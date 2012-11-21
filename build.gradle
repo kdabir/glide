@@ -1,0 +1,15 @@
+allprojects {
+    apply plugin: 'groovy'
+    apply plugin: 'idea'
+
+    group 'glide'
+    version '0.1'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}

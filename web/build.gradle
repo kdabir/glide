@@ -1,0 +1,29 @@
+apply plugin: 'war'
+
+buildDir = '../build/web'
+
+dependencies {
+    def gaeVersion = '1.7.0'
+    def groovyVersion = '1.8.6'
+
+    groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
+
+    compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
+            "com.google.appengine:appengine-api-labs:$gaeVersion",
+            "org.codehaus.groovy:groovy-all:$groovyVersion",
+            "org.gaelyk:gaelyk:1.2",
+            'org.sitemesh:sitemesh:3.0-alpha-2'
+
+    testCompile 'org.mockito:mockito-all:1.8.4',
+            'org.gaelyk:gaelyk-spock:0.3.0.1',
+            'junit:junit:4.10',
+            "com.google.appengine:appengine-api-stubs:$gaeVersion",
+            "com.google.appengine:appengine-testing:$gaeVersion"
+
+}
+// can be replaced by this logic --
+// http://forums.gradle.org/gradle/topics/how_to_automatically_create_exploded_war_without_invoking_a_seperate_task
+//http://jameswilliams.be/blog/entry/217
+war.doLast {
+    ant.unzip(src: war.archivePath, dest: "$buildDir/exploded")
+}

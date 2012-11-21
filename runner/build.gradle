@@ -1,0 +1,89 @@
+apply plugin: 'application'
+apply plugin: 'maven'
+
+dependencies {
+    def groovyVersion = '1.8.6'
+
+    groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
+
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion",
+            'org.apache.ant:ant:1.8.4',     // required for AntBuilder
+            'commons-cli:commons-cli:1.1'   // required for CliBuilder
+
+    testCompile 'junit:junit:4.10'
+}
+
+buildDir = '../build/runner'
+mainClassName = "glide.runner.GlideCLI"
+
+/**
+ * gradle start -Papp=path/to/myapp
+ *
+ * run the default sample app if no app is provided
+ */
+run {
+    dependsOn ":web:war"
+    args "-a", getPathFromProperty("app", "../samples/simple_app"),
+         "-t", file("../build/web/exploded"),
+         "-o", file("../build/runner/simple"),
+         "-g" , System.env.APPENGINE_HOME
+}
+
+
+applicationDistribution.from('../build/web/exploded') {
+    into "template"
+}
+applicationDistribution.from('../build/samples') {
+    into "samples"
+}
+
+installApp {
+    dependsOn ":runner:build", ":web:war", ":samples:copySamples"
+
+    def install_location = getPathFromProperty("dir", "../build/install")
+    into install_location
+
+    doLast {
+        println "installing to $install_location"
+    }
+}
+
+distZip {
+    dependsOn ":runner:build",":web:war", ":samples:copySamples"
+}
+
+startScripts {
+    // TODO to check if this works on windows
+    doLast {
+        def windowsScriptFile = file getWindowsScript()
+        def unixScriptFile    = file getUnixScript()
+        //  windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\lib\config', '%APP_HOME%\config')
+        unixScriptFile.text    = unixScriptFile.text.replace('APP_HOME="`pwd -P`"', 'APP_HOME="`pwd -P`"\nexport GLIDE_HOME=$APP_HOME')
+        if (!unixScriptFile.text.contains("export GLIDE_HOME")) {
+            println "GLIDE_HOME is not set. This may lead to improper installation"
+        }
+    }
+}
+
+
+/**
+ * extracts path from system properties and if no path given, uses default value
+ *
+ * use absolute path or path relative to current working dir
+ *
+ * WARNING: gradle installTo -Pdir=~/.glide may or may not work.
+ *
+ * @returns a file object
+ */
+def getPathFromProperty(prop_name, default_value){
+    if (project.hasProperty(prop_name) ) {
+        String dir = project.property(prop_name)
+
+        String user_home = System.getProperty("user.home");
+        if (dir.startsWith("~") && file(user_home).isDirectory())
+            dir = dir.replaceFirst("~",user_home)
+
+        return file(dir)
+    }
+    return file(default_value)
+}
