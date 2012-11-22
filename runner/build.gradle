@@ -53,6 +53,8 @@ distZip {
 }
 
 startScripts {
+    applicationName = "glide"       // this will be the name of script that is generated
+
     // TODO to check if this works on windows
     doLast {
         def windowsScriptFile = file getWindowsScript()
