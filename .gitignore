@@ -11,6 +11,3 @@ install/
 .settings
 /out/
 *.class
-
-# Package Files #
-*.jar
