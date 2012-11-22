@@ -27,11 +27,6 @@ class GlideCLI {
     File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppRoutesFile
 
     private GlideCLI(OptionAccessor options) {
-        if (!options || options.h) {
-            cli.usage()
-            return
-        }
-
         setupAnt(options)
         setupGaeSdk(options)
         setupTemplateApp(options)
@@ -205,6 +200,12 @@ class GlideCLI {
         }
 
         def options = cli.parse(args)
+
+        if (!options || options.h) {
+            cli.usage()
+            return
+        }
+
         if (options.q) verbose = false
         def command = (options.arguments()?options.arguments()[0] :"run")
 
