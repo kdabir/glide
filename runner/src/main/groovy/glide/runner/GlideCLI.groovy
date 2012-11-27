@@ -86,8 +86,6 @@ class GlideCLI {
         log("Output app : ${this.outputApp}")
     }
 
-
-
     ///// OPERATIONS /////
     long lastSync
 
@@ -118,7 +116,6 @@ class GlideCLI {
             outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
         }
         trace "time to generate xml : ${(System.nanoTime() - start)/1000000}"
-
 
         mergeAndCopy()
 
@@ -173,12 +170,9 @@ class GlideCLI {
 
     static def verbose = true
     static def trace = false
-    static def log (msg) {
-        if (verbose) println msg
-    }
-    static def trace(msg) {
-        if (trace) println msg
-    }
+
+    static def log (msg) { if (verbose) println msg }
+    static def trace (msg) { if (trace) println msg }
 
     public static void main(String[] args) {
         println """
@@ -207,6 +201,7 @@ class GlideCLI {
         }
 
         if (options.q) verbose = false
+        if (options.r) trace = false
         def command = (options.arguments()?options.arguments()[0] :"run")
 
         new GlideCLI(options).start()
