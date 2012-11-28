@@ -60,6 +60,9 @@ class GlideCLI {
         if (!this.templateApp.isDirectory())
             throw new IllegalArgumentException("${templateApp} is not a valid Directory")
 
+        if (!templateAppConfigFile.exists())
+            throw new RuntimeException("$templateAppConfigFile does not exist");
+
         log("Template app : ${this.templateApp}")
     }
 
@@ -89,42 +92,62 @@ class GlideCLI {
     ///// OPERATIONS /////
     long lastSync
 
-    def start = System.nanoTime()
+
+    def timed (String activityName, closure ){
+        def start = System.nanoTime()
+        def retVal = closure.call()
+        if (trace)
+            trace "Time for $activityName : ${(System.nanoTime() - start)/1000000} ms"
+        retVal
+    }
 
     def sync = {
 
-        start = System.nanoTime()
-        if (glideAppRoutesFile.exists())
-            ant.copy(file: glideAppRoutesFile, tofile: outputAppRoutesFile) // TODO merge with template
-
-        trace "time to copy routes : ${(System.nanoTime() - start)/1000000}"
-
-
-        start = System.nanoTime()
+        timed("copy route files") {
+            copyRouteFiles()
+        }
 
         def userConfigLastModified = glideAppConfigFile.lastModified()
+        if (userConfigLastModified &&  // this would be 0 if user config does not exist
+                userConfigLastModified > outputAppAppengineWebXml.lastModified() ||
+                userConfigLastModified > outputAppWebXml.lastModified()) {
 
-        if (userConfigLastModified > outputAppAppengineWebXml.lastModified() ||
-            userConfigLastModified > outputAppWebXml.lastModified()) {
+            def config = timed("merging configs") {
+                getTemplateConfig().merge(getUserConfig())
+            }
 
-            def userConfig = new ConfigSlurper().parse(glideAppConfigFile.toURL())
-            def templateConfig = new ConfigSlurper().parse(templateAppConfigFile.toURL())
-
-            def config = templateConfig.merge(userConfig)
-
-            outputAppWebXml.text = new WebXmlGenerator().generate(config)
-            outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
+            timed("generting xml files") {
+                generateRequiredXmlFiles(config)
+            }
         }
-        trace "time to generate xml : ${(System.nanoTime() - start)/1000000}"
 
-        mergeAndCopy()
+        timed("sync other files") {
+            mergeAndCopy()
+        }
 
+        lastSync = System.currentTimeMillis()
+    }
+
+    private void copyRouteFiles() {
+        if (glideAppRoutesFile.exists())
+            ant.copy(file: glideAppRoutesFile, tofile: outputAppRoutesFile) // TODO merge with template
+    }
+
+    private void generateRequiredXmlFiles(ConfigObject config) {
+        outputAppWebXml.text = new WebXmlGenerator().generate(config)
+        outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
+    }
+
+    private ConfigObject getUserConfig() {
+        new ConfigSlurper().parse(glideAppConfigFile.toURL())
+    }
+
+    private ConfigObject getTemplateConfig() {
+        new ConfigSlurper().parse(templateAppConfigFile.toURL())
     }
 
     // merge webroot of glideApp and template app sync with outputApp
     private void mergeAndCopy() {
-        start = System.nanoTime()
-
         ant.sync(todir: outputApp) {
             ant.fileset(dir: glideApp,
                     includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy",
@@ -139,7 +162,6 @@ class GlideCLI {
                 ant.include(name: "WEB-INF/appengine-generated/**/*")
             }
         }
-        trace "time to sync : ${(System.nanoTime() - start) / 1000000}"
     }
 
     def clean (){
@@ -162,10 +184,13 @@ class GlideCLI {
         }
     }
 
-
+    // things that are required to be done once before the sync thread starts
     def preprocess() {
         ant.mkdir(dir:outputApp)
+        ant.touch(file: outputAppWebXml, mkdirs:true)
+        ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
 
+        generateRequiredXmlFiles templateConfig // with the default config (without user config)
     }
 
     static def verbose = true
@@ -191,6 +216,7 @@ class GlideCLI {
             o longOpt: 'output',    args: 1, argName: 'gae',        "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
             h longOpt: 'help',                                      "help"
             q longOpt: 'quiet',                                     "do not print log messages"
+            r longOpt: 'trace',                                     "enable trace logging"
         }
 
         def options = cli.parse(args)
@@ -201,7 +227,7 @@ class GlideCLI {
         }
 
         if (options.q) verbose = false
-        if (options.r) trace = false
+        if (options.r) trace = true
         def command = (options.arguments()?options.arguments()[0] :"run")
 
         new GlideCLI(options).start()
