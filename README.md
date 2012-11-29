@@ -66,3 +66,16 @@ In our example it would look something like  `APPENGINE_HOME=C:\appengine-java-s
 
 Congratulations, you have installed glide.
 
+
+
+###Running
+
+cd into directory containing your web content (including any groovy scripts and templates) and fire glide.
+
+`$ cd my_app`
+
+`$ glide`
+
+Your app should be running on `localhost:8080`
+
+Yes! no verbose config, nothing else. Your web content is being served.
