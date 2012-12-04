@@ -11,3 +11,4 @@ install/
 .settings
 /out/
 *.class
+/bak/
