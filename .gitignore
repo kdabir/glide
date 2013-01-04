@@ -12,3 +12,4 @@ install/
 /out/
 *.class
 /bak/
+.gradletasknamecache

@@ -21,6 +21,11 @@ web {
     }
 
     filters {
+        sitemeshFilter {
+            filter_class = "org.sitemesh.config.ConfigurableSiteMeshFilter"
+            url_patterns = ['/*']
+            dispatchers = [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR']
+        }
         routesFilter {
             filter_class = "groovyx.gaelyk.routes.RoutesFilter"
             url_patterns = ['/*']
@@ -34,5 +39,13 @@ web {
     ]
 
     welcome_files = ['index.html']
+
+}
+
+layout {
+    mappings = [
+        "/*" : "/WEB-INF/layout.html"
+    ]
+    excludes = ["/_ah/*"]
 
 }

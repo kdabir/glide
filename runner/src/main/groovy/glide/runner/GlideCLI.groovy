@@ -2,6 +2,7 @@ package glide.runner
 
 import glide.runner.generators.WebXmlGenerator
 import glide.runner.generators.AppEngineWebXmlGenerator
+import glide.runner.generators.Sitemesh3XmlGenerator
 
 /**
  * This class does it all.. this is merely a script converted to a class
@@ -24,7 +25,7 @@ class GlideCLI {
     File templateApp, templateAppConfigFile, templateAppRoutesFile
 
     // output app paths
-    File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppRoutesFile
+    File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppSitemesh3Xml, outputAppRoutesFile
 
     private GlideCLI(OptionAccessor options) {
         setupAnt(options)
@@ -85,6 +86,7 @@ class GlideCLI {
         def outputAppWebInfDir      = new File("$outputApp/WEB-INF")
         outputAppWebXml             = new File("${outputAppWebInfDir}/web.xml")
         outputAppAppengineWebXml    = new File("${outputAppWebInfDir}/appengine-web.xml")
+        outputAppSitemesh3Xml       = new File("${outputAppWebInfDir}/sitemesh3.xml")
         outputAppRoutesFile         = new File("${outputAppWebInfDir}/routes.groovy")
         log("Output app : ${this.outputApp}")
     }
@@ -136,6 +138,7 @@ class GlideCLI {
     private void generateRequiredXmlFiles(ConfigObject config) {
         outputAppWebXml.text = new WebXmlGenerator().generate(config)
         outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
+        outputAppSitemesh3Xml.text = new Sitemesh3XmlGenerator().generate(config)
     }
 
     private ConfigObject getUserConfig() {
@@ -146,7 +149,7 @@ class GlideCLI {
         new ConfigSlurper().parse(templateAppConfigFile.toURL())
     }
 
-    // merge webroot of glideApp and template app sync with outputApp
+    // merge webroot of glideApp and template app, sync with outputApp
     private void mergeAndCopy() {
         ant.sync(todir: outputApp) {
             ant.fileset(dir: glideApp,
