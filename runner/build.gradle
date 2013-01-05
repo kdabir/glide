@@ -17,7 +17,7 @@ buildDir = '../build/runner'
 mainClassName = "glide.runner.GlideCLI"
 
 /**
- * gradle start -Papp=path/to/myapp
+ * gradle run -Papp=../samples/blog -Pout=../samples/out
  *
  * run the default sample app if no app is provided
  */
@@ -25,7 +25,7 @@ run {
     dependsOn ":web:war"
     args "-a", getPathFromProperty("app", "../samples/simple_app"),
          "-t", file("../build/web/exploded"),
-         "-o", file("../build/runner/simple"),
+         "-o", getPathFromProperty("out","../build/runner/generated_app"),
          "-g" , System.env.APPENGINE_HOME
 }
 
