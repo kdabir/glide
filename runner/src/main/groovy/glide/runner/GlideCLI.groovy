@@ -92,7 +92,7 @@ class GlideCLI {
     }
 
     ///// OPERATIONS /////
-    long lastSync
+    long lastSynced = 0
 
 
     def timed (String activityName, closure ){
@@ -109,10 +109,9 @@ class GlideCLI {
             copyRouteFiles()
         }
 
-        def userConfigLastModified = glideAppConfigFile.lastModified()
-        if (userConfigLastModified &&  // this would be 0 if user config does not exist
-                userConfigLastModified > outputAppAppengineWebXml.lastModified() ||
-                userConfigLastModified > outputAppWebXml.lastModified()) {
+        def userConfigLastModified = glideAppConfigFile.lastModified() // this would be 0 if user config does not exist
+
+        if ( userConfigLastModified > lastSynced ) {
 
             def config = timed("merging configs") {
                 getTemplateConfig().merge(getUserConfig())
@@ -127,7 +126,7 @@ class GlideCLI {
             mergeAndCopy()
         }
 
-        lastSync = System.currentTimeMillis()
+        lastSynced = System.currentTimeMillis()
     }
 
     private void copyRouteFiles() {
