@@ -5,3 +5,8 @@ app{
 web {
     security = ['admin':["/post/*"]]
 }
+layout {
+    mappings = [
+        "/*" : "/layout.html"
+    ]
+}
