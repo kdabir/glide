@@ -19,8 +19,7 @@ class AppEngineWebXmlGenerator {
             }
 
             'static-files' {
-                exclude(path:"**.groovy")
-                exclude(path:"**.gtpl")
+                exclude(path:"**/*")
             }
         }
         writer.toString()
