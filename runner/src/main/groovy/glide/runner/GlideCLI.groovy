@@ -69,7 +69,7 @@ class GlideCLI {
 
     private void setupGlideApp(OptionAccessor options) {
         this.glideApp               = new File(options.a ?: System.getProperty("user.dir"))
-        this.glideAppConfigFile     = new File("$glideApp/__config.groovy")
+        this.glideAppConfigFile     = new File("$glideApp/__glide.groovy")
         this.glideAppRoutesFile     = new File("$glideApp/__routes.groovy")
 
         if (!this.glideApp.isDirectory())
@@ -152,7 +152,7 @@ class GlideCLI {
     private void mergeAndCopy() {
         ant.sync(todir: outputApp) {
             ant.fileset(dir: glideApp,
-                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy",
+                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, *.ico",
                     excludes: "**/__*")
 
             ant.fileset(dir: templateApp,
@@ -176,6 +176,12 @@ class GlideCLI {
         preprocess()
         timer.schedule(this.sync as TimerTask, START_AFTER, SCAN_INTERVAL) //initialdelay & repeat interval
         start_dev_appserver()
+    }
+
+    def upload() {
+        this.preprocess()
+        this.sync()
+        ant.appcfg(action: "update", war: this.outputApp)
     }
 
     private void start_dev_appserver() {
@@ -232,7 +238,13 @@ class GlideCLI {
         if (options.r) trace = true
         def command = (options.arguments()?options.arguments()[0] :"run")
 
-        new GlideCLI(options).start()
+        def glide_cli = new GlideCLI(options)
+        switch (command) {
+            case ["run","start"] : glide_cli.start(); break
+            case ["upload", "deploy"] : glide_cli.upload(); break
+            default: println " invlid command"; break
+        }
+
     }
 
 }

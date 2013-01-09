@@ -17,7 +17,8 @@ class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
     def default_config = new ConfigSlurper().parse("""
     layout {
         mappings = [
-            "/*" : "default_layout.html"
+            "/*" : "default_layout.html",
+            "/unmapped/*" : "somedecorator.html"
         ]
         excludes = "/500.html"
     }
@@ -59,7 +60,7 @@ class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
 
     void testMergeShouldOverwrite(){
         def merged_config = default_config.merge user_config
-        assert merged_config.layout.mappings.size() == 2
+        assert merged_config.layout.mappings.size() == 3
         assert merged_config.layout.excludes.size() == 2
     }
 }

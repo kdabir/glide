@@ -43,6 +43,7 @@ web {
 }
 
 layout {
+    // important : template name must be a path, i.e. start with a /
     mappings = [
         "/*" : "/WEB-INF/layout.html"
     ]
