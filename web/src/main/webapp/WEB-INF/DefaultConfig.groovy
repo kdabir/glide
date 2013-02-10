@@ -4,15 +4,14 @@ app{
 
 //  public_root = "/_static"
 
-    static_files = {
+    static_files {
         excludes = ["**.gtpl", "**.html", "**.groovy"]
         includes = ["index.html"]
     }
 
-    resource_files = {
+    resource_files {
         includes = ["**.gtpl", "**.html", "**.groovy"]
     }
-
 }
 
 web {
