@@ -152,7 +152,7 @@ class GlideCLI {
     private void mergeAndCopy() {
         ant.sync(todir: outputApp) {
             ant.fileset(dir: glideApp,
-                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, *.ico",
+                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, **/*.ico",
                     excludes: "**/__*")
 
             ant.fileset(dir: templateApp,
