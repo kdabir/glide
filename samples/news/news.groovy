@@ -1,4 +1,4 @@
-def rss = new XmlSlurper().parseText(new URL("http://news.google.com/?output=rss").get().text)
+def rss = new XmlSlurper().parseText(new URL("http://news.google.com/?output=rss").get(deadline:15).text)
 
 html.html {
     head {
