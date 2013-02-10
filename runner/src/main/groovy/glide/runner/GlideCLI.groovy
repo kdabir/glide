@@ -56,7 +56,7 @@ class GlideCLI {
 
         this.templateApp            = new File(options.t ?: "${System.env.GLIDE_HOME}/template")
         this.templateAppConfigFile  = new File ("$templateApp/WEB-INF/DefaultConfig.groovy")
-        this.templateAppRoutesFile  = new File ("$templateApp/WEB-INF/routes.groovy")
+        this.templateAppRoutesFile  = new File ("$templateApp/WEB-INF/DefaultRoutes.groovy")
 
         if (!this.templateApp.isDirectory())
             throw new IllegalArgumentException("${templateApp} is not a valid Directory")
@@ -92,9 +92,6 @@ class GlideCLI {
     }
 
     ///// OPERATIONS /////
-    long lastSynced = 0
-
-
     def timed (String activityName, closure ){
         def start = System.nanoTime()
         def retVal = closure.call()
@@ -102,44 +99,6 @@ class GlideCLI {
             trace "Time for $activityName : ${(System.nanoTime() - start)/1000000} ms"
         retVal
     }
-
-    def sync = {
-
-        timed("copy route files") {
-            copyRouteFiles()
-        }
-
-        def userConfigLastModified = glideAppConfigFile.lastModified() // this would be 0 if user config does not exist
-
-        if ( userConfigLastModified > lastSynced ) {
-
-            def config = timed("merging configs") {
-                getTemplateConfig().merge(getUserConfig())
-            }
-
-            timed("generting xml files") {
-                generateRequiredXmlFiles(config)
-            }
-        }
-
-        timed("sync other files") {
-            mergeAndCopy()
-        }
-
-        lastSynced = System.currentTimeMillis()
-    }
-
-    private void copyRouteFiles() {
-        if (glideAppRoutesFile.exists())
-            ant.copy(file: glideAppRoutesFile, tofile: outputAppRoutesFile) // TODO merge with template
-    }
-
-    private void generateRequiredXmlFiles(ConfigObject config) {
-        outputAppWebXml.text = new WebXmlGenerator().generate(config)
-        outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
-        outputAppSitemesh3Xml.text = new Sitemesh3XmlGenerator().generate(config)
-    }
-
     private ConfigObject getUserConfig() {
         new ConfigSlurper().parse(glideAppConfigFile.toURL())
     }
@@ -148,15 +107,55 @@ class GlideCLI {
         new ConfigSlurper().parse(templateAppConfigFile.toURL())
     }
 
+    // keeps track of when last sync took place
+    long lastSynced = 0
+
+    def sync = {
+        // lastModified would be 0 if file does not exist
+        if (glideAppRoutesFile.lastModified() >= lastSynced) {
+            timed("copy route files") {
+                mergeRouteFiles()
+            }
+        }
+
+        if ( glideAppConfigFile.lastModified() >= lastSynced ) {
+            def config = timed("merging configs") {
+                getTemplateConfig().merge(getUserConfig())
+            }
+            timed("generting xml files") {
+                generateRequiredXmlFiles(config)
+            }
+        }
+
+        timed("sync other files") {
+            mergeTemplateAndGlideAppIntoOutputApp()
+        }
+
+        lastSynced = System.currentTimeMillis()
+    }
+
+    private void mergeRouteFiles() {
+        ant.concat(destfile: outputAppRoutesFile, fixlastline: "yes") {
+            ant.fileset(file: glideAppRoutesFile)
+            ant.fileset(file: templateAppRoutesFile)
+        }
+    }
+
+    private void generateRequiredXmlFiles(ConfigObject config) {
+        outputAppWebXml.text = new WebXmlGenerator().generate(config)
+        outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
+        outputAppSitemesh3Xml.text = new Sitemesh3XmlGenerator().generate(config)
+    }
+
     // merge webroot of glideApp and template app, sync with outputApp
-    private void mergeAndCopy() {
+    private void mergeTemplateAndGlideAppIntoOutputApp() {
         ant.sync(todir: outputApp) {
             ant.fileset(dir: glideApp,
                     includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, **/*.ico",
                     excludes: "**/__*")
 
             ant.fileset(dir: templateApp,
-                    excludes: "WEB-INF/*.xml, WEB-INF/DefaultConfig.groovy")
+                    excludes: "WEB-INF/*.xml, WEB-INF/Default*.groovy,")
 
             ant.preserveintarget {
                 ant.include(name: "WEB-INF/*.xml")
@@ -184,6 +183,17 @@ class GlideCLI {
         ant.appcfg(action: "update", war: this.outputApp)
     }
 
+    // things that are required to be done once before the sync thread starts
+    def preprocess() {
+        ant.mkdir(dir:outputApp)
+        ant.touch(file: outputAppWebXml, mkdirs:true)
+        ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
+        ant.touch(file: outputAppSitemesh3Xml, mkdirs:true)
+
+        generateRequiredXmlFiles templateConfig // with the default config (without user config)
+    }
+
+
     private void start_dev_appserver() {
         ant.dev_appserver(war: outputApp, port: this.PORT){
             options {
@@ -192,14 +202,6 @@ class GlideCLI {
         }
     }
 
-    // things that are required to be done once before the sync thread starts
-    def preprocess() {
-        ant.mkdir(dir:outputApp)
-        ant.touch(file: outputAppWebXml, mkdirs:true)
-        ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
-
-        generateRequiredXmlFiles templateConfig // with the default config (without user config)
-    }
 
     static def verbose = true
     static def trace = false

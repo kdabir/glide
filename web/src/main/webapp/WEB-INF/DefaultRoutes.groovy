@@ -1,0 +1,1 @@
+get "/favicon.ico", redirect: "/_static/favicon.ico"
