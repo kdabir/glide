@@ -2,6 +2,6 @@ package post
 
 import model.Post
 
-new Post(title: params.title, content: params.content).save()
+new Post(title: params.title, content: params.content, user: users.currentUser).save()
 
 redirect "/"
