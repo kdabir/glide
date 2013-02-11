@@ -2,7 +2,7 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 dependencies {
-    def groovyVersion = '2.0.5'
+    def groovyVersion = '2.1.0'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 

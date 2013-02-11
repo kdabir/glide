@@ -4,7 +4,7 @@ buildDir = '../build/web'
 
 dependencies {
     def gaeVersion = '1.7.4'
-    def groovyVersion = '2.0.5'
+    def groovyVersion = '2.1.0'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 
@@ -15,7 +15,7 @@ dependencies {
             'org.sitemesh:sitemesh:3.0-alpha-2'
 
     testCompile 'org.mockito:mockito-all:1.8.4',
-            'org.gaelyk:gaelyk-spock:0.3.0.1',
+//            'org.gaelyk:gaelyk-spock:0.3.0.1',
             'junit:junit:4.10',
             "com.google.appengine:appengine-api-stubs:$gaeVersion",
             "com.google.appengine:appengine-testing:$gaeVersion"
