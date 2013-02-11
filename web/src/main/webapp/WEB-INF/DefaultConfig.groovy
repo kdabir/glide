@@ -6,7 +6,7 @@ app{
 
     static_files {
         excludes = ["**.gtpl", "**.html", "**.groovy"]
-        includes = ["index.html"]
+        includes = ["index.html", "**/favicon.ico"]
     }
 
     resource_files {
@@ -45,7 +45,7 @@ web {
         sitemeshFilter {
             filter_class = "org.sitemesh.config.ConfigurableSiteMeshFilter"
             url_patterns = ['/*']
-            dispatchers = [ 'FORWARD']
+            dispatchers = [ 'FORWARD', 'REQUEST']
         }
         protectedResourcesFilter {
             filter_class = "glide.web.ProtectedResourcesFilter"
