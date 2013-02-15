@@ -11,6 +11,6 @@ web {
 
 layout {
     mappings = [
-            "/*": "/layout.html"
+            "/*": "/_layout.html"
     ]
 }

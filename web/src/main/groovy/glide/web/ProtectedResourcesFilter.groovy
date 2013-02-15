@@ -1,13 +1,9 @@
 package glide.web
 
-import com.google.appengine.api.users.User
-import com.google.appengine.api.users.UserService
-import com.google.appengine.api.users.UserServiceFactory
 import groovyx.gaelyk.GaelykBindings
 
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.*
 import javax.servlet.http.HttpServletResponse
+import javax.servlet.*
 
 @GaelykBindings
 public class ProtectedResourcesFilter implements javax.servlet.Filter {
