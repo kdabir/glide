@@ -23,11 +23,19 @@ mainClassName = "glide.runner.GlideCLI"
  */
 run {
     dependsOn ":web:war"
-    args "-a", getPathFromProperty("app", "../samples/simple_app"),
-         "-t", file("../build/web/exploded"),
-         "-o", getPathFromProperty("out","../build/runner/generated_app"),
-         "-g" , System.env.APPENGINE_HOME,
-         "-p" , getFromProperty("port", "8080")
+
+    def argsList = []
+
+    argsList << ["-a", getPathFromProperty("app", "../samples/simple_app")]
+    argsList << ["-t", file("../build/web/exploded")]
+    argsList << ["-o", getPathFromProperty("out", "../build/runner/generated_app")]
+
+    if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
+    if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
+    if (project.hasProperty("help")){ argsList << "-h" }
+    if (project.hasProperty("quiet")){ argsList << "-q" }
+
+    args argsList.flatten()
 }
 
 
