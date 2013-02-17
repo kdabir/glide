@@ -86,7 +86,7 @@ class GlideCLI {
         if (!options.o && !System.env.GLIDE_HOME)
             throw new IllegalArgumentException("please provide either output dir or set GLIDE_HOME env var")
 
-        outputApp                   = new File(options.o ?: "${System.env.GLIDE_HOME}/generated")
+        outputApp                   = new File(options.o ?: "${System.env.GLIDE_HOME}/generated/${this.appName}")
         def outputAppWebInfDir      = new File("$outputApp/WEB-INF")
         outputAppWebXml             = new File("${outputAppWebInfDir}/web.xml")
         outputAppAppengineWebXml    = new File("${outputAppWebInfDir}/appengine-web.xml")
@@ -99,6 +99,10 @@ class GlideCLI {
         port = options.p ? Integer.parseInt(options.p): DEFAULT_PORT
     }
 
+    public def getAppName() {
+        final config = glideAppConfigFile.exists() ? this.userConfig : new ConfigSlurper().parse("app{}")
+        (config.app.name ?: "unnamed-app") + "_" + (config.app.version ?: "0")
+    }
     ///// OPERATIONS /////
     def timed (String activityName, closure ){
         def start = System.nanoTime()
