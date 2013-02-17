@@ -6,7 +6,7 @@ app{
 
     static_files {
         excludes = ["**.gtpl", "**.html", "**.groovy"]
-        includes = ["index.html", "**/favicon.ico"]
+        includes = ["index.html", "**/favicon.ico", "**.png", "**.jpeg", "**.gif"]
     }
 
     resource_files {
