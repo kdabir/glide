@@ -2,13 +2,13 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 dependencies {
-    def groovyVersion = '2.1.0'
+    def groovyVersion = '2.1.1'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
-            'commons-cli:commons-cli:1.1'   // required for CliBuilder
+            'commons-cli:commons-cli:1.2'   // required for CliBuilder
 
     testCompile 'junit:junit:4.10'
 }
