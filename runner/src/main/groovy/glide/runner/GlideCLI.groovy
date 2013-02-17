@@ -220,13 +220,13 @@ class GlideCLI {
         def cli = new CliBuilder()
         // todo fix help banner
         cli.with {
-            a longOpt: 'app',       args: 1, argName: 'app',        "/path/to/app [default = current working dir]"
-            t longOpt: 'template',  args: 1, argName: 'template',   "/path/to/template/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
-            g longOpt: 'gae',       args: 1, argName: 'gae',        "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
-            o longOpt: 'output',    args: 1, argName: 'gae',        "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
-            h longOpt: 'help',                                      "help"
-            q longOpt: 'quiet',                                     "do not print log messages"
-            r longOpt: 'trace',                                     "enable trace logging"
+            a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default = current working dir]"
+            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_APP_DIR',   "/path/to/template/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            g longOpt: 'gae',       args: 1, argName: 'GAE_DIR',            "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
+            o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            h longOpt: 'help',                                              "help"
+            q longOpt: 'quiet',                                             "do not print log messages"
+            r longOpt: 'trace',                                             "enable trace logging"
         }
 
         def options = cli.parse(args)
