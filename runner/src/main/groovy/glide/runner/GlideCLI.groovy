@@ -13,9 +13,9 @@ class GlideCLI {
 
     public static final int SCAN_INTERVAL = 3000
     public static final int START_AFTER = 100
-    public static final int PORT = 8080 // port on which dev server will start
+    public static final int DEFAULT_PORT = 8080 // port on which dev server will start
 
-    // this guys does the heavy-lifting
+    // this guy does the heavy-lifting
     AntBuilder ant
 
     // glide app paths
@@ -27,12 +27,16 @@ class GlideCLI {
     // output app paths
     File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppSitemesh3Xml, outputAppRoutesFile
 
+    // the port on which app will start
+    int port
+
     private GlideCLI(OptionAccessor options) {
         setupAnt(options)
         setupGaeSdk(options)
         setupTemplateApp(options)
         setupGlideApp(options)
         setupOutputApp(options)
+        setupPort(options)
     }
 
     private void setupAnt(OptionAccessor options) {
@@ -89,6 +93,10 @@ class GlideCLI {
         outputAppSitemesh3Xml       = new File("${outputAppWebInfDir}/sitemesh3.xml")
         outputAppRoutesFile         = new File("${outputAppWebInfDir}/routes.groovy")
         log("Output app : ${this.outputApp}")
+    }
+
+    private void setupPort(OptionAccessor options) {
+        port = options.p ? Integer.parseInt(options.p): DEFAULT_PORT
     }
 
     ///// OPERATIONS /////
@@ -195,7 +203,7 @@ class GlideCLI {
 
 
     private void start_dev_appserver() {
-        ant.dev_appserver(war: outputApp, port: this.PORT){
+        ant.dev_appserver(war: outputApp, port: this.port){
             options {
                 arg(value:"--disable_update_check")
             }
@@ -221,9 +229,10 @@ class GlideCLI {
         // todo fix help banner
         cli.with {
             a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default = current working dir]"
-            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_APP_DIR',   "/path/to/template/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_DIR',       "/path/to/template/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
             g longOpt: 'gae',       args: 1, argName: 'GAE_DIR',            "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
             o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            p longOpt: 'port',      args: 1, argName: 'PORT',               "port on which to start the app [default = $DEFAULT_PORT]"
             h longOpt: 'help',                                              "help"
             q longOpt: 'quiet',                                             "do not print log messages"
             r longOpt: 'trace',                                             "enable trace logging"

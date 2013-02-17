@@ -26,7 +26,8 @@ run {
     args "-a", getPathFromProperty("app", "../samples/simple_app"),
          "-t", file("../build/web/exploded"),
          "-o", getPathFromProperty("out","../build/runner/generated_app"),
-         "-g" , System.env.APPENGINE_HOME
+         "-g" , System.env.APPENGINE_HOME,
+         "-p" , getFromProperty("port", "8080")
 }
 
 
@@ -88,4 +89,8 @@ def getPathFromProperty(prop_name, default_value){
         return file(dir)
     }
     return file(default_value)
+}
+
+def getFromProperty(prop_name, default_value){
+    project.hasProperty(prop_name)? project.property(prop_name): default_value
 }
