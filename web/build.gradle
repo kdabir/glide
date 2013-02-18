@@ -3,8 +3,8 @@ apply plugin: 'war'
 buildDir = '../build/web'
 
 dependencies {
-    def gaeVersion = '1.7.4'
-    def groovyVersion = '2.1.0'
+    def gaeVersion = '1.7.5'
+    def groovyVersion = '2.1.1'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 
