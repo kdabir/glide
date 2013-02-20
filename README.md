@@ -20,7 +20,7 @@ Let's say we use dir `~/` to carry out installation
 
 3. `cd` into the directory and install Glide using: `$ cd glide` and `$ ./gradlew installApp`
 
-4. add `~/glide/build/install/bin` to  the `PATH` variable using `$ export PATH=$PATH:~/glide/build/install/bin`
+4. add `~/glide/build/install/bin` to  the `PATH` variable using `$ export PATH=$PATH:~/glide/install/bin`
 
 5. open a new teminal or source profile again.  `$ glide -h`
 
@@ -36,7 +36,7 @@ let's say we use folder `C:\` to carry out installation
 
 3. `cd` into cloned directory `C:\> cd glide` and install Glide using `C:\glide\> gradlew.bat installApp`
 
-4. set the `PATH` environment vairable to include to the `C:\glide\build\install\bin`
+4. set the `PATH` environment vairable to include to the `C:\glide\install\bin`
 
 5. Open a new Command Propmt and try `$ glide -h`
 

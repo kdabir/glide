@@ -1,7 +1,6 @@
 .DS_Store
-/build/
-install/
 .gradle/
+.gradletasknamecache
 .idea/
 *.iws
 *.ipr
@@ -9,7 +8,7 @@ install/
 *.classpath
 *.project
 .settings
-/out/
+build/
+install/
 *.class
-/bak/
-.gradletasknamecache
+/out/

@@ -1,7 +1,5 @@
 apply plugin: 'war'
 
-buildDir = '../build/web'
-
 dependencies {
     def gaeVersion = '1.7.5'
     def groovyVersion = '2.1.1'
@@ -21,9 +19,13 @@ dependencies {
             "com.google.appengine:appengine-testing:$gaeVersion"
 
 }
+
+ext {
+    explodedWarDir = file("${buildDir.path}/exploded")
+}
 // can be replaced by this logic --
 // http://forums.gradle.org/gradle/topics/how_to_automatically_create_exploded_war_without_invoking_a_seperate_task
 //http://jameswilliams.be/blog/entry/217
 war.doLast {
-    ant.unzip(src: war.archivePath, dest: "$buildDir/exploded")
+    ant.unzip(src: war.archivePath, dest: explodedWarDir)
 }

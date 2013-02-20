@@ -13,10 +13,13 @@ dependencies {
     testCompile 'junit:junit:4.10'
 }
 
-buildDir = '../build/runner'
 mainClassName = "glide.runner.GlideCLI"
 
+evaluationDependsOn(':web')
+
 /**
+ * run provides a shortcut to run the app  without needing to install glide
+ *
  * gradle run -Papp=../samples/blog -Pout=../samples/out
  *
  * run the default sample app if no app is provided
@@ -26,9 +29,9 @@ run {
 
     def argsList = []
 
-    argsList << ["-a", getPathFromProperty("app", "../samples/simple_app")]
-    argsList << ["-t", file("../build/web/exploded")]
-    argsList << ["-o", getPathFromProperty("out", "../build/runner/generated_app")]
+    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/simple_app")]
+    argsList << ["-t", project(':web').ext.explodedWarDir.path]
+    argsList << ["-o", getPathFromProperty("out", "${project.rootProject.projectDir.path}/install/generated/sample")]
 
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
     if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
@@ -39,17 +42,14 @@ run {
 }
 
 
-applicationDistribution.from('../build/web/exploded') {
+applicationDistribution.from(project(':web').explodedWarDir) {
     into "template"
-}
-applicationDistribution.from('../build/samples') {
-    into "samples"
 }
 
 installApp {
-    dependsOn ":runner:build", ":web:war", ":samples:copySamples"
+    dependsOn ":runner:build", ":web:war"
 
-    def install_location = getPathFromProperty("dir", "../build/install")
+    def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/install")
     into install_location
 
     doLast {
@@ -58,7 +58,7 @@ installApp {
 }
 
 distZip {
-    dependsOn ":runner:build",":web:war", ":samples:copySamples"
+    dependsOn ":runner:build", ":web:war"
 }
 
 startScripts {
@@ -75,7 +75,6 @@ startScripts {
         }
     }
 }
-
 
 /**
  * extracts path from system properties and if no path given, uses default value
@@ -97,8 +96,4 @@ def getPathFromProperty(prop_name, default_value){
         return file(dir)
     }
     return file(default_value)
-}
-
-def getFromProperty(prop_name, default_value){
-    project.hasProperty(prop_name)? project.property(prop_name): default_value
 }
