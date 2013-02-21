@@ -9,7 +9,7 @@ dependencies {
     compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
             "com.google.appengine:appengine-api-labs:$gaeVersion",
             "org.codehaus.groovy:groovy-all:$groovyVersion",
-            "org.gaelyk:gaelyk:1.2",
+            "org.gaelyk:gaelyk:2.0-SNAPSHOT",
             'org.sitemesh:sitemesh:3.0-alpha-2'
 
     testCompile 'org.mockito:mockito-all:1.8.4',
