@@ -22,3 +22,19 @@ task wrapper(type: Wrapper) {
     jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
     scriptFile = file("${project.projectDir}/gradlew")
 }
+
+task installGae << {
+    def downloadHost = "http://googleappengine.googlecode.com/files"
+    def archiveName = "appengine-java-sdk-1.7.5.zip"
+
+    def localArchiveDir = "install/archive"
+    def extractToDir = 'install/gae/'
+
+    // download the sdk
+    ant.mkdir(dir: localArchiveDir) // ant get fails if dir does not exist
+    ant.get(src: "${downloadHost}/${archiveName}", dest: "${localArchiveDir}/${archiveName}", verbose: 'on', skipexisting: true)
+
+    // unzip it
+    ant.mkdir(dir: extractToDir)
+    ant.unzip(src: "${localArchiveDir}/${archiveName}", dest: extractToDir, overwrite: false)
+}
