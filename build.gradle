@@ -8,6 +8,9 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
+        maven { // for Gaelyk Snapshots
+            url 'https://oss.sonatype.org/content/repositories/snapshots'
+        }
     }
 
     sourceCompatibility = 1.7
