@@ -29,6 +29,7 @@ class GlideCLI {
 
     // the port on which app will start
     int port
+    boolean bindAll = false
 
     private GlideCLI(OptionAccessor options) {
         setupAnt(options)
@@ -36,7 +37,7 @@ class GlideCLI {
         setupTemplateApp(options)
         setupGlideApp(options)
         setupOutputApp(options)
-        setupPort(options)
+        setupIpAndPort(options)
     }
 
     private void setupAnt(OptionAccessor options) {
@@ -95,8 +96,9 @@ class GlideCLI {
         log("Output app : ${this.outputApp}")
     }
 
-    private void setupPort(OptionAccessor options) {
-        port = options.p ? Integer.parseInt(options.p): DEFAULT_PORT
+    private void setupIpAndPort(OptionAccessor options) {
+        port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
+        if (options.l) bindAll = true
     }
 
     public def getAppName() {
@@ -207,7 +209,9 @@ class GlideCLI {
 
 
     private void start_dev_appserver() {
-        ant.dev_appserver(war: outputApp, port: this.port){
+        final opts = [war: outputApp, port: this.port]
+        if (bindAll) opts.address = "0.0.0.0"
+        ant.dev_appserver(opts){
             options {
                 arg(value:"--disable_update_check")
             }
@@ -237,6 +241,7 @@ class GlideCLI {
             g longOpt: 'gae',       args: 1, argName: 'GAE_DIR',            "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
             o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
             p longOpt: 'port',      args: 1, argName: 'PORT',               "port on which to start the app [default = $DEFAULT_PORT]"
+            l longOpt: 'bind-all',                                          "if provived, app binds on 0.0.0.0 instead of 127.0.0.1"
             h longOpt: 'help',                                              "help"
             q longOpt: 'quiet',                                             "do not print log messages"
             r longOpt: 'trace',                                             "enable trace logging"
