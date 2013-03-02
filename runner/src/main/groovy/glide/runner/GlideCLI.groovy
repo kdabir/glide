@@ -60,8 +60,8 @@ class GlideCLI {
             throw new IllegalArgumentException("please provide either template or set GLIDE_HOME env variable")
 
         this.templateApp            = new File(options.t ?: "${System.env.GLIDE_HOME}/template")
-        this.templateAppConfigFile  = new File ("$templateApp/WEB-INF/DefaultConfig.groovy")
-        this.templateAppRoutesFile  = new File ("$templateApp/WEB-INF/DefaultRoutes.groovy")
+        this.templateAppConfigFile  = new File ("$templateApp/__glide.groovy")
+        this.templateAppRoutesFile  = new File ("$templateApp/__routes.groovy")
 
         if (!this.templateApp.isDirectory())
             throw new IllegalArgumentException("${templateApp} is not a valid Directory")
@@ -169,7 +169,7 @@ class GlideCLI {
                     excludes: "**/__*")
 
             ant.fileset(dir: templateApp,
-                    excludes: "WEB-INF/*.xml, WEB-INF/Default*.groovy,")
+                    excludes: "WEB-INF/*.xml, __*.groovy,")
 
             ant.preserveintarget {
                 ant.include(name: "WEB-INF/*.xml")
