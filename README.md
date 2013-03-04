@@ -4,6 +4,8 @@ Glide makes it incredibly easy to develop apps that harness the power of Google 
 using expressiveness of groovy and sweetness of Gaelyk's syntactic sugar.
 To cut the long story short, with glide you can create awesome apps on Google App Engine in a snap
 
+[![Build Status](https://travis-ci.org/kdabir/glide.png)](https://travis-ci.org/kdabir/glide)
+
 ---------
 ### Installing
 
