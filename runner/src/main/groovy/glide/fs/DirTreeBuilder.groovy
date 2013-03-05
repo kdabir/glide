@@ -8,12 +8,14 @@ class DirTreeBuilder {
     final def baseDir
     final def fs = FileSystemService.instance
 
+    // todo - validate the file/dir names
+
     private DirTreeBuilder(String baseDir, Closure closure = {}) {
         this.baseDir = baseDir
 
         fs.mkdirs(baseDir)
 
-        closure?.resolveStrategy = Closure.DELEGATE_ONLY
+        closure?.resolveStrategy = Closure.DELEGATE_FIRST
         closure?.delegate = this
         closure?.call(baseDir)
     }
@@ -26,9 +28,17 @@ class DirTreeBuilder {
         new DirTreeBuilder("$baseDir/$name", closure)
     }
 
+    /**
+     * if no content string is provided or content closure does not return a string the content of file is set to blank string
+     *
+     * @param name
+     * @param content String or Closure that returns a string to be written in the file
+     * @return
+     */
     def file(String name, content = "") {
-        final text = (content instanceof Closure) ? (content(name) ?: "") : (content ?: "")
-        fs.writeText("$baseDir/$name", text)
+        final file_path = "$baseDir/$name"
+        final text = (content instanceof Closure) ? content(file_path) : content
+        fs.writeText(file_path, text ?: "")
         this
     }
 }
