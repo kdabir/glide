@@ -1,6 +1,6 @@
 package glide.fs
 
-class FileSystemServiceTest extends FileSystemIntegrationTestsBase {
+class FileSystemServiceIntegrationTest extends FileSystemIntegrationTestsBase {
 
     void "test create dir"() {
         final dir = "$tempDir/test_dir"

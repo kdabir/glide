@@ -1,7 +1,6 @@
 package glide.fs
 
 import groovy.mock.interceptor.MockFor
-import groovy.mock.interceptor.StubFor
 
 /**
  *
