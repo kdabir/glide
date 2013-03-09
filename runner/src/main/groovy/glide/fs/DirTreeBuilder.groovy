@@ -6,14 +6,13 @@ package glide.fs
  */
 class DirTreeBuilder {
     final def baseDir
-    final def fs = FileSystemService.instance
 
     // todo - validate the file/dir names
 
     private DirTreeBuilder(String baseDir, Closure closure = {}) {
         this.baseDir = baseDir
 
-        fs.mkdirs(baseDir)
+        new File(baseDir).mkdirs()
 
         closure?.resolveStrategy = Closure.DELEGATE_FIRST
         closure?.delegate = this
@@ -38,7 +37,7 @@ class DirTreeBuilder {
     def file(String name, content = "") {
         final file_path = "$baseDir/$name"
         final text = (content instanceof Closure) ? content(file_path) : content
-        fs.writeText(file_path, text ?: "")
+        new File(file_path).text = text ?: ""
         this
     }
 }
