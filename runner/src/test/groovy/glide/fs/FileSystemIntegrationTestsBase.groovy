@@ -1,11 +1,12 @@
 package glide.fs
 
 /**
- *
+ * creates a tempDir for extending test cases to use
  */
 class FileSystemIntegrationTestsBase extends GroovyTestCase {
 
     def tempDir
+    def deleteOnExit = true
 
     void setUp() {
         tempDir = new File("${System.properties['java.io.tmpdir']?:"."}/glidetest")
@@ -17,6 +18,6 @@ class FileSystemIntegrationTestsBase extends GroovyTestCase {
     }
 
     void tearDown() {
-        tempDir.deleteDir()
+        if (deleteOnExit) tempDir.deleteDir()
     }
 }
