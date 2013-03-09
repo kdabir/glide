@@ -4,13 +4,13 @@ package glide.fs
  * The class abstracts out the file system operations
  *
  */
-@Singleton
-class FileSystemService {
-    def mkdirs(path) {
+
+class FileSystemCategory {
+    static mkdirs(path) {
         new File(path).mkdirs()
     }
 
-    def writeText(file, text) {
+    static writeText(file, text) {
         new File(file).text = text
     }
 }
