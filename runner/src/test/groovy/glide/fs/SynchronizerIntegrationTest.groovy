@@ -53,7 +53,7 @@ class SynchronizerIntegrationTest extends FileSystemIntegrationTestsBase {
         ]
         def target = [dir: dest]
 
-        new Synchronizer(new AntBuilder()).sync(sources, target)
+        new Synchronizer(sources:sources, target:target).sync()
 
         assertDirs dest
         assertFiles "$dest/src/home.groovy", "$dest/src/layout.groovy", "$dest/web/index.html"
@@ -68,7 +68,7 @@ class SynchronizerIntegrationTest extends FileSystemIntegrationTestsBase {
         def target = [dir: dest]
 
         shouldFail {
-            new Synchronizer(new AntBuilder()).sync(sources, target)
+            new Synchronizer(sources:sources, target:target).sync()
         }
     }
 }

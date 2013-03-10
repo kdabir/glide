@@ -22,7 +22,7 @@ class SynchronizerTest extends GroovyTestCase {
                 preserveintarget: {hash -> assert hash.includes == target.preserves}
         ]
 
-        new Synchronizer(ant_mock).sync(sources.first(), target)
+        new Synchronizer(ant:ant_mock, sources:sources.first(), target:target).sync()
     }
 
     void "test pass right values to the antbuilder"() {
@@ -32,6 +32,6 @@ class SynchronizerTest extends GroovyTestCase {
                 preserveintarget: {hash -> assert hash.includes == target.preserves}
         ]
 
-        new Synchronizer(ant_mock).sync(sources, target)
+        new Synchronizer(ant:ant_mock, sources:sources, target:target).sync()
     }
 }

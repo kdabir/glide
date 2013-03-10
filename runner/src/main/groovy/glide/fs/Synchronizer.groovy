@@ -5,10 +5,11 @@ package glide.fs
  */
 class Synchronizer {
 
-    def ant
+    def ant = new AntBuilder()
+    def sources, target
 
-    Synchronizer(ant) {
-        this.ant = ant
+    def setSources(sources){
+        this.sources = [sources].flatten()
     }
 
     /**
@@ -16,8 +17,7 @@ class Synchronizer {
      * sources = [source1, source2 ....]
      * target = [dir:"", preserves: ""]
      */
-    def sync(sources, target) {
-        sources = [sources].flatten()
+    def sync() {
         ant.sync(todir: target.dir) {
             sources.each { source ->
                 ant.fileset(source)
