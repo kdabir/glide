@@ -1,4 +1,4 @@
-package glide.runner.generators
+package glide.generators
 
 // TODO error pages by exception types
 // TODO multiple filter urls-patterns can have set of dispatchers

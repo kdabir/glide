@@ -1,8 +1,8 @@
 package glide.runner
 
-import glide.runner.generators.WebXmlGenerator
-import glide.runner.generators.AppEngineWebXmlGenerator
-import glide.runner.generators.Sitemesh3XmlGenerator
+import glide.generators.WebXmlGenerator
+import glide.generators.AppEngineWebXmlGenerator
+import glide.generators.Sitemesh3XmlGenerator
 
 /**
  * This class does it all.. this is merely a script converted to a class

@@ -1,5 +1,5 @@
 
-package glide.runner.generators
+package glide.generators
 
 class WebXmlGeneratorTest extends GroovyTestCase {
 
