@@ -6,9 +6,10 @@ package glide.fs
 class Synchronizer {
 
     def ant = new AntBuilder()
-    def sources, target
+    def sources = []
+    def target = [:]
 
-    def setSources(sources){
+    def setSources(sources) {
         this.sources = [sources].flatten()
     }
 
