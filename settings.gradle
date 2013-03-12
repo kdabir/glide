@@ -1,1 +1,1 @@
-include 'runner', 'web', 'samples'
+include 'runner', 'gae-base-web', 'samples'

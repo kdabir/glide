@@ -15,7 +15,7 @@ dependencies {
 
 mainClassName = "glide.runner.GlideCLI"
 
-evaluationDependsOn(':web')
+evaluationDependsOn(':gae-base-web')
 
 /**
  * run provides a shortcut to run the app  without needing to install glide
@@ -25,12 +25,12 @@ evaluationDependsOn(':web')
  * run the default sample app if no app is provided
  */
 run {
-    dependsOn ":web:war"
+    dependsOn ":gae-base-web:war"
 
     def argsList = []
 
     argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/simple_app")]
-    argsList << ["-t", project(':web').ext.explodedWarDir.path]
+    argsList << ["-t", project(':gae-base-web').ext.explodedWarDir.path]
     argsList << ["-o", getPathFromProperty("out", "${project.rootProject.projectDir.path}/install/generated/sample")]
 
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
@@ -42,12 +42,12 @@ run {
 }
 
 
-applicationDistribution.from(project(':web').explodedWarDir) {
+applicationDistribution.from(project(':gae-base-web').explodedWarDir) {
     into "template"
 }
 
 installApp {
-    dependsOn ":runner:build", ":web:war"
+    dependsOn ":runner:build", ":gae-base-web:war"
 
     def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/install")
     into install_location
@@ -58,7 +58,7 @@ installApp {
 }
 
 distZip {
-    dependsOn ":runner:build", ":web:war"
+    dependsOn ":runner:build", ":gae-base-web:war"
 }
 
 startScripts {

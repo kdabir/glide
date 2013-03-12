@@ -25,7 +25,7 @@ ext {
 }
 // can be replaced by this logic --
 // http://forums.gradle.org/gradle/topics/how_to_automatically_create_exploded_war_without_invoking_a_seperate_task
-//http://jameswilliams.be/blog/entry/217
+// http://jameswilliams.be/blog/entry/217
 war.doLast {
     ant.unzip(src: war.archivePath, dest: explodedWarDir)
 }
