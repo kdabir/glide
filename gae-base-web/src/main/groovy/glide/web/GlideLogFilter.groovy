@@ -50,7 +50,7 @@ public class GlideLogFilter implements javax.servlet.Filter {
         """.toString()
 
         StringBuilder requestParamBuilder = new StringBuilder()
-        requestParamBuilder.append( "[$tstamp]  -- Request Params --")
+        requestParamBuilder.append( "[$tstamp]  -- Request Params --\n")
         request.parameterMap.each{ k,v->
             requestParamBuilder.append("\t$k: \t$v\n")
         }
