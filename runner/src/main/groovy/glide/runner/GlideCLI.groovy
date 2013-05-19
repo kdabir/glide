@@ -5,6 +5,7 @@ import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
 import glide.fs.Syncgine
 import glide.gae.AppEngine
+import glide.generators.CronXmlGenerator
 
 /**
  * This class does it all.. this is merely a script converted to a class
@@ -29,7 +30,7 @@ class GlideCLI {
     File templateApp, templateAppConfigFile, templateAppRoutesFile
 
     // output app paths
-    File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppSitemesh3Xml, outputAppRoutesFile
+    File outputApp, outputAppWebXml, outputAppAppengineWebXml, outputAppSitemesh3Xml, outputAppRoutesFile, outputAppCronXml
 
     // the port on which app will start
     int port
@@ -95,6 +96,7 @@ class GlideCLI {
         outputAppWebXml             = new File("${outputAppWebInfDir}/web.xml")
         outputAppAppengineWebXml    = new File("${outputAppWebInfDir}/appengine-web.xml")
         outputAppSitemesh3Xml       = new File("${outputAppWebInfDir}/sitemesh3.xml")
+        outputAppCronXml            = new File("${outputAppWebInfDir}/cron.xml")
         outputAppRoutesFile         = new File("${outputAppWebInfDir}/routes.groovy")
         log("Output app : ${this.outputApp}")
     }
@@ -124,6 +126,7 @@ class GlideCLI {
         outputAppWebXml.text = new WebXmlGenerator().generate(config)
         outputAppAppengineWebXml.text = new AppEngineWebXmlGenerator().generate(config)
         outputAppSitemesh3Xml.text = new Sitemesh3XmlGenerator().generate(config)
+        outputAppCronXml.text = new CronXmlGenerator().generate(config)
     }
 
     def clean (){
@@ -178,6 +181,7 @@ class GlideCLI {
         ant.touch(file: outputAppWebXml, mkdirs:true)
         ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
         ant.touch(file: outputAppSitemesh3Xml, mkdirs:true)
+        ant.touch(file: outputAppCronXml, mkdirs:true)
 
         generateRequiredXmlFiles templateConfig // with the default config (without user config)
     }
@@ -244,7 +248,6 @@ class GlideCLI {
         }
 
 
-
         if (options.q) verbose = false
         if (options.r) trace = true
         def command = (options.arguments()?options.arguments()[0] :"run")
@@ -252,7 +255,7 @@ class GlideCLI {
         def glide_cli = new GlideCLI(options)
 
         def appEngineHome = options.g ?: System.env.APPENGINE_HOME
-        log "GAE SDK home : ${appEngineHome}"
+//        log "GAE SDK home : ${appEngineHome}"
 
         glide_cli.port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
         if (options.l) glide_cli.bindAll = true
