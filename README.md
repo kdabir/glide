@@ -68,3 +68,5 @@ difficult to jumpstart.
 
 With glide, you are not enforced to write a single config file or maintain a specific dir structure. Don't believe, 
 just see the [samples](https://github.com/kdabir/glide/tree/master/samples) dir.
+
+[![githalytics.com alpha](https://cruel-carlota.pagodabox.com/53b148f82205c28cff2d3378e7108793 "githalytics.com")](http://githalytics.com/kdabir/glide)
