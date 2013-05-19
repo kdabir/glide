@@ -49,7 +49,7 @@ Congratulations, you have installed glide.
 
 ###Running
 
-`cd` into directory containing your web content (including any groovy scripts and templates) and fire glide.
+`cd` into directory containing your web content (optionally including any groovy scripts and gtpl templates) and fire glide.
 
 `$ cd my_app`
 
@@ -58,3 +58,13 @@ Congratulations, you have installed glide.
 Your app should be running on `localhost:8080`
 
 Yes! no verbose config, nothing else. Your web content is being served.
+
+------------
+### Why Glide?
+Glide provides a dead simple way to create simple apps that run on google app engine. GAE has everything 
+that is required to deploy a scalable webapp like static files server, memcache, taskqueue, email, 
+xmpp, nosql and the list goes on. But java webapp directory strucutre and verbose config files make it 
+difficult to jumpstart. 
+
+With glide, you are not enforced to write a single config file or maintain a specific dir structure. Don't believe, 
+just see the samples dir.
