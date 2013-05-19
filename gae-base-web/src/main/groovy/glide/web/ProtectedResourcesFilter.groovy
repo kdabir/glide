@@ -25,7 +25,8 @@ public class ProtectedResourcesFilter implements javax.servlet.Filter {
         if(!startWithUnderscore || request.requestURI.startsWith('/_ah')){
           chain.doFilter(request, response)
         } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            log.warning "returning NOT_FOUND"
+            response.sendError(HttpServletResponse.SC_NOT_FOUND)
         }
     }
 

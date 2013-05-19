@@ -8,7 +8,7 @@ class CronXmlGeneratorTest extends GroovyTestCase {
     def config = new ConfigSlurper().parse("""
     cron {
          entries = [
-            [url:"test", description:"test cron", scehdule:"every time"],
+            [url:"test", description:"test cron", schedule:"every time"],
             [url:"other/url", schedule:"every now and then"]
         ]
     }

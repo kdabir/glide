@@ -3,6 +3,8 @@ package glide.runner
 import glide.generators.WebXmlGenerator
 import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
+import glide.fs.Syncgine
+import glide.gae.AppEngine
 
 /**
  * This class does it all.. this is merely a script converted to a class
@@ -17,6 +19,8 @@ class GlideCLI {
 
     // this guy does the heavy-lifting
     AntBuilder ant
+    Syncgine engine
+    AppEngine gae
 
     // glide app paths
     File glideApp, glideAppConfigFile, glideAppRoutesFile;
@@ -37,7 +41,6 @@ class GlideCLI {
         setupTemplateApp(options)
         setupGlideApp(options)
         setupOutputApp(options)
-        setupIpAndPort(options)
     }
 
     private void setupAnt(OptionAccessor options) {
@@ -96,56 +99,18 @@ class GlideCLI {
         log("Output app : ${this.outputApp}")
     }
 
-    private void setupIpAndPort(OptionAccessor options) {
-        port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
-        if (options.l) bindAll = true
-    }
 
     public def getAppName() {
         final config = glideAppConfigFile.exists() ? this.userConfig : new ConfigSlurper().parse("app{}")
         (config.app.name ?: "unnamed-app") + "_" + (config.app.version ?: "0")
     }
     ///// OPERATIONS /////
-    def timed (String activityName, closure ){
-        def start = System.nanoTime()
-        def retVal = closure.call()
-        if (trace)
-            trace "Time for $activityName : ${(System.nanoTime() - start)/1000000} ms"
-        retVal
-    }
     private ConfigObject getUserConfig() {
         new ConfigSlurper().parse(glideAppConfigFile.toURL())
     }
 
     private ConfigObject getTemplateConfig() {
         new ConfigSlurper().parse(templateAppConfigFile.toURL())
-    }
-
-    // keeps track of when last sync took place
-    long lastSynced = 0
-
-    def sync = {
-        // lastModified would be 0 if file does not exist
-        if (glideAppRoutesFile.lastModified() >= lastSynced) {
-            timed("copy route files") {
-                mergeRouteFiles()
-            }
-        }
-
-        if ( glideAppConfigFile.lastModified() >= lastSynced ) {
-            def config = timed("merging configs") {
-                getTemplateConfig().merge(getUserConfig())
-            }
-            timed("generting xml files") {
-                generateRequiredXmlFiles(config)
-            }
-        }
-
-        timed("sync other files") {
-            mergeTemplateAndGlideAppIntoOutputApp()
-        }
-
-        lastSynced = System.currentTimeMillis()
     }
 
     private void mergeRouteFiles() {
@@ -161,45 +126,55 @@ class GlideCLI {
         outputAppSitemesh3Xml.text = new Sitemesh3XmlGenerator().generate(config)
     }
 
-    // merge webroot of glideApp and template app, sync with outputApp
-    private void mergeTemplateAndGlideAppIntoOutputApp() {
-        ant.sync(todir: outputApp) {
-            ant.fileset(dir: glideApp,
-                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, **/*.ico, **/*.png, **/*.jpeg, **/*.gif",
-                    excludes: "**/__*")
-
-            ant.fileset(dir: templateApp,
-                    excludes: "WEB-INF/*.xml, __*.groovy,")
-
-            ant.preserveintarget {
-                ant.include(name: "WEB-INF/*.xml")
-                ant.include(name: "WEB-INF/routes.groovy")
-                ant.include(name: "WEB-INF/appengine-generated/**/*")
-            }
-        }
-    }
-
     def clean (){
         // delete the outputApp
         ant.delete(dir:outputApp, failonerror:true)
     }
 
-    Timer timer = new Timer()
     def start() {
+        setupEngine()
         preprocess()
-        timer.schedule(this.sync as TimerTask, START_AFTER, SCAN_INTERVAL) //initialdelay & repeat interval
+        engine.syncOnce()
+        engine.start()
         start_dev_appserver()
     }
 
+    private setupEngine() {
+        this.engine = Syncgine.build {
+            source dir: glideApp,
+                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, **/*.ico, **/*.png, **/*.jpeg, **/*.gif",
+                    excludes: "**/__*"
+
+            source dir: templateApp,
+                    excludes: "WEB-INF/*.xml, __*.groovy,"
+
+            to dir: outputApp, preserves: "WEB-INF/*.xml,WEB-INF/routes.groovy,WEB-INF/appengine-generated/**/*"
+
+            every SCAN_INTERVAL
+
+            beforeSync {
+                if (glideAppRoutesFile.lastModified() >= lastSynced) {
+                    mergeRouteFiles()
+                }
+
+                if (glideAppConfigFile.lastModified() >= lastSynced) {
+                    def config = getTemplateConfig().merge(getUserConfig())
+                    generateRequiredXmlFiles(config)
+                }
+            }
+        }
+    }
+
     def upload() {
+        setupEngine()
         this.preprocess()
-        this.sync()
+        engine.syncOnce()
         ant.appcfg(action: "update", war: this.outputApp)
     }
 
     // things that are required to be done once before the sync thread starts
     def preprocess() {
-        ant.mkdir(dir:outputApp)
+        ant.mkdir(dir: outputApp)
         ant.touch(file: outputAppWebXml, mkdirs:true)
         ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
         ant.touch(file: outputAppSitemesh3Xml, mkdirs:true)
@@ -226,11 +201,19 @@ class GlideCLI {
     static def trace (msg) { if (trace) println msg }
 
     public static void main(String[] args) {
+
+        def versionProps = new Properties()
+        versionProps.load(Thread.currentThread().contextClassLoader.getResourceAsStream("version.properties"))
+
+
         println """
           ___  _  _     _
          / __|| |(_) __| | ___
         | (_ || || |/ _` |/ -_)
          \\___||_||_|\\__,_|\\___|
+
+         version : ${versionProps.version}
+         build at: ${versionProps.build_at}
         """
 
         def cli = new CliBuilder()
@@ -245,6 +228,7 @@ class GlideCLI {
             h longOpt: 'help',                                              "help"
             q longOpt: 'quiet',                                             "do not print log messages"
             r longOpt: 'trace',                                             "enable trace logging"
+            v longOpt: 'version',                                           "displays version"
         }
 
         def options = cli.parse(args)
@@ -254,11 +238,26 @@ class GlideCLI {
             return
         }
 
+        if (options.v) {
+            println versionProps.version
+            return
+        }
+
+
+
         if (options.q) verbose = false
         if (options.r) trace = true
         def command = (options.arguments()?options.arguments()[0] :"run")
 
         def glide_cli = new GlideCLI(options)
+
+        def appEngineHome = options.g ?: System.env.APPENGINE_HOME
+        log "GAE SDK home : ${appEngineHome}"
+
+        glide_cli.port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
+        if (options.l) glide_cli.bindAll = true
+
+
         switch (command) {
             case ["run","start"] : glide_cli.start(); break
             case ["upload", "deploy"] : glide_cli.upload(); break
