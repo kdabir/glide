@@ -1,10 +1,11 @@
 package model
 import com.google.appengine.api.users.User
+import groovyx.gaelyk.datastore.Indexed
 
 @groovyx.gaelyk.datastore.Entity
 class Post {
     String title
     String content
-    Date date = new Date()
+    @Indexed Date date = new Date()
     User user
 }
