@@ -67,4 +67,4 @@ xmpp, nosql and the list goes on. But java webapp directory strucutre and verbos
 difficult to jumpstart. 
 
 With glide, you are not enforced to write a single config file or maintain a specific dir structure. Don't believe, 
-just see the samples dir.
+just see the [samples](https://github.com/kdabir/glide/tree/master/samples) dir.
