@@ -105,12 +105,12 @@ class GlideCLI {
 
 
     public def getAppName() {
-        final config = glideAppConfigFile.exists() ? this.userConfig : new ConfigSlurper().parse("app{}")
+        final config = this.userConfig
         (config.app.name ?: "unnamed-app") + "_" + (config.app.version ?: "0")
     }
     ///// OPERATIONS /////
     private ConfigObject getUserConfig() {
-        new ConfigSlurper().parse(glideAppConfigFile.toURL())
+        glideAppConfigFile.exists() ? new ConfigSlurper().parse(glideAppConfigFile.toURL()) : new ConfigSlurper().parse("app{}")
     }
 
     private ConfigObject getTemplateConfig() {
