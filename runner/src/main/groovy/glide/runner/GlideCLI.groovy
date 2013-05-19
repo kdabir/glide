@@ -8,9 +8,11 @@ import glide.gae.AppEngine
 import glide.generators.CronXmlGenerator
 
 /**
- * This class does it all.. this is merely a script converted to a class
+ * This class does it all.. this is merely a script converted to a class.
+ * This is how glide evolved from a helper script to a gradle based project.
+ * This class is still not testable.
  *
- * Later refactor this class for testability, modularity and OO
+ * TODO refactor this class for testability, modularity and OO
  */
 class GlideCLI {
 
@@ -151,6 +153,7 @@ class GlideCLI {
             source dir: templateApp,
                     excludes: "WEB-INF/*.xml, __*.groovy,"
 
+            // TODO exclude/preserver exact file names so that user can sync other xml files from WEB-INF
             to dir: outputApp, preserves: "WEB-INF/*.xml,WEB-INF/routes.groovy,WEB-INF/appengine-generated/**/*"
 
             every SCAN_INTERVAL
