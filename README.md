@@ -22,7 +22,7 @@ Let's say we use dir `~/` to carry out installation
 
 3. `cd` into the directory and install Glide using: `$ cd glide` and `$ ./gradlew installApp`
 
-4. add `~/glide/build/install/bin` to  the `PATH` variable using `$ export PATH=$PATH:~/glide/install/bin`
+4. add `~/glide/install/bin` to  the `PATH` variable using `$ export PATH=$PATH:~/glide/install/bin`
 
 5. open a new teminal or source profile again.  `$ glide -h`
 
