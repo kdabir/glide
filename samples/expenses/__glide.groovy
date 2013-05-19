@@ -1,10 +1,10 @@
 app {
-	name = "glide-expense-tracker"
-	version = 1
+	name = "glide-gae"
+	version = "sample-expenses"
 }
 
 web {
         security = [
-            'admin' : ['/*']
-        ]        
+            '*' : ['/*']
+        ]
 }

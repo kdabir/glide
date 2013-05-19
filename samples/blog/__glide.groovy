@@ -1,6 +1,6 @@
 app {
-    name = "glide-blog"
-    version = "1"
+    name = "glide-gae"
+    version = "sample-blog"
 }
 
 web {

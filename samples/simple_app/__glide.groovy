@@ -1,6 +1,6 @@
 app{
-	name="glide-sample"
-	version="2"
+	name="glide-gae"
+	version="sample-hello"
 }
 web {
     security = ["*":["/user/*"]]
