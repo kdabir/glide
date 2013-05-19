@@ -1,15 +1,15 @@
 apply plugin: 'war'
 
 dependencies {
-    def gaeVersion = '1.7.5'
-    def groovyVersion = '2.1.1'
+    def gaeVersion = '1.8.0'
+    def groovyVersion = '2.1.3'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 
     compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
             "com.google.appengine:appengine-api-labs:$gaeVersion",
             "org.codehaus.groovy:groovy-all:$groovyVersion",
-            "org.gaelyk:gaelyk:2.0-SNAPSHOT",
+            'org.gaelyk:gaelyk:2.0',
             'org.sitemesh:sitemesh:3.0-alpha-2'
 
     testCompile 'org.mockito:mockito-all:1.8.4',
@@ -29,3 +29,4 @@ ext {
 war.doLast {
     ant.unzip(src: war.archivePath, dest: explodedWarDir)
 }
+

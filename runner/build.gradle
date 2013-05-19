@@ -2,7 +2,7 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 dependencies {
-    def groovyVersion = '2.1.1'
+    def groovyVersion = '2.1.3'
 
     groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
 
@@ -74,6 +74,13 @@ startScripts {
             println "GLIDE_HOME is not set. This may lead to improper installation"
         }
     }
+}
+
+processResources {
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+            build_at: new Date().dateTimeString,
+            version: project.version
+    ]
 }
 
 /**
