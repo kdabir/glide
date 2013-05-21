@@ -35,8 +35,8 @@ task installGae << {
     def downloadHost = "http://googleappengine.googlecode.com/files"
     def archiveName = "appengine-java-sdk-${gaeVersion}.zip"
 
-    def localArchiveDir = "install/archive"
-    def extractToDir = 'install/gae/'
+    def localArchiveDir = "appengine/archive"
+    def extractToDir = 'appengine/'
 
     // download the sdk
     ant.mkdir(dir: localArchiveDir) // ant `get` fails if `dir` does not exist
