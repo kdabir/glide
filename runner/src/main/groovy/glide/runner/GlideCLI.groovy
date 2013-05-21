@@ -204,7 +204,6 @@ class GlideCLI {
         }
     }
 
-
     static def verbose = true
     static def trace = false
 
@@ -231,11 +230,11 @@ class GlideCLI {
         // todo fix help banner
         cli.with {
             a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default = current working dir]"
-            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_DIR',       "/path/to/template/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_DIR',       "/path/to/template/app [WARNING DON'T GIVE PATH INSIDE GLIDE APP]"
             g longOpt: 'gae',       args: 1, argName: 'GAE_DIR',            "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
-            o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DONT GIVE PATH INSIDE GLIDE APP]"
+            o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DON'T GIVE PATH INSIDE GLIDE APP]"
             p longOpt: 'port',      args: 1, argName: 'PORT',               "port on which to start the app [default = $DEFAULT_PORT]"
-            l longOpt: 'bind-all',                                          "if provived, app binds on 0.0.0.0 instead of 127.0.0.1"
+            l longOpt: 'bind-all',                                          "if provided, app binds on 0.0.0.0 instead of 127.0.0.1"
             h longOpt: 'help',                                              "help"
             q longOpt: 'quiet',                                             "do not print log messages"
             r longOpt: 'trace',                                             "enable trace logging"
@@ -260,17 +259,18 @@ class GlideCLI {
 
         def glide_cli = new GlideCLI(options)
 
-        def appEngineHome = options.g ?: System.env.APPENGINE_HOME
+//        def appEngineHome = options.g ?: System.env.APPENGINE_HOME
 //        log "GAE SDK home : ${appEngineHome}"
 
         glide_cli.port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
         if (options.l) glide_cli.bindAll = true
 
 
+
         switch (command) {
             case ["run","start"] : glide_cli.start(); break
             case ["upload", "deploy"] : glide_cli.upload(); break
-            default: println " invlid command"; break
+            default: println "Invalid command"; break
         }
 
         System.exit(0)
