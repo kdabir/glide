@@ -29,6 +29,8 @@ task wrapper(type: Wrapper) {
 }
 
 task installGae << {
+    println "Downloading Google App Engine, it may take upto several minutes depending on the internet speed."
+
     def downloadHost = "http://googleappengine.googlecode.com/files"
     def archiveName = "appengine-java-sdk-${gaeVersion}.zip"
 
@@ -37,7 +39,8 @@ task installGae << {
 
     // download the sdk
     ant.mkdir(dir: localArchiveDir) // ant `get` fails if `dir` does not exist
-    ant.get(src: "${downloadHost}/${archiveName}", dest: "${localArchiveDir}/${archiveName}", verbose: 'on', skipexisting: true)
+    ant.get(src: "${downloadHost}/${archiveName}", dest: "${localArchiveDir}/${archiveName}", skipexisting: true)
+    // TODO verbose ant log poduces to many dots (lines) and it may kill imp user info from terminal, change to something more intelligent
 
     // unzip it
     ant.mkdir(dir: extractToDir)
