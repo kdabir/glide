@@ -175,7 +175,11 @@ class GlideCLI {
         setupEngine()
         this.preprocess()
         engine.syncOnce()
-        ant.appcfg(action: "update", war: this.outputApp)
+        ant.appcfg(action: "update", war: this.outputApp) {
+            options {
+                arg(value:"--oauth2")
+            }
+        }
     }
 
     // things that are required to be done once before the sync thread starts
@@ -250,7 +254,6 @@ class GlideCLI {
             return
         }
 
-
         if (options.q) verbose = false
         if (options.r) trace = true
         def command = (options.arguments()?options.arguments()[0] :"run")
@@ -269,6 +272,8 @@ class GlideCLI {
             case ["upload", "deploy"] : glide_cli.upload(); break
             default: println " invlid command"; break
         }
+
+        System.exit(0)
 
     }
 
