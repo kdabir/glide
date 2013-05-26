@@ -147,14 +147,14 @@ class GlideCLI {
     private setupEngine() {
         this.engine = Syncgine.build {
             source dir: glideApp,
-                    includes: "**/*.html, **/*.js, **/*.css, **/*.gtpl, **/*.groovy, **/*.ico, **/*.png, **/*.jpeg, **/*.gif",
-                    excludes: "**/__*"
+                    includes: "**/*.groovy, **/*.html, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar",
+                    excludes: "__glide.groovy, __routes.groovy"
 
             source dir: templateApp,
-                    excludes: "WEB-INF/*.xml, __*.groovy,"
+                    excludes: "__glide.groovy, __routes.groovy, WEB-INF/*.xml"
 
-            // TODO exclude/preserver exact file names so that user can sync other xml files from WEB-INF
-            to dir: outputApp, preserves: "WEB-INF/*.xml,WEB-INF/routes.groovy,WEB-INF/appengine-generated/**/*"
+            to dir: outputApp,
+                    preserves: "WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
 
             every SCAN_INTERVAL
 
