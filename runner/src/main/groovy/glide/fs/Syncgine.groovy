@@ -9,8 +9,8 @@ class Syncgine {
     def beforeSync = []
     def afterSync = []
 
-    Synchronizer synchronizer = new Synchronizer()
-    Timer timer = new Timer()
+    final Synchronizer synchronizer = new Synchronizer()
+    final Timer timer = new Timer()
     long lastSynced = 0
 
     final def syncOnce = {
@@ -31,13 +31,19 @@ class Syncgine {
     //Syncgine dsl
 
     static def build(closure) {
-        def cfg = new Syncgine()
+        def engine = new Syncgine()
 
         closure?.resolveStrategy = Closure.DELEGATE_FIRST
-        closure?.delegate = cfg
+        closure?.delegate = engine
         closure?.call()
+        engine
+    }
 
-        return cfg
+    def configure(closure) {
+        closure?.resolveStrategy = Closure.DELEGATE_FIRST
+        closure?.delegate = this
+        closure?.call()
+        this
     }
 
     def to(target) {synchronizer.target = target; this}

@@ -5,7 +5,7 @@ package glide.fs
  *
  */
 class DirTreeBuilder {
-    final def baseDir
+    def baseDir
 
     // todo - validate the file/dir names
 

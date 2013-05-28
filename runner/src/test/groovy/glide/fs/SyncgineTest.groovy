@@ -98,4 +98,15 @@ class SyncgineTest extends GroovyTestCase {
         assert cancelCalled
     }
 
+    void "test should configure existing instance of syncgine"() {
+        def syncgine = Syncgine.build {}
+        syncgine.configure{
+            to dir:"x"
+            every 10000
+        }
+
+        assert syncgine.synchronizer.target.dir == "x"
+        assert syncgine.frequency == 10000
+    }
+
 }
