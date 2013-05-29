@@ -139,7 +139,8 @@ class GlideCLI {
     def start() {
         setupEngine()
         preprocess()
-        getUserConfig().glide.configure(this.engine, this.glideApp, this.outputApp)
+        if (this.userConfig?.glide?.configure instanceof Closure)
+            this.userConfig.glide.configure(this.engine, this.glideApp, this.outputApp)
         engine.syncOnce()
         engine.start()
         start_dev_appserver()
