@@ -139,9 +139,11 @@ class GlideCLI {
     def start() {
         setupEngine()
         preprocess()
+        getUserConfig().glide.configure(this.engine, this.glideApp, this.outputApp)
         engine.syncOnce()
         engine.start()
         start_dev_appserver()
+        Thread.sleep(5000)
     }
 
     private setupEngine() {
