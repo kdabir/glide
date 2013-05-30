@@ -19,7 +19,7 @@ public class GlideLogFilter implements javax.servlet.Filter {
     public void init(FilterConfig config) throws ServletException {
         log.info "Initializing GlideFilter ..."
         filterConfig = config
-        logStats = config.getInitParameter('logStats')
+        logStats = config.getInitParameter('logStats')?.toBoolean()
     }
 
     @Override
