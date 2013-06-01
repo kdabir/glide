@@ -45,7 +45,7 @@ web {
         sitemeshFilter {
             filter_class = "org.sitemesh.config.ConfigurableSiteMeshFilter"
             url_patterns = ['/*']
-            dispatchers = [ 'FORWARD', 'REQUEST']
+            dispatchers = [ 'FORWARD', 'REQUEST', 'ERROR']
         }
         protectedResourcesFilter {
             filter_class = "glide.web.ProtectedResourcesFilter"
