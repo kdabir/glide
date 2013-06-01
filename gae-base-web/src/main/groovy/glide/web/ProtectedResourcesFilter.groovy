@@ -11,23 +11,25 @@ public class ProtectedResourcesFilter implements javax.servlet.Filter {
 
     @Override
     public void init(FilterConfig config) throws ServletException {
-        log.info "Initializing GlideFilter ..."
+        log.info "Initializing ProtectedResourceFilter ..."
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response   ,
                          FilterChain chain) throws IOException, ServletException {
 
-        log.warning "Reached protected resource filter"
+        log.info "Reached protected resource filter"
 
-        // if this filter is reached we need to block this request!
         boolean startWithUnderscore = request.requestURI.split("/").any { it.startsWith("_") }
-        if(!startWithUnderscore || request.requestURI.startsWith('/_ah')){
-          chain.doFilter(request, response)
-        } else {
-            log.warning "returning NOT_FOUND"
+
+        // if this filter is reached for _* url, we need to block this request!
+        if(startWithUnderscore && !request.requestURI.startsWith('/_ah')){
+            log.warning "trying to access protected reource, returning NOT_FOUND"
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
+            return
         }
+
+        chain.doFilter(request, response)
     }
 
     @Override

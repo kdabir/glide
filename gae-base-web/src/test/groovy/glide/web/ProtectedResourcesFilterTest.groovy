@@ -6,19 +6,19 @@ import javax.servlet.http.HttpServletResponse
 
 class ProtectedResourcesFilterTest extends GroovyTestCase {
 
-    void testShouldNotProceedInChainIfUrlStartsWithUnderscore() {
+    void "test should not proceed in chain if url starts with underscore"() {
         def request = [getRequestURI: {-> "/_protected_resource"}] as HttpServletRequest
         def notFound
         def response = [sendError: { code-> notFound = code}] as HttpServletResponse
-        def chained = false
-        def chain = [doFilter: { HttpServletRequest req, HttpServletResponse resp -> chained = true }] as FilterChain
+        def is_chain_called = false
+        def chain = [doFilter: { HttpServletRequest req, HttpServletResponse resp -> is_chain_called = true }] as FilterChain
 
         new ProtectedResourcesFilter().doFilter(request, response, chain)
         assert notFound == HttpServletResponse.SC_NOT_FOUND
-        assert chained == false
+        assert !is_chain_called
     }
 
-    void testShouldNotProceedInChainIfUrlDoesNotStartsWithUnderscore() {
+    void "test should not proceed in chain if url does not starts with underscore"() {
         def request = [getRequestURI: {-> "/allowed_url" },] as HttpServletRequest
         def response = [:] as HttpServletResponse
         def chained = false
@@ -29,7 +29,7 @@ class ProtectedResourcesFilterTest extends GroovyTestCase {
         assert chained == true
     }
 
-    void testShouldAllow_ahUrls() {
+    void "test should allow _ah urls"() {
         def request = [getRequestURI: {-> "/_ah/anything" },] as HttpServletRequest
         def response = [:] as HttpServletResponse
         def chained = false
