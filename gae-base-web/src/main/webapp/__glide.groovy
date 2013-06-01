@@ -55,8 +55,8 @@ web {
     }
 
     error_pages = [
-            500 : '/WEB-INF/pages/500.html',
-            404 : '/WEB-INF/pages/404.html'
+            500 : '/WEB-INF/errors/500.groovy',
+            404 : '/WEB-INF/errors/404.groovy'
     ]
 
     welcome_files = ['index.html']
