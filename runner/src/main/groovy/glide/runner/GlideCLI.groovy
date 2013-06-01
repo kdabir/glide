@@ -139,8 +139,6 @@ class GlideCLI {
     def start() {
         setupEngine()
         preprocess()
-        if (this.userConfig?.glide?.configure instanceof Closure)
-            this.userConfig.glide.configure(this.engine, this.glideApp, this.outputApp)
         engine.syncOnce()
         engine.start()
         start_dev_appserver()
@@ -194,6 +192,10 @@ class GlideCLI {
         ant.touch(file: outputAppCronXml, mkdirs:true)
 
         generateRequiredXmlFiles templateConfig // with the default config (without user config)
+
+        if (this.userConfig?.glide?.configure instanceof Closure)
+            this.userConfig.glide.configure(this.engine, this.glideApp, this.outputApp)
+
     }
 
 
