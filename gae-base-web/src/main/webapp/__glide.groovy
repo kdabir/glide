@@ -35,7 +35,7 @@ web {
             filter_class = "glide.web.GlideLogFilter"
             url_patterns = ['/*']
             dispatchers = [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR']
-            init_params = ['logStats' : true]
+            init_params = ['logStats' : false]
         }
         routesFilter {
             filter_class = "groovyx.gaelyk.routes.RoutesFilter"
@@ -56,7 +56,8 @@ web {
 
     error_pages = [
             500 : '/WEB-INF/errors/500.groovy',
-            404 : '/WEB-INF/errors/404.groovy'
+            404 : '/WEB-INF/errors/404.groovy',
+            403 : '/WEB-INF/errors/403.groovy'
     ]
 
     welcome_files = ['index.html']
