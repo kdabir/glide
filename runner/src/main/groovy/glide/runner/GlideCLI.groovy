@@ -183,6 +183,13 @@ class GlideCLI {
         }
     }
 
+    def export() {
+        setupEngine()
+        this.preprocess()
+        engine.syncOnce()
+        println "exported to ${outputApp}"
+    }
+
     // things that are required to be done once before the sync thread starts
     def preprocess() {
         ant.mkdir(dir: outputApp)
@@ -275,6 +282,7 @@ class GlideCLI {
         switch (command) {
             case ["run","start"] : glide_cli.start(); break
             case ["upload", "deploy"] : glide_cli.upload(); break
+            case ["export"] : glide_cli.export(); break
             default: println "Invalid command"; break
         }
 
