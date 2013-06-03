@@ -9,9 +9,16 @@ import javax.servlet.*
 public class ProtectedResourcesFilter implements javax.servlet.Filter {
     def log = logger['glide']
 
+    def filterConfig
+    boolean strictMode = false
+
+
     @Override
     public void init(FilterConfig config) throws ServletException {
         log.info "Initializing ProtectedResourceFilter ..."
+        filterConfig = config
+        strictMode = config.getInitParameter('strict')?.toBoolean()
+
     }
 
     @Override
@@ -23,7 +30,7 @@ public class ProtectedResourcesFilter implements javax.servlet.Filter {
         boolean startWithUnderscore = request.requestURI.split("/").any { it.startsWith("_") }
 
         // if this filter is reached for _* url, we need to block this request!
-        if(startWithUnderscore && !request.requestURI.startsWith('/_ah')){
+        if(strictMode || (startWithUnderscore && !request.requestURI.startsWith('/_ah'))){
             log.warning "trying to access protected reource, returning NOT_FOUND"
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
             return
