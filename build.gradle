@@ -1,3 +1,11 @@
+ext {
+    javaVersion = '1.7'
+    groovyVersion = '2.1.3'
+    gaeVersion = '1.8.0'
+    gaelykVersion = '2.0'
+    gradleVersion = '1.5'
+}
+
 allprojects {
     apply plugin: 'groovy'
     apply plugin: 'idea'
@@ -5,25 +13,19 @@ allprojects {
     group 'glide'
     version '0.2-SNAPSHOT'
 
+    sourceCompatibility = "$javaVersion"
+    targetCompatibility = "$javaVersion"
+
     repositories {
         mavenLocal()
         mavenCentral()
         // enable for Gaelyk Snapshots
         // maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
-
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
-
-ext {
-    groovyVersion = '2.1.3'
-    gaeVersion = '1.8.0'
-    gaelykVersion = '2.0'
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.5'
+    gradleVersion = "$gradleVersion"
     jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
     scriptFile = file("${project.projectDir}/gradlew")
 }
