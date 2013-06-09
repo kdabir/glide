@@ -35,7 +35,7 @@ clone the git repo using `$ git clone git@github.com:kdabir/glide.git` or prefer
 `$ ./gradlew run` runs the default sample app
 
 ### Installing
-After you have made modifications to glide source code you can install glide using `$ ./gradlew installGae`
+After you have made modifications to glide source code you can install glide using `$ ./gradlew installApp`
 
 
 [![githalytics.com alpha](https://cruel-carlota.pagodabox.com/53b148f82205c28cff2d3378e7108793 "githalytics.com")](http://githalytics.com/kdabir/glide)

@@ -235,10 +235,10 @@ class GlideCLI {
          \\___||_||_|\\__,_|\\___|
 
          version : ${versionProps.version}
-         build at: ${versionProps.build_at}
+         build   : ${versionProps.build_at}
         """
 
-        def cli = new CliBuilder()
+        def cli = new CliBuilder(usage:'glide [options] <run|deploy|export>', header:'\noptions:', footer: "\nhttp://glide-gae.appspot.com")
         // todo fix help banner
         cli.with {
             a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default = current working dir]"
@@ -267,23 +267,23 @@ class GlideCLI {
 
         if (options.q) verbose = false
         if (options.r) trace = true
-        def command = (options.arguments()?options.arguments()[0] :"run")
+        def command = (options.arguments() ? options.arguments().first() : 'run')
 
-        def glide_cli = new GlideCLI(options)
+        def glideCli = new GlideCLI(options)
 
 //        def appEngineHome = options.g ?: System.env.APPENGINE_HOME
 //        log "GAE SDK home : ${appEngineHome}"
 
-        glide_cli.port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
-        if (options.l) glide_cli.bindAll = true
+        glideCli.port = options.p ? Integer.parseInt(options.p) : DEFAULT_PORT
+        if (options.l) glideCli.bindAll = true
 
 
 
         switch (command) {
-            case ["run","start"] : glide_cli.start(); break
-            case ["upload", "deploy"] : glide_cli.upload(); break
-            case ["export"] : glide_cli.export(); break
-            default: println "Invalid command"; break
+            case ['run', 'start']: glideCli.start(); break
+            case ['upload', 'deploy']: glideCli.upload(); break
+            case ['export']: glideCli.export(); break
+            default: println 'Invalid command'; break
         }
 
         System.exit(0)
