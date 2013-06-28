@@ -3,7 +3,7 @@ ext {
     groovyVersion = '2.1.3'
     gaeVersion = '1.8.0'
     gaelykVersion = '2.0'
-    gradleVersion = '1.5'
+    gradleVersion = '1.6'
 }
 
 allprojects {
@@ -11,7 +11,7 @@ allprojects {
     apply plugin: 'idea'
 
     group 'glide'
-    version '0.2-SNAPSHOT'
+    version '0.3-SNAPSHOT'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"

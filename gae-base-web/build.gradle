@@ -2,11 +2,9 @@ apply plugin: 'war'
 
 dependencies {
 
-    groovy "org.codehaus.groovy:groovy-all:$groovyVersion"
-
-    compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion",
+            "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
             "com.google.appengine:appengine-api-labs:$gaeVersion",
-            "org.codehaus.groovy:groovy-all:$groovyVersion",
             "org.gaelyk:gaelyk:$gaelykVersion",
             'org.sitemesh:sitemesh:3.0-alpha-2'
 
