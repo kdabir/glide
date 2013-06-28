@@ -1,6 +1,6 @@
 app {
-	name = "glide-gae"
-	version = "sample-expenses"
+	name = "glide-samples"
+	version = "expenses"
 }
 
 web {
