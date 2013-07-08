@@ -1,28 +1,70 @@
-apply plugin: 'war'
+apply plugin: 'gaelyk'
+apply plugin: 'gae-geb'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+def compatibilityVersion = 1.7
+def groovyVersion = '2.1.5'
+def gaeVersion = '1.8.1'
+def gaelykVersion = '2.0'
+def templateVersion = '0.1-test'
+
+sourceCompatibility = compatibilityVersion
+targetCompatibility = compatibilityVersion
+
+webAppDirName = "app"
+
+sourceSets {
+    main.groovy.srcDir 'src'
+    test.groovy.srcDir 'test'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.4.1'
+        classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.8', {
+            exclude module: "gradle-fatjar-plugin"
+        }
+        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+        classpath 'org.gradle.api.plugins:gradle-gae-geb-plugin:0.3'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
 
 dependencies {
+    groovy "org.codehaus.groovy:groovy-all:${groovyVersion}"
 
-    compile "org.codehaus.groovy:groovy-all:$groovyVersion",
-            "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
-            "com.google.appengine:appengine-api-labs:$gaeVersion",
-            "org.gaelyk:gaelyk:$gaelykVersion",
-            'org.sitemesh:sitemesh:3.0-alpha-2'
+    compile "org.codehaus.groovy:groovy-json:${groovyVersion}"
+    compile "org.codehaus.groovy:groovy-servlet:${groovyVersion}"
+    compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
+            "com.google.appengine:appengine-api-labs:$gaeVersion"
+    compile "org.gaelyk:gaelyk:$gaelykVersion"
 
-    testCompile 'org.mockito:mockito-all:1.8.4',
-//            'org.gaelyk:gaelyk-spock:0.3.0.1',
-            'junit:junit:4.10',
-            "com.google.appengine:appengine-api-stubs:$gaeVersion",
+
+
+
+    testCompile 'org.gaelyk:gaelyk-spock:0.4'
+    testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion",
             "com.google.appengine:appengine-testing:$gaeVersion"
 
+    functionalTestCompile 'org.codehaus.geb:geb-spock:0.7.0',
+            'org.seleniumhq.selenium:selenium-firefox-driver:2.22.0'
+    gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
 }
 
-ext {
-    explodedWarDir = file("${buildDir.path}/exploded")
-}
-// can be replaced by this logic --
-// http://forums.gradle.org/gradle/topics/how_to_automatically_create_exploded_war_without_invoking_a_seperate_task
-// http://jameswilliams.be/blog/entry/217
-war.doLast {
-    ant.unzip(src: war.archivePath, dest: explodedWarDir)
+task hello << {
+    println "Hello Gradle"
+
 }
 
+task tempalteVersion << {
+    println "$templateVersion"
+}
