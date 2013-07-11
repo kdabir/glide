@@ -66,8 +66,8 @@ class GlideCLI {
             throw new IllegalArgumentException("please provide either template or set GLIDE_HOME env variable")
 
         this.templateApp            = new File(options.t ?: "${System.env.GLIDE_HOME}/template")
-        this.templateAppConfigFile  = new File ("$templateApp/__glide.groovy")
-        this.templateAppRoutesFile  = new File ("$templateApp/__routes.groovy")
+        this.templateAppConfigFile  = new File ("$templateApp/app/__glide.groovy")
+        this.templateAppRoutesFile  = new File ("$templateApp/app/__routes.groovy")
 
         if (!this.templateApp.isDirectory())
             throw new IllegalArgumentException("${templateApp} is not a valid Directory")
@@ -94,7 +94,7 @@ class GlideCLI {
             throw new IllegalArgumentException("please provide either output dir or set GLIDE_HOME env var")
 
         outputApp                   = new File(options.o ?: "${System.env.GLIDE_HOME}/generated/${this.appName}")
-        def outputAppWebInfDir      = new File("$outputApp/WEB-INF")
+        def outputAppWebInfDir      = new File("$outputApp/app/WEB-INF")
         outputAppWebXml             = new File("${outputAppWebInfDir}/web.xml")
         outputAppAppengineWebXml    = new File("${outputAppWebInfDir}/appengine-web.xml")
         outputAppSitemesh3Xml       = new File("${outputAppWebInfDir}/sitemesh3.xml")
@@ -131,20 +131,6 @@ class GlideCLI {
         outputAppCronXml.text = new CronXmlGenerator().generate(config)
     }
 
-    def clean (){
-        // delete the outputApp
-        ant.delete(dir:outputApp, failonerror:true)
-    }
-
-    def start() {
-        setupEngine()
-        preprocess()
-        engine.syncOnce()
-        engine.start()
-        start_dev_appserver()
-        Thread.sleep(5000)
-    }
-
     private setupEngine() {
         this.engine = Syncgine.build {
             source dir: glideApp,
@@ -172,6 +158,46 @@ class GlideCLI {
         }
     }
 
+    // things that are required to be done once before the sync thread starts
+    private def preprocess() {
+        ant.mkdir(dir: outputApp)
+        ant.touch(file: outputAppWebXml, mkdirs:true)
+        ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
+        ant.touch(file: outputAppSitemesh3Xml, mkdirs:true)
+        ant.touch(file: outputAppCronXml, mkdirs:true)
+
+        generateRequiredXmlFiles templateConfig // with the default config (without user config)
+
+        if (this.userConfig?.glide?.configure instanceof Closure)
+            this.userConfig.glide.configure(this.engine, this.glideApp, this.outputApp)
+
+    }
+
+    private void start_dev_appserver() {
+        final opts = [war: outputApp, port: this.port]
+        if (bindAll) opts.address = "0.0.0.0"
+        ant.dev_appserver(opts){
+            options {
+                arg(value:"--disable_update_check")
+            }
+        }
+    }
+
+
+    def clean (){
+        // delete the outputApp
+        ant.delete(dir:outputApp, failonerror:true)
+    }
+
+    def start() {
+        setupEngine()
+        preprocess()
+        engine.syncOnce()
+        engine.start()
+        start_dev_appserver()
+        Thread.sleep(5000)
+    }
+
     def upload() {
         setupEngine()
         this.preprocess()
@@ -190,31 +216,6 @@ class GlideCLI {
         println "exported to ${outputApp}"
     }
 
-    // things that are required to be done once before the sync thread starts
-    def preprocess() {
-        ant.mkdir(dir: outputApp)
-        ant.touch(file: outputAppWebXml, mkdirs:true)
-        ant.touch(file: outputAppAppengineWebXml, mkdirs:true)
-        ant.touch(file: outputAppSitemesh3Xml, mkdirs:true)
-        ant.touch(file: outputAppCronXml, mkdirs:true)
-
-        generateRequiredXmlFiles templateConfig // with the default config (without user config)
-
-        if (this.userConfig?.glide?.configure instanceof Closure)
-            this.userConfig.glide.configure(this.engine, this.glideApp, this.outputApp)
-
-    }
-
-
-    private void start_dev_appserver() {
-        final opts = [war: outputApp, port: this.port]
-        if (bindAll) opts.address = "0.0.0.0"
-        ant.dev_appserver(opts){
-            options {
-                arg(value:"--disable_update_check")
-            }
-        }
-    }
 
     static def verbose = true
     static def trace = false
