@@ -23,7 +23,6 @@ class GlideCLI {
     // this guy does the heavy-lifting
     AntBuilder ant
     Syncgine engine
-    AppEngine gae
 
     // glide app paths
     File glideApp, glideAppConfigFile, glideAppRoutesFile;

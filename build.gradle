@@ -1,7 +1,7 @@
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.1.3'
-    gaeVersion = '1.8.0'
+    groovyVersion = '2.1.5'
+    gaeVersion = '1.8.1'
     gaelykVersion = '2.0'
     gradleVersion = '1.6'
 }
@@ -19,8 +19,6 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        // enable for Gaelyk Snapshots
-        // maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 }
 
@@ -28,26 +26,4 @@ task wrapper(type: Wrapper) {
     gradleVersion = "$gradleVersion"
     jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
     scriptFile = file("${project.projectDir}/gradlew")
-}
-
-task installGae << {
-    println "Downloading Google App Engine, it may take upto several minutes depending on the internet speed."
-
-
-    def downloadHost = "http://googleappengine.googlecode.com/files"
-    def archiveName = "appengine-java-sdk-${gaeVersion}.zip"
-
-    def localArchiveDir = "appengine/archive"
-    def extractToDir = 'appengine/'
-
-    // download the sdk
-    ant.mkdir(dir: localArchiveDir) // ant `get` fails if `dir` does not exist
-    // logging.level = LogLevel.INFO
-    // TODO verbose ant log poduces to many dots (lines) and it may kill imp user info from terminal, change to something more intelligent
-    ant.get(src: "${downloadHost}/${archiveName}", dest: "${localArchiveDir}/${archiveName}", verbose: false, skipexisting: true)
-
-
-    // unzip it
-    ant.mkdir(dir: extractToDir)
-    ant.unzip(src: "${localArchiveDir}/${archiveName}", dest: extractToDir, overwrite: false)
 }
