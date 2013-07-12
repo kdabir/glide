@@ -4,12 +4,14 @@ apply plugin: 'maven'
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
-            'commons-cli:commons-cli:1.2'   // required for CliBuilder
+            'commons-cli:commons-cli:1.2',   // required for CliBuilder
+            gradleApi()
+
 
     testCompile 'junit:junit:4.10'
 }
 
-mainClassName = "glide.runner.GlideCLI"
+mainClassName = "glide.runner.GradleBasedRunner"
 
 evaluationDependsOn(':gae-base-web')
 
@@ -26,7 +28,7 @@ run {
     def argsList = []
 
     argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/simple_app")]
-    argsList << ["-t", project(':gae-base-web').ext.explodedWarDir.path]
+    argsList << ["-t", project(':gae-base-web').projectDir]
     argsList << ["-o", getPathFromProperty("out", "${project.rootProject.projectDir.path}/install/generated/sample")]
 
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
@@ -38,9 +40,9 @@ run {
 }
 
 
-applicationDistribution.from(project(':gae-base-web').explodedWarDir) {
-    into "template"
-}
+//applicationDistribution.from(project(':gae-base-web').explodedWarDir) {
+//    into "template"
+//}
 
 installApp {
     dependsOn ":runner:build", ":gae-base-web:war"
