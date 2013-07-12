@@ -4,7 +4,6 @@ import glide.generators.WebXmlGenerator
 import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
 import glide.fs.Syncgine
-import glide.gae.AppEngine
 import glide.generators.CronXmlGenerator
 
 /**

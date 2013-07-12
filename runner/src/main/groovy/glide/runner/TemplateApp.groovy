@@ -1,7 +1,6 @@
 package glide.runner
 
 class TemplateApp {
-
     @Delegate Directory dir
 
     static final DIR_STRUCTURE = {

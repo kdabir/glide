@@ -1,4 +1,3 @@
-
 package glide.generators
 
 class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
@@ -13,7 +12,6 @@ class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
     }
     """)
 
-
     def default_config = new ConfigSlurper().parse("""
     layout {
         mappings = [
@@ -23,8 +21,6 @@ class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
         excludes = "/500.html"
     }
     """)
-
-
 
     void testGenerate() {
         def sitemesh3XmlString = new Sitemesh3XmlGenerator().generate(user_config)

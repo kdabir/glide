@@ -1,10 +1,5 @@
 package glide.fs
 
-import groovy.mock.interceptor.MockFor
-
-/**
- *
- */
 class DirTreeBuilderTest extends GroovyTestCase {
 
     protected void setUp() {
@@ -31,7 +26,6 @@ class DirTreeBuilderTest extends GroovyTestCase {
             DirTreeBuilder.create({})
         }
     }
-
 
     void "test chaining and nesting"() {
         def mkdirCount = 0

@@ -1,8 +1,5 @@
 package glide.generators
 
-/**
- *
- */
 class CronXmlGenerator {
     String generate(config) {
         def writer = new StringWriter()

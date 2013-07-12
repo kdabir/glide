@@ -1,8 +1,5 @@
 package glide.generators
 
-/**
- * 
- */
 class CronXmlGeneratorTest extends GroovyTestCase {
 
     def config = new ConfigSlurper().parse("""

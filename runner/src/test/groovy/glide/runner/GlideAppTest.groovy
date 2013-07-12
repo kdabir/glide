@@ -1,6 +1,5 @@
 package glide.runner
 
-
 class GlideAppTest extends GroovyTestCase {
     void "test glide app dir structure"() {
         def t = new GlideApp("/tmp/glide")

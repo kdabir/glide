@@ -1,8 +1,5 @@
 package glide.fs
 
-/**
- *
- */
 class DirTreeBuilderIntegrationTest extends FileSystemIntegrationTestsBase {
 
     void "test should create root directory"() {

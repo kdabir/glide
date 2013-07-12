@@ -13,7 +13,6 @@ class SyncgineTest extends GroovyTestCase {
         Synchronizer.metaClass = null
     }
 
-
     void "test should create instance of Syncgine with config"() {
         Closure doSomethingBefore = {}
         Closure doSomethingAfter = {}
@@ -43,7 +42,6 @@ class SyncgineTest extends GroovyTestCase {
         assert syncgine.afterSync.first() == doSomethingAfter
         assert syncgine.afterSync.last() == doSomethingAnyway
     }
-
 
     void "test start should call sync at set frequency"() {
         def syncgine = Syncgine.build { every 3000 }

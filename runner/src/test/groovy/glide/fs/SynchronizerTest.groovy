@@ -1,8 +1,5 @@
 package glide.fs
 
-/**
- *
- */
 class SynchronizerTest extends GroovyTestCase {
 
     def sources, target

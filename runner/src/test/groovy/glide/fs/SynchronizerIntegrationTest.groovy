@@ -1,8 +1,5 @@
 package glide.fs
 
-/**
- *
- */
 class SynchronizerIntegrationTest extends FileSystemIntegrationTestsBase {
 
     def source1, source2, source3, dest

@@ -1,6 +1,5 @@
 package glide.runner
 
-
 class OutputAppTest extends GroovyTestCase {
     void "test output app dir structure"() {
         def t = new OutputApp("/tmp/output")
