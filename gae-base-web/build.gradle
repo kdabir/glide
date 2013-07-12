@@ -49,8 +49,6 @@ dependencies {
     compile "org.gaelyk:gaelyk:$gaelykVersion"
 
 
-
-
     testCompile 'org.gaelyk:gaelyk-spock:0.4'
     testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion",
             "com.google.appengine:appengine-testing:$gaeVersion"
