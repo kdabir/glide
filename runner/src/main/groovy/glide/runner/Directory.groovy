@@ -34,4 +34,12 @@ class Directory {
         closure?.call()
         directory
     }
+
+    def walk(Closure c){
+        [c.call(root), children.collect {key, value -> (value instanceof Directory) ? value.walk(c) : c.call(value) } ].flatten()
+    }
+
+    def walkFiles(Closure c){
+        children.collect {key, value -> (value instanceof Directory) ? value.walkFiles(c) : c.call(value) }.flatten()
+    }
 }

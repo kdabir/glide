@@ -26,4 +26,30 @@ class DirectoryTest extends GroovyTestCase {
         assert dir.appDir.path == "/tmp/test/app"
         assert dir.appDir.testFile.path == "/tmp/test/app/file.txt"
     }
+
+    void "test builder should walk the Directory Tree"() {
+        def dir = Directory.build("/tmp/test") {
+            someDir("a") {
+                testFile "file.txt"
+            }
+            otherDir("b") {
+            }
+            someFile "some.txt"
+        }
+
+        assert dir.walk { it.path } == ["/tmp/test", "/tmp/test/a", "/tmp/test/a/file.txt", "/tmp/test/b", "/tmp/test/some.txt"]
+    }
+
+    void "test builder should walk the files in Directory Tree"() {
+        def dir = Directory.build("/tmp/test") {
+            someDir("a") {
+                testFile "file.txt"
+            }
+            otherDir("b") {
+            }
+            someFile "some.txt"
+        }
+
+        assert dir.walkFiles { it.path } == ["/tmp/test/a/file.txt", "/tmp/test/some.txt"]
+    }
 }
