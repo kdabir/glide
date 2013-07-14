@@ -1,6 +1,12 @@
 apply plugin: 'application'
 apply plugin: 'maven'
 
+sourceSets {
+    main.groovy.srcDir 'src'
+    main.resources.srcDir 'resources'
+    test.groovy.srcDir 'test'
+}
+
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
