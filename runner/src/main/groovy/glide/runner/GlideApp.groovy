@@ -3,6 +3,8 @@ package glide.runner
 class GlideApp  {
     @Delegate Directory dir
 
+    static final ConfigObject EMPTY_CONFIG = new ConfigSlurper().parse("app{}")
+
     static final DIR_STRUCTURE = {
         routesFile '__routes.groovy'
         glideFile '__glide.groovy'
@@ -12,8 +14,17 @@ class GlideApp  {
         this.dir = Directory.build(root, DIR_STRUCTURE)
     }
 
-    def getUserConfig() {
-        dir.glideFile
+    /**
+     * Note: every call reads fresh from filesystem, cache the config
+     */
+    ConfigObject getConfig() {
+        File configFile = dir.glideFile
+        configFile.exists() ? new ConfigSlurper().parse(configFile.toURI().toURL()) : EMPTY_CONFIG
+    }
+
+    String getAppName() {
+        def userConfig = config // so that it's not read twice from file
+        (userConfig.app.name ?: this.dir.name) + "_" + (userConfig.app.version ?: "0")
     }
 
 }

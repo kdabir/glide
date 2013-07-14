@@ -10,4 +10,20 @@ class GlideAppTest extends GroovyTestCase {
         def t = new GlideApp("/tmp/glide")
         t.glideFile.path == "/tmp/glide/__glide.groovy"
     }
+
+    void "test Dir name"(){
+        def t = new GlideApp("/tmp/glide")
+        assert t.name == 'glide'
+    }
+
+    void "test empty config"(){
+        def t = new GlideApp("/tmp/glide")
+        assert t.config == GlideApp.EMPTY_CONFIG
+    }
+
+    void "test App name"(){
+        def t = new GlideApp("/tmp/glide")
+        assert t.appName == 'glide_0'
+    }
+
 }
