@@ -15,4 +15,12 @@ class TemplateApp {
     TemplateApp(String root) {
         this.dir = Directory.build(root, DIR_STRUCTURE)
     }
+
+    /**
+     * Note: every call reads fresh from filesystem, cache the config
+     */
+    ConfigObject getConfig() {
+        File configFile = dir.appDir.glideFile
+        new ConfigSlurper().parse(configFile.toURI().toURL()) // config file should be always present
+    }
 }
