@@ -20,6 +20,8 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
                     key = 'value'
                 }
             """
+
+            file "__routes.groovy"
         }
 
         glideApp = new GlideApp("$tempDir/glideTestApp")
@@ -38,4 +40,21 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
     void "test App Name should be read from config file if exists"() {
         assert glideApp.appName == 'glideAppNameFromFile_test'
     }
+
+    void "test routes modified check should be true only for timestamp greater passed argument" () {
+        def ts = glideApp.routesFile.lastModified()
+
+        assert  glideApp.isRoutesModifiedAfter(ts) == false
+        assert  glideApp.isRoutesModifiedAfter(ts+1) == false
+        assert  glideApp.isRoutesModifiedAfter(ts-1) == true
+    }
+
+    void "test config modified check should be true only for timestamp greater passed argument" () {
+        def ts = glideApp.glideFile.lastModified()
+
+        assert  glideApp.isConfigModifiedAfter(ts) == false
+        assert  glideApp.isConfigModifiedAfter(ts+1) == false
+        assert  glideApp.isConfigModifiedAfter(ts-1) == true
+    }
+
 }

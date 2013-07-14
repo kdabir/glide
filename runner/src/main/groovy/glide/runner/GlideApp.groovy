@@ -27,4 +27,12 @@ class GlideApp  {
         (userConfig.app.name ?: this.dir.name) + "_" + (userConfig.app.version ?: "0")
     }
 
+    boolean isRoutesModifiedAfter(long timestamp){
+        dir.routesFile.lastModified() > timestamp
+    }
+
+    boolean isConfigModifiedAfter(long timestamp){
+        dir.glideFile.lastModified() > timestamp
+    }
+
 }
