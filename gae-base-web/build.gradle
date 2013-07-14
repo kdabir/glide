@@ -47,6 +47,7 @@ dependencies {
     compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
             "com.google.appengine:appengine-api-labs:$gaeVersion"
     compile "org.gaelyk:gaelyk:$gaelykVersion"
+    compile 'org.sitemesh:sitemesh:3.0-alpha-2'
 
 
     testCompile 'org.gaelyk:gaelyk-spock:0.4'

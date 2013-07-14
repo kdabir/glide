@@ -2,26 +2,54 @@ package glide.runner
 
 import glide.fs.Syncgine
 
-/*  1. first sync  template => out
+/*  1. first syncs template => out
     2. glide + template/app =>  out/app
     3. gaeRun project
-
  */
 class GradleBasedRunner {
 
     GradleProjectRunner gradleProjectRunner
-    Syncgine engine
+    Syncgine glideAppSync
+    Syncgine projectSync
 
+    GlideApp glideApp
+    TemplateApp templateApp
+    OutputApp outputApp
+
+    ConfigFilesGenerator configFilesGenerator
+
+
+    // NOTE:  instantiating runner would create output app on the fs
     GradleBasedRunner(GlideApp glideApp, TemplateApp templateApp, OutputApp outputApp) {
+        this.glideApp = glideApp
+        this.templateApp = templateApp
+        this.outputApp = outputApp
 
+        configFilesGenerator = new ConfigFilesGenerator(glideApp, templateApp, outputApp)
+        projectSync = buildProjectSyncgine()
+        glideAppSync = buildGlideSyncgine()
 
+        gradleProjectRunner = new GradleProjectRunner(outputApp.dir.asFile())
+
+        // do the callbacks
+        // caveat - if changes happen in this block, the app needs to be restarted.
+        // todo - move it to better place
+        if (this.glideApp.config?.glide?.configure instanceof Closure)
+            this.glideApp.config.glide.configure.call(this.glideAppSync, this.glideApp, this.outputApp)
+
+        projectSync.syncOnce()
+        glideAppSync.syncOnce()
+    }
+
+    private Syncgine buildProjectSyncgine() {
         Syncgine.build {
             source dir: templateApp.path, includes: "src/, test/, build.gradle"
             to dir: outputApp.path, preserves: outputApp.appDir.path
-        }.syncOnce()
+        }
+    }
 
-
-        engine = Syncgine.build {
+    private Syncgine buildGlideSyncgine() {
+        Syncgine.build {
             source dir: glideApp.path,
                     includes: "**/*.groovy, **/*.html, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar",
                     excludes: "__glide.groovy, __routes.groovy"
@@ -35,37 +63,30 @@ class GradleBasedRunner {
             every 3000
 
             beforeSync {
-//                if (glideApp.files.routesFile.lastModified() >= lastSynced) {
-//                    println "--------------"
-//                    mergeRouteFiles()
-//                }
-//
-//                if (glideApp.files.configFile.lastModified() >= lastSynced) {
-//                    def config = getTemplateConfig().merge(getUserConfig())
-//                    generateRequiredXmlFiles(config)
-//                }
+                configFilesGenerator.generateIfModifiedAfter(lastSynced)
             }
         }
-
-        engine.syncOnce()
-
-        gradleProjectRunner = new GradleProjectRunner(outputApp.dir.asFile())
     }
 
     def run(String taskName) {
+        glideAppSync.start() // we dont need continuous sync for tasks other than gaeRun
         gradleProjectRunner.run(taskName)
     }
 
-    def init() {}
-
+    // todo - stop the server
     def end() {
+        glideAppSync.stop()
         gradleProjectRunner.cleanup()
     }
 
     public static void main(String[] args) {
         // run the sample app using std template
 
-        final runner = new GradleBasedRunner(new GlideApp("../samples/news"), new TemplateApp("../gae-base-web"), new OutputApp("../tmp/out"))
+        def glideApp = new GlideApp("../samples/news")
+        def templateApp = new TemplateApp("../gae-base-web")
+        def outputApp = new OutputApp("../tmp/out")
+
+        final runner = new GradleBasedRunner(glideApp, templateApp, outputApp)
         runner.run("gaeRun")
     }
 }
