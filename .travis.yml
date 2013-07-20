@@ -1,6 +1,6 @@
 language: groovy
 
-script: 'gradle -q check'
+script: 'gradle test check'
 
 jdk:
   - oraclejdk7
