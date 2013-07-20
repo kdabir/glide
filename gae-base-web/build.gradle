@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
+    groovy "org.codehaus.groovy:groovy-all:${groovyVersion}"
 //    compile "org.codehaus.groovy:groovy-json:${groovyVersion}"
 //    compile "org.codehaus.groovy:groovy-servlet:${groovyVersion}"
 
