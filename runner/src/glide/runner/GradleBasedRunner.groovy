@@ -55,7 +55,7 @@ class GradleBasedRunner {
                     excludes: "__glide.groovy, __routes.groovy"
 
             source dir: templateApp.appDir.path,
-                    excludes: "__glide.groovy, __routes.groovy"
+                    excludes: "__glide.groovy, __routes.groovy, WEB-INF/lib/*, WEB-INF/classes/*"
 
             to dir: outputApp.appDir.path,
                     preserves: "WEB-INF/lib/*, WEB-INF/classes/*, WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"

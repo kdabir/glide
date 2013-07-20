@@ -17,7 +17,7 @@ dependencies {
     testCompile 'junit:junit:4.10'
 }
 
-mainClassName = "glide.runner.GradleBasedRunner"
+mainClassName = "glide.runner.CLI"
 
 evaluationDependsOn(':gae-base-web')
 
@@ -46,12 +46,12 @@ run {
 }
 
 
-//applicationDistribution.from(project(':gae-base-web').explodedWarDir) {
-//    into "template"
-//}
+applicationDistribution.from(project(':gae-base-web').projectDir) {
+    into "template"
+}
 
 installApp {
-    dependsOn ":runner:build", ":gae-base-web:war"
+    dependsOn ":runner:build"
 
     def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/install")
     into install_location
@@ -62,7 +62,7 @@ installApp {
 }
 
 distZip {
-    dependsOn ":runner:build", ":gae-base-web:war"
+    dependsOn ":runner:build"
 }
 
 startScripts {

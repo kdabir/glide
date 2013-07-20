@@ -9,6 +9,10 @@ class TemplateApp {
         appDir('app') {
             routesFile '__routes.groovy'
             glideFile '__glide.groovy'
+            webInfDir('WEB-INF') {
+                classesDir('classes') {}
+                libDir('lib') {}
+            }
         }
     }
 
