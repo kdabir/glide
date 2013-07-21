@@ -3,6 +3,10 @@ apply plugin: 'idea'
 //apply plugin: 'gae-geb'
 //apply plugin: 'eclipse'
 
+if (new File(projectDir.path + "/app/__build.gradle").exists()) {
+    apply from: 'app/__build.gradle'
+}
+
 def compatibilityVersion = 1.7
 def groovyVersion = '2.1.5'
 def gaeVersion = '1.8.1'

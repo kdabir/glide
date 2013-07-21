@@ -1,0 +1,7 @@
+gaeRun {
+    println "This runs from __build.gradle"
+}
+
+gae {
+    httpPort = 8080    // customize port here
+}

@@ -29,8 +29,6 @@ class CLI {
             p longOpt: 'port',      args: 1, argName: 'PORT',               "port on which to start the app [default = $DEFAULT_PORT]"
             l longOpt: 'bind-all',                                          "if provided, app binds on 0.0.0.0 instead of 127.0.0.1"
             h longOpt: 'help',                                              "help"
-            q longOpt: 'quiet',                                             "do not print log messages"
-            r longOpt: 'trace',                                             "enable trace logging"
             v longOpt: 'version',                                           "displays version"
         }
 
@@ -45,9 +43,6 @@ class CLI {
             println versionProps.version
             return
         }
-
-        def command = (options.arguments() ? options.arguments().first() : 'run')
-
 
         def glideApp  = new GlideApp(options.a ?: System.getProperty("user.dir"))
         def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/template")
