@@ -8,8 +8,8 @@ if (new File(projectDir.path + "/app/__build.gradle").exists()) {
 }
 
 def compatibilityVersion = 1.7
-def groovyVersion = '2.1.5'
-def gaeVersion = '1.8.1'
+def groovyVersion = '2.1.6'
+def gaeVersion = '1.8.2'
 def gaelykVersion = '2.0'
 def templateVersion = '0.1-test'
 
