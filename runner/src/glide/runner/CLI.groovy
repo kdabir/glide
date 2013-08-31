@@ -49,8 +49,10 @@ class CLI {
         def outputApp = new OutputApp(options.o ?: "${System.env.GLIDE_HOME}/generated/${glideApp.appName}")
 
         def runner = new GradleBasedRunner(glideApp,templateApp,outputApp)
-        runner.run("gaeRun")
 
+
+        def command = (options.arguments() ? options.arguments().first() : 'gaeRun')
+        runner.run(command)
 
         System.exit(0)
 
