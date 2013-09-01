@@ -1,0 +1,11 @@
+sourceSets {
+    main.groovy.srcDir 'src'
+    test.groovy.srcDir 'test'
+}
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:$groovyVersion",
+            'org.apache.ant:ant:1.8.4'     // required for AntBuilder
+
+    testCompile 'junit:junit:4.10'
+}

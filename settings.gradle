@@ -1,1 +1,1 @@
-include 'runner', 'gae-base-web', 'samples'
+include 'fs','generators','runner', 'gae-base-web', 'samples'
