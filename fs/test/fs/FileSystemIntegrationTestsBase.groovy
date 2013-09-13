@@ -1,4 +1,4 @@
-package glide.fs
+package fs
 
 /**
  * creates a tempDir for extending test cases to use

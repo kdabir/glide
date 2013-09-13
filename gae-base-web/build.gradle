@@ -1,7 +1,5 @@
 apply plugin: 'gaelyk'
 apply plugin: 'idea'
-//apply plugin: 'gae-geb'
-//apply plugin: 'eclipse'
 
 if (new File(projectDir.path + "/app/__build.gradle").exists()) {
     apply from: 'app/__build.gradle'
@@ -9,7 +7,7 @@ if (new File(projectDir.path + "/app/__build.gradle").exists()) {
 
 def compatibilityVersion = 1.7
 def groovyVersion = '2.1.6'
-def gaeVersion = '1.8.2'
+def gaeVersion = '1.8.4'
 def gaelykVersion = '2.0'
 def templateVersion = '0.1-test'
 
@@ -29,11 +27,9 @@ buildscript {
 
     dependencies {
         classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.4.1'
-        classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.8', {
+        classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.9', {
             exclude module: "gradle-fatjar-plugin"
         }
-//        classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
-//        classpath 'org.gradle.api.plugins:gradle-gae-geb-plugin:0.3'
     }
 }
 
@@ -44,22 +40,15 @@ repositories {
 
 dependencies {
     groovy "org.codehaus.groovy:groovy-all:${groovyVersion}"
-//    compile "org.codehaus.groovy:groovy-json:${groovyVersion}"
-//    compile "org.codehaus.groovy:groovy-servlet:${groovyVersion}"
-
     compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
             "com.google.appengine:appengine-api-labs:$gaeVersion"
     compile "org.gaelyk:gaelyk:$gaelykVersion"
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
 
 
-//    testCompile 'org.gaelyk:gaelyk-spock:0.4'
     testCompile 'junit:junit:4.10'
     testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion",
-            "com.google.appengine:appengine-testing:$gaeVersion"
-
-//    functionalTestCompile 'org.codehaus.geb:geb-spock:0.7.0',
-//            'org.seleniumhq.selenium:selenium-firefox-driver:2.22.0'
+                "com.google.appengine:appengine-testing:$gaeVersion"
 
     gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
 }

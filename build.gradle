@@ -1,9 +1,9 @@
 ext {
     javaVersion = '1.7'
     groovyVersion = '2.1.6'
-    gaeVersion = '1.8.2'
+    gaeVersion = '1.8.4'
     gaelykVersion = '2.0'
-    gradleVersion = '1.6'
+    gradleVersion = '1.7'
 }
 
 allprojects {

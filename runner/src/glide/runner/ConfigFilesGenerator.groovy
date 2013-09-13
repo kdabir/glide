@@ -4,6 +4,9 @@ import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.CronXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
 import glide.generators.WebXmlGenerator
+import glide.runner.components.GlideApp
+import glide.runner.components.OutputApp
+import glide.runner.components.TemplateApp
 
 
 class ConfigFilesGenerator {

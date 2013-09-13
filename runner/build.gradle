@@ -15,7 +15,8 @@ dependencies {
             project(":fs"),
             project(":generators")
 
-    testCompile 'junit:junit:4.10'
+    testCompile 'junit:junit:4.10',
+            project(path: ':fs', configuration: 'tests')
 }
 
 mainClassName = "glide.runner.CLI"

@@ -1,4 +1,6 @@
-package glide.runner
+package glide.runner.components
+
+import glide.runner.components.Directory
 
 class DirectoryTest extends GroovyTestCase {
 

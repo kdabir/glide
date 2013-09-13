@@ -9,3 +9,13 @@ dependencies {
 
     testCompile 'junit:junit:4.10'
 }
+
+// to expose fs integration test base : http://stackoverflow.com/questions/5144325/gradle-test-dependency
+task testJar(type: Jar, dependsOn: testClasses) {
+    baseName = "test-${project.archivesBaseName}"
+    from sourceSets.test.output
+}
+
+configurations { tests }
+
+artifacts { tests testJar }

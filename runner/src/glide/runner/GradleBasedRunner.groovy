@@ -1,6 +1,9 @@
 package glide.runner
 
 import glide.fs.Syncgine
+import glide.runner.components.GlideApp
+import glide.runner.components.OutputApp
+import glide.runner.components.TemplateApp
 
 /*  1. first syncs template => out
     2. glide + template/app =>  out/app

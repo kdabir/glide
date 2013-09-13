@@ -1,5 +1,9 @@
 package glide.runner
 
+import glide.runner.components.GlideApp
+import glide.runner.components.OutputApp
+import glide.runner.components.TemplateApp
+
 class CLI {
     public static final int DEFAULT_PORT = 8080 // port on which dev server will start
 

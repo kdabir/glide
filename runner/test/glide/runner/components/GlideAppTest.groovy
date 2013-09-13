@@ -1,4 +1,6 @@
-package glide.runner
+package glide.runner.components
+
+import glide.runner.components.GlideApp
 
 class GlideAppTest extends GroovyTestCase {
     void "test glide app dir structure"() {

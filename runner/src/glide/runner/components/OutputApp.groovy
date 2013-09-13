@@ -1,4 +1,4 @@
-package glide.runner
+package glide.runner.components
 
 class OutputApp  {
     @Delegate Directory dir
