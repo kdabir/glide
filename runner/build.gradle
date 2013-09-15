@@ -1,6 +1,12 @@
 apply plugin: 'application'
 apply plugin: 'maven'
 
+repositories {
+    maven {
+        url 'http://repo.gradle.org/gradle/libs-releases-local'
+    }
+}
+
 sourceSets {
     main.groovy.srcDir 'src'
     main.resources.srcDir 'resources'
@@ -11,9 +17,11 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
             'commons-cli:commons-cli:1.2',   // required for CliBuilder
-            gradleApi(),
+            "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
             project(":fs"),
             project(":generators")
+
+    runtime 'org.slf4j:slf4j-nop:1.7.2'
 
     testCompile 'junit:junit:4.10',
             project(path: ':fs', configuration: 'tests')

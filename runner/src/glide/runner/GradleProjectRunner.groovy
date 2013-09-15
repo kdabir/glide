@@ -4,7 +4,7 @@ import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection
 
 /**
- * simple wrapper aroung gradle api
+ * Simple wrapper around gradle api
  */
 class GradleProjectRunner {
     ProjectConnection connection
@@ -17,7 +17,11 @@ class GradleProjectRunner {
 
     def run(String taskName) {
         try {
-            connection.newBuild().forTasks(taskName).run();
+            connection.newBuild()
+                    .forTasks(taskName)
+                    .setJvmArguments("-Xmx512m", "-XX:MaxPermSize=256m")
+                    .withArguments("--no-search-upward",'-q')
+                    .run();
         } catch (e) {
             System.err.println(e.toString())
         }

@@ -9,9 +9,7 @@ class CLI {
 
     public static void main(String[] args) {
 
-        def versionProps = new Properties()
-        versionProps.load(Thread.currentThread().contextClassLoader.getResourceAsStream("version.properties"))
-
+        def versionProps = loadVersionProperties()
 
         println """
           ___  _  _     _
@@ -61,5 +59,11 @@ class CLI {
         System.exit(0)
 
 
+    }
+
+    private static Properties loadVersionProperties() {
+        def versionProps = new Properties()
+        versionProps.load(Thread.currentThread().contextClassLoader.getResourceAsStream("version.properties"))
+        versionProps
     }
 }

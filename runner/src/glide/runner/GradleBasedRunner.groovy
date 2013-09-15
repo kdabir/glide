@@ -80,16 +80,6 @@ class GradleBasedRunner {
     def end() {
         glideAppSync.stop()
         gradleProjectRunner.cleanup()
-    }
 
-    public static void main(String[] args) {
-        // run the sample app using std template
-
-        def glideApp = new GlideApp("../samples/news")
-        def templateApp = new TemplateApp("../gae-base-web")
-        def outputApp = new OutputApp("../tmp/out")
-
-        final runner = new GradleBasedRunner(glideApp, templateApp, outputApp)
-        runner.run("gaeRun")
     }
 }
