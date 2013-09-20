@@ -67,7 +67,13 @@ installApp {
     into install_location
 
     doLast {
-        println "installing to $install_location"
+        println """Installation Complete
+
+        ===================================================================
+        Important: Add the following path to your PATH environment variable
+        '$install_location'
+        ===================================================================
+        """
     }
 }
 
