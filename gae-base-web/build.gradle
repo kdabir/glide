@@ -1,6 +1,14 @@
 apply plugin: 'gaelyk'
 apply plugin: 'idea'
 
+gae {
+    disableUpdateCheck = true
+    optimizeWar = false
+    appcfg {
+        oauth2 = true
+    }
+}
+
 if (new File(projectDir.path + "/app/__build.gradle").exists()) {
     apply from: 'app/__build.gradle'
 }
