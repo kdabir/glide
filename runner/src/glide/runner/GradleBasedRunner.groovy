@@ -54,7 +54,7 @@ class GradleBasedRunner {
     private Syncgine buildGlideSyncgine() {
         Syncgine.build {
             source dir: glideApp.path,
-                    includes: "**/*.groovy, **/*.html, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar, __build.gradle",
+                    includes: "**/*.groovy, **/*.html, **/*.md, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar, __build.gradle",
                     excludes: "__glide.groovy, __routes.groovy"
 
             source dir: templateApp.appDir.path,
