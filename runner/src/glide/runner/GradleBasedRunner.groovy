@@ -47,7 +47,7 @@ class GradleBasedRunner {
     private Syncgine buildProjectSyncgine() {
         Syncgine.build {
             source dir: templateApp.path, includes: "src/, test/, build.gradle"
-            to dir: outputApp.path, preserves: outputApp.appDir.path
+            to dir: outputApp.path, preserves: "app/"
         }
     }
 
