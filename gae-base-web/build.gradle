@@ -5,14 +5,15 @@ if (new File(projectDir.path + "/app/__build.gradle").exists()) {
     apply from: 'app/__build.gradle'
 }
 
-def compatibilityVersion = 1.7
-def groovyVersion = '2.1.6'
-def gaeVersion = '1.8.4'
-def gaelykVersion = '2.0'
+def tempalteJavaVersion = 1.7
+def templateGroovyVersion = '2.1.6'
+def templateGaeVersion = '1.8.4'
+def temaplteGaelykVersion = '2.0'
 def templateVersion = '0.1-test'
+def templateGradleVersion = "1.7"
 
-sourceCompatibility = compatibilityVersion
-targetCompatibility = compatibilityVersion
+sourceCompatibility = tempalteJavaVersion
+targetCompatibility = tempalteJavaVersion
 
 webAppDirName = "app"
 sourceSets {
@@ -39,20 +40,24 @@ repositories {
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:${groovyVersion}"
-    compile "com.google.appengine:appengine-api-1.0-sdk:$gaeVersion",
-            "com.google.appengine:appengine-api-labs:$gaeVersion"
-    compile "org.gaelyk:gaelyk:$gaelykVersion"
+    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
+    compile "com.google.appengine:appengine-api-1.0-sdk:$templateGaeVersion",
+            "com.google.appengine:appengine-api-labs:$templateGaeVersion"
+    compile "org.gaelyk:gaelyk:$temaplteGaelykVersion"
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
 
 
     testCompile 'junit:junit:4.10'
-    testCompile "com.google.appengine:appengine-api-stubs:$gaeVersion",
-                "com.google.appengine:appengine-testing:$gaeVersion"
+    testCompile "com.google.appengine:appengine-api-stubs:$templateGaeVersion",
+                "com.google.appengine:appengine-testing:$templateGaeVersion"
 
-    gaeSdk "com.google.appengine:appengine-java-sdk:$gaeVersion"
+    gaeSdk "com.google.appengine:appengine-java-sdk:$templateGaeVersion"
 }
 
 task tempalteVersion << {
     println "$templateVersion"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = templateGradleVersion
 }
