@@ -21,23 +21,38 @@ class CLI {
          build   : ${versionProps.build_at}
         """
 
-        def cli = new CliBuilder(usage:'glide [options] <run|deploy|export>', header:'\noptions:', footer: "\nhttp://glide-gae.appspot.com")
+        def examples_text = """
+        |Examples :
+        | Run app located in current directory : glide
+        | Run app located in subdirectory      : glide -a samples/blog run
+        | Deploy app located in subdirectory   : glide -a samples/blog deploy
+        | Export app located in subdirectory   : glide -a samples/blog -o out/blog export
+        |
+        |Important: Don't give a path that is child directory of glide app as a value of
+        | options output (-o) or template (-t) dir.
+        |
+        |See more at http://glide-gae.appspot.com
+        """.stripMargin()
+
+        def cli = new CliBuilder(
+                usage:'glide [options] <run|deploy|export>',
+                header:'\noptions:'
+        )
+
         // todo fix help banner
         cli.with {
-            a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default = current working dir]"
-            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_DIR',       "/path/to/template/app [WARNING DON'T GIVE PATH INSIDE GLIDE APP]"
-            g longOpt: 'gae',       args: 1, argName: 'GAE_DIR',            "APPENGINE_HOME [default = environment variable (APPENGINE_HOME)]"
-            o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app [WARNING DON'T GIVE PATH INSIDE GLIDE APP]"
-            p longOpt: 'port',      args: 1, argName: 'PORT',               "port on which to start the app [default = $DEFAULT_PORT]"
-            l longOpt: 'bind-all',                                          "if provided, app binds on 0.0.0.0 instead of 127.0.0.1"
-            h longOpt: 'help',                                              "help"
-            v longOpt: 'version',                                           "displays version"
+            a longOpt: 'app',       args: 1, argName: 'APP_DIR',            "/path/to/app [default: current dir]"
+            o longOpt: 'output',    args: 1, argName: 'OUT_DIR',            "/path/to/output/app"
+            t longOpt: 'template',  args: 1, argName: 'TEMPLATE_DIR',       "/path/to/template/app"
+            h longOpt: 'help',                                              "prints this help and exits"
+            v longOpt: 'version',                                           "displays version and exits"
         }
 
         def options = cli.parse(args)
 
         if (!options || options.h) {
             cli.usage()
+            println examples_text
             return
         }
 
@@ -52,13 +67,17 @@ class CLI {
 
         def runner = new GradleBasedRunner(glideApp,templateApp,outputApp)
 
-
         def command = (options.arguments() ? options.arguments().first() : 'gaeRun')
-        runner.run(command)
+
+        switch (command) {
+            case ['run', 'start']:      runner.run("gaeRun");break
+            case ['upload', 'deploy']:  runner.run("gaeUpdate"); break
+            case ['export']:            runner.run("wrapper"); println("app exported to ${outputApp.absolutePath}"); break
+            case ['templateVersion']:   runner.run("templateVersion"); break
+            default:                    runner.run(command); break
+        }
 
         System.exit(0)
-
-
     }
 
     private static Properties loadVersionProperties() {
