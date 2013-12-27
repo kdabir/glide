@@ -15,7 +15,7 @@ if (new File(projectDir.path + "/app/__build.gradle").exists()) {
 
 def tempalteJavaVersion = 1.7
 def templateGroovyVersion = '2.1.6'
-def templateGaeVersion = '1.8.5'
+def templateGaeVersion = '1.8.8'
 def temaplteGaelykVersion = '2.0'
 def templateVersion = '0.1-test'
 def templateGradleVersion = "1.8"
