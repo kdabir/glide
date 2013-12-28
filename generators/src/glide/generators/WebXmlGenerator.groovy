@@ -1,6 +1,5 @@
 package glide.generators
 
-// TODO error pages by exception types
 // TODO multiple filter urls-patterns can have set of dispatchers
 /* url_patterns = [
     '/*': [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR'],
@@ -74,9 +73,13 @@ class WebXmlGenerator {
                 }
             }
 
-            config.web.error_pages.each { code, page ->
+            // to do: in servlet 3 support the generic error page which has no code or exception type
+            config.web.error_pages.each { key, page ->
                 'error-page' {
-                    'error-code' code
+                    if (key.toString().isInteger())
+                        'error-code' key
+                    else
+                        'exception-type' key
                     'location' page
                 }
             }

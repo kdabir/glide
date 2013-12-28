@@ -1,5 +1,7 @@
 package glide.generators
 
+import groovy.util.slurpersupport.GPathResult
+
 class WebXmlGeneratorTest extends GroovyTestCase {
 
     def app_config = """
@@ -58,6 +60,28 @@ class WebXmlGeneratorTest extends GroovyTestCase {
         assert webXml.'listener'.size() == 1
         assert webXml.'filter'.size() == 1
         assert webXml.'security-constraint'.size() == 2
+    }
+
+    void testErrorPagesForErrorCodesAndExceptionTypes() {
+        def webXml = getXmlObjectForConfig("""
+        web {
+            error_pages = [
+                500 : '/error.html',
+                404 : '/404.html',
+                'java.lang.Throwable' : '/exception.html'
+            ]
+        }
+        """)
+
+        assert webXml.'error-page'.size() == 3
+        assert webXml.'error-page'[0].'error-code' == 500
+        assert webXml.'error-page'[1].'location' == '/404.html'
+        assert webXml.'error-page'[2].'exception-type' == 'java.lang.Throwable'
+        assert webXml.'error-page'[2].'location' == '/exception.html'
+    }
+
+    private GPathResult getXmlObjectForConfig(String config) {
+        new XmlSlurper().parseText(new WebXmlGenerator().generate(new ConfigSlurper().parse(config)))
     }
 }
 
