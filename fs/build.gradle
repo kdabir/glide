@@ -3,6 +3,9 @@ sourceSets {
     test.groovy.srcDir 'test'
 }
 
+description="glide file system utils"
+version = "0.1"
+
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4'     // required for AntBuilder

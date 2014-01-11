@@ -6,7 +6,17 @@ ext {
     gradleVersion = '1.8'
 }
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+    }
+}
+
 allprojects {
+
     apply plugin: 'groovy'
     apply plugin: 'idea'
 
@@ -20,7 +30,44 @@ allprojects {
         mavenLocal()
         mavenCentral()
     }
+
+
+    apply plugin: 'maven-publish'
+    apply plugin: 'bintray'
+
+    publishing {
+        publications {
+            groovyMaven(MavenPublication) {
+                from components.java
+            }
+        }
+    }
+
+    // set bintrayUser & bintrayKey in gradle.properties
+    bintray {
+
+        user = getPropertyOrUseDefault("bintrayUser", "fake_user")
+        key = getPropertyOrUseDefault("bintrayKey", "fake_key")
+        publications = ['groovyMaven']
+
+        def projectName = project.name
+        def projectDescription = project.description
+
+        pkg {
+            repo = 'maven' // or your repo name
+            name = projectName      // somehow project.* doesn't work in this closure
+            desc = projectDescription
+            licenses = ['Apache-2.0']
+        }
+        //dryRun = true // whether to run this as dry-run, without deploying
+    }
+
 }
+
+String getPropertyOrUseDefault(String propertyName, String defaultValue) {
+    hasProperty(propertyName) ? getProperty(propertyName) : defaultValue
+}
+
 
 task wrapper(type: Wrapper) {
     gradleVersion = "$gradleVersion"
