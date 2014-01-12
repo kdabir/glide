@@ -1,6 +1,10 @@
 language: groovy
 
-script: 'gradle test check'
+install:
+  - TERM=dumb ./gradlew -q assemble
+
+script:
+  - TERM=dumb ./gradlew check
 
 jdk:
   - oraclejdk7
