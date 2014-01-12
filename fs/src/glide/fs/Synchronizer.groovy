@@ -7,7 +7,7 @@ class Synchronizer {
 
     def ant = new AntBuilder()
     def sources = []
-    def target = [:]
+    def target = [includeEmptyDirs: true]
 
     def setSources(sources) {
         this.sources = [sources].flatten()
@@ -16,10 +16,10 @@ class Synchronizer {
     /**
      * source = [dir:"", excludes:"", includes:""]
      * sources = [source1, source2 ....]
-     * target = [dir:"", preserves: ""]
+     * target = [dir:"", preserves: "", ]
      */
     def sync() {
-        ant.sync(todir: target.dir) {
+        ant.sync(todir: target.dir, includeEmptyDirs: target.includeEmptyDirs) {
             sources.each { source ->
                 ant.fileset(source)
             }
