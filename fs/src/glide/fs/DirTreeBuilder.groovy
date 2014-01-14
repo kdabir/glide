@@ -23,7 +23,7 @@ class DirTreeBuilder {
         new DirTreeBuilder(name, closure)
     }
 
-    def dir(String name, closure = {}) {
+    def dir(String name, Closure closure = {}) {
         new DirTreeBuilder("$baseDir/$name", closure)
     }
 
@@ -34,7 +34,7 @@ class DirTreeBuilder {
      * @param content String or Closure that returns a string to be written in the file
      * @return
      */
-    def file(String name, content = "") {
+    def file(String name, def content = "") {
         final file_path = "$baseDir/$name"
         final text = (content instanceof Closure) ? content(file_path) : content
         new File(file_path).text = text ?: ""
