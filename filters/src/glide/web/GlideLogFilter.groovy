@@ -1,15 +1,15 @@
 package glide.web
 
+import javax.servlet.http.HttpServletRequest
 import groovyx.gaelyk.GaelykBindings
 
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.*
 import com.google.appengine.api.users.UserService
 import com.google.appengine.api.users.User
 import com.google.appengine.api.users.UserServiceFactory
 
 @GaelykBindings
-public class GlideLogFilter implements javax.servlet.Filter {
+public class GlideLogFilter implements Filter {
     def log = logger['glide']
 
     def filterConfig

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse
 import javax.servlet.*
 
 @GaelykBindings
-public class ProtectedResourcesFilter implements javax.servlet.Filter {
+public class ProtectedResourcesFilter implements Filter {
     def log = logger['glide']
 
     def filterConfig

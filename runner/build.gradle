@@ -43,7 +43,7 @@ run {
 
     def argsList = []
 
-    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/simple_app")]
+    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/sandbox/app")]
     argsList << ["-t", project(':gae-base-web').projectDir]
     argsList << ["-o", getPathFromProperty("out", "${project.rootProject.projectDir.path}/install/generated/sample")]
 
