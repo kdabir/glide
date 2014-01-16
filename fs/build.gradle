@@ -1,3 +1,9 @@
+repositories {
+    maven {
+        url "http://dl.bintray.com/kdabir/maven"
+    }
+}
+
 sourceSets {
     main.groovy.srcDir 'src'
     test.groovy.srcDir 'test'
@@ -10,7 +16,9 @@ dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4'     // required for AntBuilder
 
-    testCompile 'junit:junit:4.10'
+    testCompile 'junit:junit:4.10',
+            'directree:directree:0.1'
+
 }
 
 // to expose fs integration test base : http://stackoverflow.com/questions/5144325/gradle-test-dependency

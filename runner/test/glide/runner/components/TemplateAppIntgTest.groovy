@@ -1,14 +1,14 @@
 package glide.runner.components
 
 import fs.FileSystemIntegrationTestsBase
-import glide.fs.DirTreeBuilder
+import directree.DirTree
 
 class TemplateAppIntgTest extends FileSystemIntegrationTestsBase {
     TemplateApp templateApp
 
     void setUp() {
         super.setUp()
-        DirTreeBuilder.create("$tempDir/testTemplateApp") {
+        DirTree.create("$tempDir/testTemplateApp") {
             dir("src")
             dir("app") {
                 file "__glide.groovy", """

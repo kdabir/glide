@@ -1,7 +1,7 @@
 package glide.runner.components
 
+import directree.DirTree
 import fs.FileSystemIntegrationTestsBase
-import glide.fs.DirTreeBuilder
 
 class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
 
@@ -9,7 +9,7 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
 
     void setUp() {
         super.setUp()
-        DirTreeBuilder.create("$tempDir/glideTestApp") {
+        DirTree.create("$tempDir/glideTestApp") {
             file "__glide.groovy", """
                 app {
                     name = 'glideAppNameFromFile'

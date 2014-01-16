@@ -5,6 +5,10 @@ repositories {
     maven {
         url 'http://repo.gradle.org/gradle/libs-releases-local'
     }
+    maven {
+        url "http://dl.bintray.com/kdabir/maven"
+    }
+
 }
 
 sourceSets {
@@ -24,6 +28,7 @@ dependencies {
     runtime 'org.slf4j:slf4j-nop:1.7.2'
 
     testCompile 'junit:junit:4.10',
+            'directree:directree:0.1',
             project(path: ':fs', configuration: 'tests')
 }
 

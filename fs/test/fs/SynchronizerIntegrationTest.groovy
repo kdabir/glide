@@ -1,6 +1,7 @@
 package glide.fs
 
 import fs.FileSystemIntegrationTestsBase
+import directree.*
 
 class SynchronizerIntegrationTest extends FileSystemIntegrationTestsBase {
 
@@ -12,7 +13,7 @@ class SynchronizerIntegrationTest extends FileSystemIntegrationTestsBase {
         def root = "$tempDir/sync_test"
         (source1, source2, source3, dest) = ["app", "template", "deps", "target"].collect {"$root/$it"}
 
-        DirTreeBuilder.create(root) {
+        DirTree.create(root) {
             dir "app", {
                 dir "src", {
                     file "home.groovy", "println 'home'"
