@@ -8,7 +8,8 @@ class GlideApp  {
     static final DIR_STRUCTURE = {
         staticDir  'static'
         testDir    'test'
-        webappDir  'app'
+        appDir     'app'
+        libDir     'lib'
         routesFile 'routes.groovy'
         glideFile  'glide.groovy'
         buildFile  'glide.gradle'

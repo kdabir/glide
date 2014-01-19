@@ -63,6 +63,7 @@ applicationDistribution.from("${project.rootProject.projectDir.path}/base-templa
 
 installApp {
     dependsOn ":runner:build"
+    dependsOn ":filters:publishToMavenLocal"
 
     def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/install")
     into install_location

@@ -48,19 +48,19 @@ class ConfigFilesGenerator {
 
     def mergeRouteFiles() {
         // the order is important, glide routes should be placed above template routes
-        ant.concat(destfile: outputApp.appDir.webInfDir.routesFile, fixlastline: "yes") {
+        ant.concat(destfile: outputApp.webappDir.webInfDir.routesFile, fixlastline: "yes") {
             // hope this works when routes file is not present in the glide app
             ant.fileset(file: glideApp.routesFile)
-            ant.fileset(file: templateApp.appDir.routesFile)
+            ant.fileset(file: templateApp.webappDir.routesFile)
         }
     }
 
     def generateXmlFiles() {
         def config = templateApp.config.merge(glideApp.config)
 
-        outputApp.appDir.webInfDir.webXml.text = webXmlGenerator.generate(config)
-        outputApp.appDir.webInfDir.appengineWebXml.text = appEngineWebXmlGenerator.generate(config)
-        outputApp.appDir.webInfDir.sitemesh3Xml.text = sitemesh3XmlGenerator.generate(config)
-        outputApp.appDir.webInfDir.cronXml.text = cronXmlGenerator.generate(config)
+        outputApp.webappDir.webInfDir.webXml.text = webXmlGenerator.generate(config)
+        outputApp.webappDir.webInfDir.appengineWebXml.text = appEngineWebXmlGenerator.generate(config)
+        outputApp.webappDir.webInfDir.sitemesh3Xml.text = sitemesh3XmlGenerator.generate(config)
+        outputApp.webappDir.webInfDir.cronXml.text = cronXmlGenerator.generate(config)
     }
 }

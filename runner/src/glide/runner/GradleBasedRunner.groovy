@@ -57,10 +57,10 @@ class GradleBasedRunner {
                     includes: "**/*.groovy, **/*.html, **/*.md, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar, __build.gradle",
                     excludes: "__glide.groovy, __routes.groovy"
 
-            source dir: templateApp.appDir.path,
+            source dir: templateApp.webappDir.path,
                     excludes: "__glide.groovy, __routes.groovy, WEB-INF/lib/*, WEB-INF/classes/*"
 
-            to dir: outputApp.appDir.path,
+            to dir: outputApp.webappDir.path,
                     preserves: "WEB-INF/lib/*, WEB-INF/classes/*, WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
 
             every 3000

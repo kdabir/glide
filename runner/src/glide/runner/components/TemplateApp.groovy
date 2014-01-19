@@ -5,10 +5,11 @@ class TemplateApp {
 
     static final DIR_STRUCTURE = {
         buildFile 'build.gradle'
-
-        appDir('app') {
-            routesFile '__routes.groovy'
-            glideFile '__glide.groovy'
+        srcDir 'src'
+        testDir 'test'
+        webappDir('webapp') {
+            routesFile 'routes.groovy'
+            glideFile 'glide.groovy'
             webInfDir('WEB-INF') {
                 classesDir('classes') {}
                 libDir('lib') {}
@@ -24,7 +25,7 @@ class TemplateApp {
      * Note: every call reads fresh from filesystem, cache the config
      */
     ConfigObject getConfig() {
-        File configFile = dir.appDir.glideFile
+        File configFile = dir.webappDir.glideFile
         new ConfigSlurper().parse(configFile.toURI().toURL()) // config file should be always present
     }
 }

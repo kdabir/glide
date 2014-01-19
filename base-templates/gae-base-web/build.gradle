@@ -23,7 +23,7 @@ def templateGradleVersion = "1.10"
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
 
-webAppDirName = "app"
+webAppDirName = "webapp"
 sourceSets {
     main.groovy.srcDir 'src'
     test.groovy.srcDir 'test'
@@ -31,7 +31,7 @@ sourceSets {
 
 buildscript {
     repositories {
-        //mavenLocal()
+        mavenLocal()
         mavenCentral()
     }
 
@@ -54,6 +54,7 @@ dependencies {
             "com.google.appengine:appengine-api-labs:$templateGaeVersion"
     compile "org.gaelyk:gaelyk:$templateGaelykVersion"
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
+    compile 'glide:filters:0.3-SNAPSHOT'
 
 
     testCompile 'junit:junit:4.10'

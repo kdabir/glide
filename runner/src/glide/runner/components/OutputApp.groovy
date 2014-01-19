@@ -6,9 +6,13 @@ class OutputApp  {
     static final DIR_STRUCTURE = {
 
         buildFile 'build.gradle'
-
-        appDir('app') {
+        srcDir  'src'
+        testDir 'test'
+        webappDir('webapp') {
+            staticDir 'static'
             webInfDir('WEB-INF') {
+                classesDir 'classes'
+                libDir 'classes'
                 webXml "web.xml"
                 appengineWebXml "appengine-web.xml"
                 sitemesh3Xml "sitemesh3.xml"
