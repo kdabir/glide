@@ -1,4 +1,4 @@
-package glide.runner
+package glide.runner.deprecated
 
 import glide.generators.WebXmlGenerator
 import glide.generators.AppEngineWebXmlGenerator
