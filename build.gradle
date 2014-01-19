@@ -3,7 +3,7 @@ ext {
     groovyVersion = '2.1.6'
     gaeVersion = '1.8.4'
     gaelykVersion = '2.0'
-    gradleVersion = '1.8'
+    gradleVersion = '1.10'
 }
 
 buildscript {
@@ -71,6 +71,6 @@ String getPropertyOrUseDefault(String propertyName, String defaultValue) {
 
 task wrapper(type: Wrapper) {
     gradleVersion = "$gradleVersion"
-    jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
-    scriptFile = file("${project.projectDir}/gradlew")
+//    jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
+//    scriptFile = file("${project.projectDir}/gradlew")
 }
