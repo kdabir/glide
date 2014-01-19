@@ -1,7 +1,5 @@
 package glide.runner.components
 
-import glide.runner.components.Directory
-
 class DirectoryTest extends GroovyTestCase {
 
     void "test should build new Dir with root file and retrieve that"() {

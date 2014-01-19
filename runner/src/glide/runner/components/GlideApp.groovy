@@ -6,8 +6,12 @@ class GlideApp  {
     static final ConfigObject EMPTY_CONFIG = new ConfigSlurper().parse("app{}")
 
     static final DIR_STRUCTURE = {
-        routesFile '__routes.groovy'
-        glideFile '__glide.groovy'
+        staticDir  'static'
+        testDir    'test'
+        webappDir  'app'
+        routesFile 'routes.groovy'
+        glideFile  'glide.groovy'
+        buildFile  'glide.gradle'
     }
 
     GlideApp(String root) {

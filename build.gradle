@@ -1,7 +1,7 @@
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.1.6'
-    gaeVersion = '1.8.4'
+    groovyVersion = '2.2.1'
+    gaeVersion = '1.8.9'
     gaelykVersion = '2.0'
     gradleVersion = '1.10'
 }

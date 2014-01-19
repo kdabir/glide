@@ -1,16 +1,14 @@
 package glide.runner.components
 
-import glide.runner.components.GlideApp
-
 class GlideAppTest extends GroovyTestCase {
     void "test glide app dir structure"() {
         def t = new GlideApp("/tmp/glide")
-        t.dir.glideFile.path == "/tmp/glide/__glide.groovy"
+        assert t.dir.glideFile.path == "/tmp/glide/glide.groovy"
     }
 
     void "test delegation to dir"() {
         def t = new GlideApp("/tmp/glide")
-        t.glideFile.path == "/tmp/glide/__glide.groovy"
+        assert t.glideFile.path == "/tmp/glide/glide.groovy"
     }
 
     void "test Dir name"(){

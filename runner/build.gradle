@@ -34,8 +34,6 @@ dependencies {
 
 mainClassName = "glide.runner.CLI"
 
-evaluationDependsOn(':gae-base-web')
-
 /**
  * run provides a shortcut to run the app  without needing to install glide
  *
@@ -44,13 +42,11 @@ evaluationDependsOn(':gae-base-web')
  * run the default sample app if no app is provided
  */
 run {
-    dependsOn ":gae-base-web:war"
-
     def argsList = []
 
-    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/sandbox/app")]
-    argsList << ["-t", project(':gae-base-web').projectDir]
-    argsList << ["-o", getPathFromProperty("out", "${project.rootProject.projectDir.path}/install/generated/sample")]
+    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/sandbox")]
+    argsList << ["-t", getPathFromProperty("template", "${project.rootProject.projectDir.path}/base-templates/gae-base-web")]
+    argsList << ["-o", getPathFromProperty("out", "${project.buildDir.path}/generated/sandbox")]
 
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
     if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
@@ -61,8 +57,8 @@ run {
 }
 
 
-applicationDistribution.from(project(':gae-base-web').projectDir) {
-    into "template"
+applicationDistribution.from("${project.rootProject.projectDir.path}/base-templates") {
+    into "templates"
 }
 
 installApp {

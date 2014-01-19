@@ -10,7 +10,7 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
     void setUp() {
         super.setUp()
         DirTree.create("$tempDir/glideTestApp") {
-            file "__glide.groovy", """
+            file "glide.groovy", """
                 app {
                     name = 'glideAppNameFromFile'
                     version = 'test'
@@ -20,7 +20,7 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
                 }
             """
 
-            file "__routes.groovy"
+            file "routes.groovy"
         }
 
         glideApp = new GlideApp("$tempDir/glideTestApp")

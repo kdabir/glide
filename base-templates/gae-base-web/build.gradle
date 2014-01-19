@@ -14,8 +14,8 @@ if (new File(projectDir.path + "/app/__build.gradle").exists()) {
 }
 
 def templateJavaVersion = 1.7
-def templateGroovyVersion = '2.1.6'
-def templateGaeVersion = '1.8.8'
+def templateGroovyVersion = '2.2.1'
+def templateGaeVersion = '1.8.9'
 def templateGaelykVersion = '2.0'
 def templateVersion = '0.1-test'
 def templateGradleVersion = "1.10"
@@ -31,6 +31,7 @@ sourceSets {
 
 buildscript {
     repositories {
+        //mavenLocal()
         mavenCentral()
     }
 

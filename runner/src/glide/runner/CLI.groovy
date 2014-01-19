@@ -62,7 +62,7 @@ class CLI {
         }
 
         def glideApp  = new GlideApp(options.a ?: System.getProperty("user.dir"))
-        def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/template")
+        def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/templates/gae-base-web")
         def outputApp = new OutputApp(options.o ?: "${System.env.GLIDE_HOME}/generated/${glideApp.appName}")
 
         def runner = new GradleBasedRunner(glideApp,templateApp,outputApp)
