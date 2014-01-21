@@ -1,9 +1,9 @@
 package glide.runner.deprecated
 
+import glide.fs.Synchronizer
 import glide.generators.WebXmlGenerator
 import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
-import glide.fs.Syncgine
 import glide.generators.CronXmlGenerator
 
 /**
@@ -21,7 +21,7 @@ class GlideCLI {
 
     // this guy does the heavy-lifting
     AntBuilder ant
-    Syncgine engine
+    Synchronizer engine
 
     // glide app paths
     File glideApp, glideAppConfigFile, glideAppRoutesFile;
@@ -130,7 +130,7 @@ class GlideCLI {
     }
 
     private setupEngine() {
-        this.engine = Syncgine.build {
+        this.engine = Synchronizer.build {
             source dir: glideApp,
                     includes: "**/*.groovy, **/*.html, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar",
                     excludes: "__glide.groovy, __routes.groovy"

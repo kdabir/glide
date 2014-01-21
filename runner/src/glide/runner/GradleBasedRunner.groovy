@@ -1,6 +1,6 @@
 package glide.runner
 
-import glide.fs.Syncgine
+import glide.fs.Synchronizer
 import glide.runner.components.GlideApp
 import glide.runner.components.OutputApp
 import glide.runner.components.TemplateApp
@@ -12,8 +12,7 @@ import glide.runner.components.TemplateApp
 class GradleBasedRunner {
 
     GradleProjectRunner gradleProjectRunner
-    Syncgine glideAppSync
-    Syncgine projectSync
+    Synchronizer glideAppSync, projectSync
 
     GlideApp glideApp
     TemplateApp templateApp
@@ -29,8 +28,8 @@ class GradleBasedRunner {
         this.outputApp = outputApp
 
         configFilesGenerator = new ConfigFilesGenerator(glideApp, templateApp, outputApp)
-        projectSync = buildProjectSyncgine()
-        glideAppSync = buildGlideSyncgine()
+        projectSync = buildProjectSync()
+        glideAppSync = buildGlideSync()
 
         gradleProjectRunner = new GradleProjectRunner(outputApp.dir.asFile())
 
@@ -44,15 +43,15 @@ class GradleBasedRunner {
         glideAppSync.syncOnce()
     }
 
-    private Syncgine buildProjectSyncgine() {
-        Syncgine.build {
+    private Synchronizer buildProjectSync() {
+        Synchronizer.build {
             source dir: templateApp.path, includes: "src/, test/, build.gradle"
             to dir: outputApp.path, preserves: "app/"
         }
     }
 
-    private Syncgine buildGlideSyncgine() {
-        Syncgine.build {
+    private Synchronizer buildGlideSync() {
+        Synchronizer.build {
             source dir: glideApp.path,
                     includes: "**/*.groovy, **/*.html, **/*.md, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar, __build.gradle",
                     excludes: "__glide.groovy, __routes.groovy"
