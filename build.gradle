@@ -62,6 +62,12 @@ subprojects {
         //dryRun = true // whether to run this as dry-run, without deploying
     }
 
+    idea {
+        module {
+            excludeDirs += [file(".gradle"), file('gradle'), file('install'), file('build')]
+        }
+    }
+
 }
 
 String getPropertyOrUseDefault(String propertyName, String defaultValue) {

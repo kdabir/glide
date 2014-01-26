@@ -22,14 +22,12 @@ dependencies {
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
             'commons-cli:commons-cli:1.2',   // required for CliBuilder
             "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
-            project(":fs"),
+            'directree:directree:0.2-alpha', // todo - change when released
             project(":generators")
 
     runtime 'org.slf4j:slf4j-nop:1.7.2'
 
-    testCompile 'junit:junit:4.10',
-            'directree:directree:0.1',
-            project(path: ':fs', configuration: 'tests')
+    testCompile 'junit:junit:4.10'
 }
 
 mainClassName = "glide.runner.CLI"
