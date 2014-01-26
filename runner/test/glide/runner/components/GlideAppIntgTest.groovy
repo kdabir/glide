@@ -1,7 +1,7 @@
 package glide.runner.components
 
 import directree.DirTree
-import fs.FileSystemIntegrationTestsBase
+import glide.test.FileSystemIntegrationTestsBase
 
 class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
 

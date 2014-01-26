@@ -1,4 +1,4 @@
-package fs
+package glide.test
 
 /**
  * creates a tempDir for extending test cases to use
@@ -9,7 +9,7 @@ class FileSystemIntegrationTestsBase extends GroovyTestCase {
     def deleteOnExit = true
 
     void setUp() {
-        tempDir = new File("${System.properties['java.io.tmpdir'] ?: "."}/glidetest")
+        tempDir = new File("${System.properties['java.io.tmpdir'] ?: "."}/directest")
         tempDir.mkdirs()
     }
 

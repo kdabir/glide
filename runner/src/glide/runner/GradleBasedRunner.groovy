@@ -1,6 +1,6 @@
 package glide.runner
 
-import glide.fs.Synchronizer
+import directree.Synchronizer
 import glide.runner.components.GlideApp
 import glide.runner.components.OutputApp
 import glide.runner.components.TemplateApp
@@ -39,30 +39,32 @@ class GradleBasedRunner {
         if (this.glideApp.config?.glide?.configure instanceof Closure)
             this.glideApp.config.glide.configure.call(this.glideAppSync, this.glideApp, this.outputApp)
 
-        projectSync.syncOnce()
-        glideAppSync.syncOnce()
+        projectSync.sync()
+        glideAppSync.sync()
     }
 
-    private Synchronizer buildProjectSync() {
+    private def buildProjectSync() {
         Synchronizer.build {
-            source dir: templateApp.path, includes: "src/, test/, build.gradle"
-            to dir: outputApp.path, preserves: "app/"
+            sourceDir templateApp.path, includes: "src/, test/, build.gradle"
+            targetDir outputApp.path
+            preserve includes: "app/"
         }
     }
 
-    private Synchronizer buildGlideSync() {
+    private def buildGlideSync() {
         Synchronizer.build {
-            source dir: glideApp.path,
+            sourceDir glideApp.path,
                     includes: "**/*.groovy, **/*.html, **/*.md, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar, __build.gradle",
                     excludes: "__glide.groovy, __routes.groovy"
 
-            source dir: templateApp.webappDir.path,
+            sourceDir templateApp.webappDir.path.toString(),
                     excludes: "__glide.groovy, __routes.groovy, WEB-INF/lib/*, WEB-INF/classes/*"
 
-            to dir: outputApp.webappDir.path,
-                    preserves: "WEB-INF/lib/*, WEB-INF/classes/*, WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
+            targetDir outputApp.webappDir.path.toString()
 
-            every 3000
+            preserve includes: "WEB-INF/lib/*, WEB-INF/classes/*, WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
+
+            syncEvery 3.seconds
 
             beforeSync {
                 configFilesGenerator.generateIfModifiedAfter(lastSynced)

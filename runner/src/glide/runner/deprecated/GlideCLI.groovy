@@ -1,6 +1,6 @@
 package glide.runner.deprecated
 
-import glide.fs.Synchronizer
+import directree.Synchronizer
 import glide.generators.WebXmlGenerator
 import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
@@ -131,17 +131,17 @@ class GlideCLI {
 
     private setupEngine() {
         this.engine = Synchronizer.build {
-            source dir: glideApp,
+            sourceDir glideApp.toString(),
                     includes: "**/*.groovy, **/*.html, **/*.gtpl, **/*.jsp, **/*.js, **/*.css, **/*.ico, **/*.png, **/*.jpeg, **/*.gif, WEB-INF/lib/*.jar",
                     excludes: "__glide.groovy, __routes.groovy"
 
-            source dir: templateApp,
+            sourceDir templateApp.toString(),
                     excludes: "__glide.groovy, __routes.groovy, WEB-INF/*.xml"
 
-            to dir: outputApp,
-                    preserves: "WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
+            targetDir: outputApp.toString()
 
-            every SCAN_INTERVAL
+            preserve includes: "WEB-INF/web.xml, WEB-INF/appengine-web.xml, WEB-INF/cron.xml, WEB-INF/sitemesh3.xml, WEB-INF/routes.groovy, WEB-INF/appengine-generated/**/*"
+
 
             beforeSync {
                 if (glideAppRoutesFile.lastModified() >= lastSynced) {
