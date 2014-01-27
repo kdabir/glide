@@ -16,9 +16,7 @@ buildscript {
 }
 
 subprojects {
-
     apply plugin: 'groovy'
-    apply plugin: 'idea'
 
     group 'glide'
     version '0.3-SNAPSHOT'
@@ -62,12 +60,16 @@ subprojects {
         //dryRun = true // whether to run this as dry-run, without deploying
     }
 
+
+}
+
+allprojects {
+    apply plugin: 'idea'
     idea {
         module {
-            excludeDirs += [file(".gradle"), file('gradle'), file('install'), file('build')]
+            excludeDirs += [file(".gradle"), file('gradle'), file('install'), file('build'), file('out'), file('.idea')]
         }
     }
-
 }
 
 String getPropertyOrUseDefault(String propertyName, String defaultValue) {
