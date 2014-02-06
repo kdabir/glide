@@ -9,8 +9,8 @@ gae {
     }
 }
 
-if (new File(projectDir.path + "/app/__build.gradle").exists()) {
-    apply from: 'app/__build.gradle'
+if (new File(projectDir.path + "/glide.gradle").exists()) {
+    apply from: 'glide.gradle'
 }
 
 def templateJavaVersion = 1.7
@@ -23,7 +23,7 @@ def templateGradleVersion = "1.10"
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
 
-webAppDirName = "webapp"
+webAppDirName = "app"
 sourceSets {
     main.groovy.srcDir 'src'
     test.groovy.srcDir 'test'
