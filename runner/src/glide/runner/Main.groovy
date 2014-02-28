@@ -27,11 +27,11 @@ class Main {
         OptionAccessor options = cli.parse(args)
 
         // println System.env.GRADLE_HOME
-        // if (options.h) command = "help"
-        // if (options.v) command = "version"
         // new GradleProjectRunner(prepareRuntime(options).outputApp.dir.asFile())
 
         def command = (options.arguments() ? options.arguments().first() : 'gaeRun')
+        if (options.h) command = "help"
+        if (options.v) command = "version"
 
         switch (command) {
             case ['help']: new HelpCommand(this.cli).execute(); break
