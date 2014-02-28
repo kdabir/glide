@@ -11,25 +11,28 @@ class TemplateAppIntgTest extends FileSystemIntegrationTestsBase {
         DirTree.create("$tempDir/testTemplateApp") {
             dir("src")
             dir("webapp") {
-                file "glide.groovy", """
+                dir("WEB-INF") {
+                    file "routes.groovy"
+                }
+            }
+            file "glide.groovy", """
                     someConfig {
                         key = 'value'
                     }
                 """
-            }
         }
 
         templateApp = new TemplateApp("$tempDir/testTemplateApp")
     }
 
     void "test if application is setup by test" () {
-        assert templateApp.exists()
-        assert templateApp.webappDir.glideFile.exists()
+        assert templateApp.dir.exists()
+        assert templateApp.glideFile.exists()
     }
 
     void "test template app config" () {
-        assertNotNull templateApp.config
-        assert templateApp.config.someConfig.key == 'value'
+        assertNotNull templateApp.glideConfig
+        assert templateApp.glideConfig.someConfig.key == 'value'
     }
 
 }

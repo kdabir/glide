@@ -2,13 +2,8 @@ apply plugin: 'application'
 apply plugin: 'maven'
 
 repositories {
-    maven {
-        url 'http://repo.gradle.org/gradle/libs-releases-local'
-    }
-    maven {
-        url "http://dl.bintray.com/kdabir/maven"
-    }
-
+    maven { url 'http://repo.gradle.org/gradle/libs-releases-local' }
+    maven { url "http://dl.bintray.com/kdabir/maven" }
 }
 
 sourceSets {
@@ -30,7 +25,7 @@ dependencies {
     testCompile 'junit:junit:4.10'
 }
 
-mainClassName = "glide.runner.CLI"
+mainClassName = "glide.runner.Main"
 
 /**
  * run provides a shortcut to run the app  without needing to install glide
@@ -48,15 +43,17 @@ run {
 
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
     if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
+    if (project.hasProperty("task")){ argsList << [ project.getProperty("task")] }
     if (project.hasProperty("help")){ argsList << "-h" }
     if (project.hasProperty("quiet")){ argsList << "-q" }
+    if (project.hasProperty("version")){ argsList << "-v" }
 
     args argsList.flatten()
 }
 
 
 applicationDistribution.from("${project.rootProject.projectDir.path}/base-templates") {
-    into "templates"
+    into "base-templates"
 }
 
 installApp {
@@ -71,7 +68,7 @@ installApp {
 
         ===================================================================
         Important: Add the following path to your PATH environment variable
-        '$install_location'
+        '$install_location/bin'
         ===================================================================
         """
     }
@@ -98,7 +95,7 @@ startScripts {
 
 processResources {
     filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-            build_at: new Date().dateTimeString,
+            builtAt: new Date().dateTimeString,
             version: project.version
     ]
 }

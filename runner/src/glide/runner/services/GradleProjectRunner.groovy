@@ -1,4 +1,4 @@
-package glide.runner
+package glide.runner.services
 
 import org.gradle.tooling.GradleConnector
 import org.gradle.tooling.ProjectConnection

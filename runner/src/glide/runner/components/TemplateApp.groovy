@@ -1,31 +1,47 @@
 package glide.runner.components
 
-class TemplateApp {
-    @Delegate Directory dir
+/**
+ * A Valid gradle app, contains boilerpplate setup
+ */
+class TemplateApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
 
-    static final DIR_STRUCTURE = {
-        buildFile 'build.gradle'
+    static final DIRECTORY_STRUCTURE = {
         srcDir 'src'
         testDir 'test'
-        webappDir('webapp') {
-            routesFile 'routes.groovy'
-            glideFile 'glide.groovy'
+        appDir ('app') {
+            staticDir 'static'
             webInfDir('WEB-INF') {
-                classesDir('classes') {}
-                libDir('lib') {}
+                classesDir 'classes'
+                libDir 'lib'
+                routesFile 'routes.groovy'
             }
         }
+        buildFile 'build.gradle'
+        glideFile 'glide.groovy'
     }
 
+    final Directory dir
+
     TemplateApp(String root) {
-        this.dir = Directory.build(root, DIR_STRUCTURE)
+        this.dir = Directory.build(root, DIRECTORY_STRUCTURE)
     }
 
     /**
      * Note: every call reads fresh from filesystem, cache the config
      */
-    ConfigObject getConfig() {
-        File configFile = dir.webappDir.glideFile
-        new ConfigSlurper().parse(configFile.toURI().toURL()) // config file should be always present
+    ConfigObject getGlideConfig() {
+        new ConfigSlurper().parse(dir.glideFile.toURI().toURL()) // config file should be always present
     }
+
+    @Override
+    String getPath() { dir.path.toString() }
+
+    @Override
+    File getRoutesFile() { dir.webappDir.webInfDir.routesFile }
+
+    @Override
+    File getBuildFile() { dir.buildFile }
+
+    @Override
+    File getGlideFile() { dir.glideFile }
 }

@@ -3,9 +3,9 @@ package glide.runner.components
 import directree.DirTree
 import glide.test.FileSystemIntegrationTestsBase
 
-class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
+class UserAppIntgTest extends FileSystemIntegrationTestsBase {
 
-    GlideApp glideApp
+    UserApp glideApp
 
     void setUp() {
         super.setUp()
@@ -23,37 +23,37 @@ class GlideAppIntgTest extends FileSystemIntegrationTestsBase {
             file "routes.groovy"
         }
 
-        glideApp = new GlideApp("$tempDir/glideTestApp")
+        glideApp = new UserApp("$tempDir/glideTestApp")
     }
 
     void "test if application is setup by test" () {
-        assert glideApp.exists()
+        assert glideApp.dir.exists()
         assert glideApp.glideFile.exists()
     }
 
     void "test Config should be read from file if exists"() {
-        assertNotNull glideApp.config
-        assert glideApp.config.someRandomConfig.key == 'value'
+        assertNotNull glideApp.glideConfig
+        assert glideApp.glideConfig.someRandomConfig.key == 'value'
     }
 
     void "test App Name should be read from config file if exists"() {
-        assert glideApp.appName == 'glideAppNameFromFile_test'
+        assert glideApp.glideConfig.app.name == 'glideAppNameFromFile'
     }
 
     void "test routes modified check should be true only for timestamp greater passed argument" () {
         def ts = glideApp.routesFile.lastModified()
 
-        assert  glideApp.isRoutesModifiedAfter(ts) == false
-        assert  glideApp.isRoutesModifiedAfter(ts+1) == false
-        assert  glideApp.isRoutesModifiedAfter(ts-1) == true
+        assert  glideApp.isRoutesFileModifiedAfter(ts) == false
+        assert  glideApp.isRoutesFileModifiedAfter(ts+1) == false
+        assert  glideApp.isRoutesFileModifiedAfter(ts-1) == true
     }
 
     void "test config modified check should be true only for timestamp greater passed argument" () {
         def ts = glideApp.glideFile.lastModified()
 
-        assert  glideApp.isConfigModifiedAfter(ts) == false
-        assert  glideApp.isConfigModifiedAfter(ts+1) == false
-        assert  glideApp.isConfigModifiedAfter(ts-1) == true
+        assert  glideApp.isGlideConfigModifiedAfter(ts) == false
+        assert  glideApp.isGlideConfigModifiedAfter(ts+1) == false
+        assert  glideApp.isGlideConfigModifiedAfter(ts-1) == true
     }
 
 }
