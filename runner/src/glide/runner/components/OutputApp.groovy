@@ -13,7 +13,7 @@ class OutputApp implements DirectoryAware, RoutesAware, BuildAware {
             staticDir 'static'
             webInfDir('WEB-INF') {
                 classesDir 'classes'
-                libDir 'classes'
+                libDir 'lib'
                 webXml "web.xml"
                 appengineWebXml "appengine-web.xml"
                 sitemesh3Xml "sitemesh3.xml"

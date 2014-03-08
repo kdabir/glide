@@ -37,6 +37,7 @@ class Main {
             case ['help']: new HelpCommand(this.cli).execute(); break
             case ['version']: new VersionCommand(this.cli).execute(); break
             case ['gaeRun']: new RunCommand(prepareRuntime(options), ant).execute(); break
+            default: println ('command not found')
         }
 
     }
