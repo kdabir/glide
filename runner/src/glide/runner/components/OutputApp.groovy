@@ -1,57 +1,60 @@
 package glide.runner.components
 
+import directree.DirTree
+
 /**
  * A valid gradle app, that is intelligent combination of user app + template app
  */
 //@groovy.transform.Immutable
 class OutputApp implements DirectoryAware, RoutesAware, BuildAware {
 
-    static final DIRECTORY_STRUCTURE = {
-        srcDir 'src'
-        testDir 'test'
-        appDir('app') {
-            staticDir 'static'
-            webInfDir('WEB-INF') {
-                classesDir 'classes'
-                libDir 'lib'
-                webXml "web.xml"
-                appengineWebXml "appengine-web.xml"
-                sitemesh3Xml "sitemesh3.xml"
-                cronXml "cron.xml"
-                routesFile "routes.groovy"
-            }
-        }
-        buildFile 'build.gradle'
-    }
-
-    final Directory dir
+    final DirTree dirTree
 
     OutputApp(String root) {
-        this.dir = Directory.build(root, DIRECTORY_STRUCTURE)
+        this.dirTree = DirTree.build(root){
+            dir 'src'
+            dir 'test'
+            dir('app') {
+                dir 'static'
+                dir('WEB-INF') {
+                    dir 'classes'
+                    dir 'lib'
+                    file "web.xml"
+                    file "appengine-web.xml"
+                    file "sitemesh3.xml"
+                    file "cron.xml"
+                    file "routes.groovy"
+                }
+            }
+            file 'build.gradle'
+        }
     }
+
+    @Override
+    File getDir() { dirTree.file }
 
     @Override
     String getPath() { dir.path.toString() }
 
     @Override
-    File getRoutesFile() { dir.appDir.webInfDir.routesFile }
+    File getRoutesFile() { dirTree['app']['WEB-INF']['routes.groovy'].file }
 
     @Override
-    File getBuildFile() { dir.buildFile }
+    File getBuildFile() { dirTree['build.gradle'].file }
 
-    File getWebXmlFile() { dir.appDir.webInfDir.webXml }
+    File getWebXmlFile() { dirTree['app']['WEB-INF']['web.xml'].file }
 
     def setWebXmlText(String text) { webXmlFile.text = text }
 
-    File getAppengineWebXmlFile() { dir.appDir.webInfDir.appengineWebXml }
+    File getAppengineWebXmlFile() { dirTree['app']['WEB-INF']['appengine-web.xml'].file }
 
     def setAppengineWebXmlText(String text) { appengineWebXmlFile.text = text }
 
-    File getSitemesh3XmlFile() { dir.appDir.webInfDir.sitemesh3Xml }
+    File getSitemesh3XmlFile() { dirTree['app']['WEB-INF']['sitemesh3.xml'].file }
 
     def setSitemesh3Text(String text) { sitemesh3XmlFile.text = text }
 
-    File getCronXmlFile() { dir.appDir.webInfDir.cronXml }
+    File getCronXmlFile() { dirTree['app']['WEB-INF']['cron.xml'].file }
 
     def setCronXmlText(String text) { cronXmlFile.text = text }
 

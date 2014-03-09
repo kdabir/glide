@@ -1,25 +1,25 @@
 package glide.runner.components
 
+import directree.DirTree
+
 /**
  * A User app, its not a valid gradle app in itself
  */
 class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
 
-    static final DIRECTORY_STRUCTURE = {
-        srcDir 'src'
-        testDir 'test'
-        appDir ('app') {
-            staticDir 'static'
-        }
-        routesFile 'routes.groovy'
-        glideFile 'glide.groovy'
-        buildFile 'glide.gradle'
-    }
-
-    final Directory dir
+    final DirTree dirTree
 
     UserApp(String root) {
-        this.dir = Directory.build(root, DIRECTORY_STRUCTURE)
+        this.dirTree = DirTree.build(root){
+            dir 'src'
+            dir 'test'
+            dir ('app') {
+                dir 'static'
+            }
+            file 'routes.groovy'
+            file 'glide.groovy'
+            file 'glide.gradle'
+        }
     }
 
     /**
@@ -40,15 +40,20 @@ class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
     }
 
     @Override
+    File getDir() {
+        dirTree.file
+    }
+
+    @Override
     String getPath() { dir.path.toString() }
 
     @Override
-    File getRoutesFile() { dir.routesFile }
+    File getRoutesFile() { dirTree["routes.groovy"].file }
 
     @Override
-    File getBuildFile() { dir.buildFile }
+    File getBuildFile() { dirTree["build.gradle"].file }
 
     @Override
-    File getGlideFile() { dir.glideFile }
+    File getGlideFile() { dirTree["glide.groovy"].file }
 
 }

@@ -6,8 +6,8 @@ class TemplateAppTest extends GroovyTestCase {
         assert t.glideFile.path == "/tmp/template/glide.groovy"
     }
 
-    void "test delegation to dir"() {
+    void "test template app has routes file"() {
         def t = new TemplateApp("/tmp/template")
-        assert t.dir.appDir.webInfDir.routesFile.path == "/tmp/template/app/WEB-INF/routes.groovy"
+        assert t.routesFile.path == "/tmp/template/app/WEB-INF/routes.groovy"
     }
 }

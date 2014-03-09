@@ -43,17 +43,17 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
     void "test routes modified check should be true only for timestamp greater passed argument" () {
         def ts = glideApp.routesFile.lastModified()
 
-        assert  glideApp.isRoutesFileModifiedAfter(ts) == false
-        assert  glideApp.isRoutesFileModifiedAfter(ts+1) == false
-        assert  glideApp.isRoutesFileModifiedAfter(ts-1) == true
+        assert !glideApp.isRoutesFileModifiedAfter(ts)
+        assert !glideApp.isRoutesFileModifiedAfter(ts + 1)
+        assert glideApp.isRoutesFileModifiedAfter(ts - 1)
     }
 
     void "test config modified check should be true only for timestamp greater passed argument" () {
         def ts = glideApp.glideFile.lastModified()
 
-        assert  glideApp.isGlideConfigModifiedAfter(ts) == false
-        assert  glideApp.isGlideConfigModifiedAfter(ts+1) == false
-        assert  glideApp.isGlideConfigModifiedAfter(ts-1) == true
+        assert !glideApp.isGlideConfigModifiedAfter(ts)
+        assert !glideApp.isGlideConfigModifiedAfter(ts + 1)
+        assert glideApp.isGlideConfigModifiedAfter(ts - 1)
     }
 
 }

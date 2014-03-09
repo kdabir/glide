@@ -12,6 +12,6 @@ interface GlideAware {
     File getGlideFile()
 }
 interface DirectoryAware{
-    Directory getDir()
+    File getDir()
     String getPath()
 }

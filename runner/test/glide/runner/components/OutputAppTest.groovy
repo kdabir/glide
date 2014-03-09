@@ -3,7 +3,7 @@ package glide.runner.components
 class OutputAppTest extends GroovyTestCase {
     void "test output app dir structure"() {
         def t = new OutputApp("/tmp/output")
-        assert t.dir.appDir.webInfDir.path == "/tmp/output/app/WEB-INF"
+        assert t.dirTree["app"]["WEB-INF"].file.path == "/tmp/output/app/WEB-INF"
     }
 
     void "test output app is build aware"() {

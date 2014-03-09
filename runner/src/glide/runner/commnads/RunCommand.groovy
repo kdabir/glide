@@ -21,7 +21,7 @@ class RunCommand implements Command {
         def sync = new SyncService(runtime, ant)
         sync.start()
         // gradle build
-        def gradle = new GradleProjectRunner(runtime.outputApp.dir.asFile())
+        def gradle = new GradleProjectRunner(runtime.outputApp.dir)
         gradle.run("gaeRun")
 
         // devapp srv
