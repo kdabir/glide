@@ -46,8 +46,9 @@ run {
     if (project.hasProperty("task")){ argsList << [ project.getProperty("task")] }
     if (project.hasProperty("help")){ argsList << "-h" }
     if (project.hasProperty("quiet")){ argsList << "-q" }
-    if (project.hasProperty("version")){ argsList << "-v" }
+    if (project.hasProperty("showVersion")){ argsList << "-v" }
 
+    println "Running using: ${argsList.flatten()}"
     args argsList.flatten()
 }
 
