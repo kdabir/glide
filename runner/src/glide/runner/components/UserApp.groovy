@@ -10,10 +10,10 @@ class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
     final DirTree dirTree
 
     UserApp(String root) {
-        this.dirTree = DirTree.build(root){
+        this.dirTree = DirTree.build(root) {
             dir 'src'
             dir 'test'
-            dir ('app') {
+            dir('app') {
                 dir 'static'
             }
             file 'routes.groovy'

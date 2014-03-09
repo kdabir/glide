@@ -10,10 +10,10 @@ class TemplateApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware
     final DirTree dirtree
 
     TemplateApp(String root) {
-        this.dirtree = DirTree.build(root){
+        this.dirtree = DirTree.build(root) {
             dir 'src'
             dir 'test'
-            dir ('app') {
+            dir('app') {
                 dir 'static'
                 dir('WEB-INF') {
                     dir 'classes'

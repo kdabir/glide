@@ -11,7 +11,7 @@ class OutputApp implements DirectoryAware, RoutesAware, BuildAware {
     final DirTree dirTree
 
     OutputApp(String root) {
-        this.dirTree = DirTree.build(root){
+        this.dirTree = DirTree.build(root) {
             dir 'src'
             dir 'test'
             dir('app') {
@@ -44,17 +44,17 @@ class OutputApp implements DirectoryAware, RoutesAware, BuildAware {
 
     File getWebXmlFile() { dirTree['app']['WEB-INF']['web.xml'].file }
 
-    def setWebXmlText(String text) { webXmlFile.text = text }
-
     File getAppengineWebXmlFile() { dirTree['app']['WEB-INF']['appengine-web.xml'].file }
-
-    def setAppengineWebXmlText(String text) { appengineWebXmlFile.text = text }
 
     File getSitemesh3XmlFile() { dirTree['app']['WEB-INF']['sitemesh3.xml'].file }
 
-    def setSitemesh3Text(String text) { sitemesh3XmlFile.text = text }
-
     File getCronXmlFile() { dirTree['app']['WEB-INF']['cron.xml'].file }
+
+    def setWebXmlText(String text) { webXmlFile.text = text }
+
+    def setAppengineWebXmlText(String text) { appengineWebXmlFile.text = text }
+
+    def setSitemesh3Text(String text) { sitemesh3XmlFile.text = text }
 
     def setCronXmlText(String text) { cronXmlFile.text = text }
 
