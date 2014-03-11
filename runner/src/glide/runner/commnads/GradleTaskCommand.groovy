@@ -1,30 +1,27 @@
 package glide.runner.commnads
 
-import glide.runner.GlideRuntime
+import glide.runner.components.GlideRuntime
 import glide.runner.services.GradleProjectRunner
 import glide.runner.services.SyncService
-import groovy.transform.Canonical
 
-@Canonical
-class RunCommand implements Command {
+
+class GradleTaskCommand implements Command {
     GlideRuntime runtime
     AntBuilder ant
+    String command
 
-    RunCommand(GlideRuntime runtime, AntBuilder ant) {
+    GradleTaskCommand(GlideRuntime runtime, AntBuilder ant, String command) {
         this.runtime = runtime
         this.ant = ant
+        this.command = command
     }
+
 
     @Override
     void execute() {
-        // star t sync
         def sync = new SyncService(runtime, ant)
         sync.start()
-        // gradle build
         def gradle = new GradleProjectRunner(runtime.outputApp.dir)
-        gradle.run("gaeRun")
-
-        // devapp srv
-
+        gradle.run(command) // hopefully this is a blocking call
     }
 }

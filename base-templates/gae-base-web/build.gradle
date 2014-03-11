@@ -9,16 +9,16 @@ gae {
     }
 }
 
-if (new File(projectDir.path + "/glide.gradle").exists()) {
+if (new File(projectDir, "glide.gradle").exists()) {
     apply from: 'glide.gradle'
 }
 
 def templateJavaVersion = 1.7
-def templateGroovyVersion = '2.2.1'
-def templateGaeVersion = '1.8.9'
+def templateGroovyVersion = '2.2.2'
+def templateGaeVersion = '1.9.0'
 def templateGaelykVersion = '2.0'
 def templateVersion = '0.1-test'
-def templateGradleVersion = "1.10"
+def templateGradleVersion = "1.11"
 
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
@@ -43,6 +43,16 @@ buildscript {
     }
 }
 
+import static org.gradle.api.plugins.gae.task.AbstractGaeTask.*
+build.doFirst {
+    // TODO feels little hacky, but there is not way around right now !
+    def appEngineHomeEnvVariable = System.getenv(APPENGINE_HOME_ENV_PROP_KEY)
+    def appEngineSdkRoot = System.getProperty(APPENGINE_SDK_ROOT_SYS_PROP_KEY)
+
+    println "using sdk: ${appEngineHomeEnvVariable?:appEngineSdkRoot}"
+    new File(projectDir, ".sdk-root").text = appEngineHomeEnvVariable?:appEngineSdkRoot
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -55,7 +65,6 @@ dependencies {
     compile "org.gaelyk:gaelyk:$templateGaelykVersion"
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
     compile 'glide:filters:0.3-SNAPSHOT'
-
 
     testCompile 'junit:junit:4.10'
     testCompile "com.google.appengine:appengine-api-stubs:$templateGaeVersion",

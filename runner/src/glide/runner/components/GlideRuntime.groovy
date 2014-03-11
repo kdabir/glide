@@ -1,8 +1,5 @@
-package glide.runner
+package glide.runner.components
 
-import glide.runner.components.OutputApp
-import glide.runner.components.TemplateApp
-import glide.runner.components.UserApp
 import groovy.transform.Canonical
 
 /**

@@ -41,6 +41,7 @@ web {
             filter_class = "groovyx.gaelyk.routes.RoutesFilter"
             url_patterns = ['/*']
             dispatchers = [ 'FORWARD', 'REQUEST', 'ERROR']
+            init_params = ["routes.location": "_routes.groovy"]
         }
         sitemeshFilter {
             filter_class = "org.sitemesh.config.ConfigurableSiteMeshFilter"

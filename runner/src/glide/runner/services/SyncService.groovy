@@ -5,7 +5,7 @@ import glide.generators.AppEngineWebXmlGenerator
 import glide.generators.CronXmlGenerator
 import glide.generators.Sitemesh3XmlGenerator
 import glide.generators.WebXmlGenerator
-import glide.runner.GlideRuntime
+import glide.runner.components.GlideRuntime
 
 /**
  *
@@ -25,15 +25,15 @@ class SyncService {
         this.ant = ant
         this.synchronizer = Synchronizer.build {
             sourceDir runtime.userApp.path,
-                    excludes: "glide.groovy, routes.groovy"
+                    excludes: "glide.groovy"
 
             sourceDir runtime.templateApp.path,
-                    excludes: "glide.groovy, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy"
+                    excludes: "glide.groovy, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, .gradle, build"
 
             targetDir runtime.outputApp.path,
                     verbose:"yes"
 
-            preserve includes: ".gradle/, build/**/*, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, app/WEB-INF/appengine-generated/**/*"
+            preserve includes: "**/.sdk-root, .sdk-root, .gradle/, build/**/*, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, app/WEB-INF/appengine-generated/**/*"
 
             syncEvery 3.seconds
 
@@ -47,18 +47,15 @@ class SyncService {
         }
     }
 
-
     def start() {
         createXmlFiles()
         synchronizer.start()
-        Thread.sleep(3000)
+        Thread.sleep(3000) // blocking gives us some time to sync before this method returns
     }
 
     def stop() {
-        //runtime.outputApp.dir.walk {}
         synchronizer.stop()
     }
-
 
     private def createXmlFiles(){
         def outputApp = runtime.outputApp
@@ -78,5 +75,4 @@ class SyncService {
         outputApp.sitemesh3Text = sitemesh3XmlGenerator.generate(config)
         outputApp.cronXmlText = cronXmlGenerator.generate(config)
     }
-
 }

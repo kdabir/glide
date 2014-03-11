@@ -1,9 +1,9 @@
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.2.1'
-    gaeVersion = '1.8.9'
+    groovyVersion = '2.2.2'
+    gaeVersion = '1.9.0'
     gaelykVersion = '2.0'
-    gradleVersion = '1.10'
+    gradleVersion = '1.11'
 }
 
 buildscript {

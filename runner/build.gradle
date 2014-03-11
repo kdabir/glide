@@ -17,7 +17,7 @@ dependencies {
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
             'commons-cli:commons-cli:1.2',   // required for CliBuilder
             "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
-            'directree:directree:0.2-alpha', // todo - change when released
+            'directree:directree:0.2-alpha-1', // todo - change when released
             project(":generators")
 
     runtime 'org.slf4j:slf4j-nop:1.7.2'

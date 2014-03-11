@@ -1,13 +1,14 @@
 package glide.runner
 
+import glide.runner.commnads.DevAppServerRunCommand
+import glide.runner.commnads.GradleTaskCommand
 import glide.runner.commnads.HelpCommand
-import glide.runner.commnads.RunCommand
 import glide.runner.commnads.VersionCommand
+import glide.runner.components.GlideRuntime
 import glide.runner.components.OutputApp
 import glide.runner.components.TemplateApp
 import glide.runner.components.UserApp
 import glide.runner.exceptions.HumanFriendlyExceptionHandler
-import glide.runner.services.GradleProjectRunner
 
 // todo -- implement -q (quiet setting)
 // todo -- refactor and split
@@ -26,20 +27,19 @@ class Main {
     def run(String[] args) {
         OptionAccessor options = cli.parse(args)
 
-        // println System.env.GRADLE_HOME
-        // new GradleProjectRunner(prepareRuntime(options).outputApp.dir.asFile())
-
-        def command = (options.arguments() ? options.arguments().first() : 'gaeRun')
+        def command = (options.arguments() ? options.arguments().first() : 'run')
         if (options.h) command = "help"
         if (options.v) command = "version"
 
         switch (command) {
             case ['help']: new HelpCommand(this.cli).execute(); break
             case ['version']: new VersionCommand(this.cli).execute(); break
-            case ['gaeRun']: new RunCommand(prepareRuntime(options), ant).execute(); break
-            default: println ('command not found')
+            case ['native', 'lite']: new DevAppServerRunCommand(prepareRuntime(options), ant).execute(); break
+            case ['run', 'start']: new GradleTaskCommand(prepareRuntime(options), ant, "gaeRun").execute(); break
+            case ['deploy', 'upload']: new GradleTaskCommand(prepareRuntime(options), ant, "gaeUpload").execute(); break
+            case ['export']: new GradleTaskCommand(prepareRuntime(options), ant, "wrapper").execute(); break
+            default: new GradleTaskCommand(prepareRuntime(options), ant, command).execute(); break
         }
-
     }
 
     // read the optional values (flags)
