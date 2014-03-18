@@ -11,7 +11,7 @@ class GlideCli {
     GlideCli(Writer writer) {
         this.writer = writer
         this.cli = new CliBuilder(
-                usage: 'glide [options] <run|deploy|export>',
+                usage: 'glide [options] <create|run|deploy|export>',
                 header: '\nOptions:',
                 writer: writer
         ).with {
