@@ -13,11 +13,11 @@ class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
         this.dirTree = DirTree.build(root) {
             dir 'src'
             dir 'test'
-            dir('app') {
+            dir('app', required:true) {
                 dir 'static'
+                file '_routes.groovy'
             }
-            file 'routes.groovy'
-            file 'glide.groovy'
+            file 'glide.groovy', required: true
             file 'glide.gradle'
         }
     }
@@ -44,16 +44,20 @@ class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
         dirTree.file
     }
 
+    def validate(){
+        dirTree.walk {it.options.required ? it.file.exists(): true}.every{it}
+    }
+
     @Override
     String getPath() { dir.path.toString() }
 
     @Override
-    File getRoutesFile() { dirTree["routes.groovy"].file }
+    File getRoutesFile() { dirTree['app']['_routes.groovy'].file }
 
     @Override
-    File getBuildFile() { dirTree["build.gradle"].file }
+    File getBuildFile() { dirTree['build.gradle'].file }
 
     @Override
-    File getGlideFile() { dirTree["glide.groovy"].file }
+    File getGlideFile() { dirTree['glide.groovy'].file }
 
 }

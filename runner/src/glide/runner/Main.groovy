@@ -10,6 +10,7 @@ import glide.runner.components.OutputApp
 import glide.runner.components.TemplateApp
 import glide.runner.components.UserApp
 import glide.runner.exceptions.HumanFriendlyExceptionHandler
+import glide.runner.exceptions.InvalidGlideAppException
 
 // todo -- implement -q (quiet setting)
 // todo -- refactor and split
@@ -50,7 +51,9 @@ class Main {
         def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/base-templates/gae-base-web")
         def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
 
-        // todo validate the directories
+        if (!userApp.validate()) {
+            throw new InvalidGlideAppException("A valid Glide app does not exist. Use `glide create` to create one.")
+        }
         new GlideRuntime(userApp: userApp, templateApp: templateApp, outputApp: outputApp) // form the app
     }
 

@@ -19,8 +19,10 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
                     key = 'value'
                 }
             """
+           dir("app"){
 
-            file "routes.groovy"
+           }
+
         }
 
         glideApp = new UserApp("$tempDir/glideTestApp")
@@ -55,5 +57,10 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
         assert !glideApp.isGlideConfigModifiedAfter(ts + 1)
         assert glideApp.isGlideConfigModifiedAfter(ts - 1)
     }
+
+    void "test validation"(){
+        assert glideApp.validate() == true
+    }
+
 
 }

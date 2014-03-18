@@ -17,4 +17,9 @@ class UserAppTest extends GroovyTestCase {
         assert t.glideConfig.app.version == '0'
     }
 
+    void "test validation"(){
+        def t = new UserApp("/tmp/glide")
+        assert t.validate() == false
+    }
+
 }
