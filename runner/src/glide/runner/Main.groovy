@@ -48,7 +48,7 @@ class Main {
     private GlideRuntime prepareRuntime(OptionAccessor options) {
         def userApp = new UserApp(options.a ?: System.getProperty("user.dir"))
         def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/base-templates/gae-base-web")
-        def outputApp = new OutputApp(options.o ?: "${System.env.GLIDE_HOME}/generated/${userApp.glideConfig.app.name}")
+        def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
 
         // todo validate the directories
         new GlideRuntime(userApp: userApp, templateApp: templateApp, outputApp: outputApp) // form the app
