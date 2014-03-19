@@ -39,7 +39,7 @@ class Main {
             case ['native', 'lite']: new DevAppServerRunCommand(prepareRuntime(options), ant).execute(); break
             case ['new', 'create']: new CreateAppCommand(ant, options).execute(); break
             case ['run', 'start']: new GradleTaskCommand(prepareRuntime(options), ant, "gaeRun").execute(); break
-            case ['deploy', 'upload']: new GradleTaskCommand(prepareRuntime(options), ant, "gaeUpload").execute(); break
+            case ['deploy', 'upload']: new GradleTaskCommand(prepareRuntime(options), ant, "gaeUpdate").execute(); break
             case ['export']: new GradleTaskCommand(prepareRuntime(options), ant, "wrapper").execute(); break
             default: new GradleTaskCommand(prepareRuntime(options), ant, command).execute(); break
         }
