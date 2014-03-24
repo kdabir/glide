@@ -33,10 +33,12 @@ class GlideCli {
     def printExtendedHelp() {
         writer.println """
         |Examples:
-        | Run app located in current directory : glide
-        | Run app located in subdirectory      : glide -a samples/blog run
-        | Deploy app located in subdirectory   : glide -a samples/blog deploy
-        | Export app located in subdirectory   : glide -a samples/blog -o out/blog export
+        | Run app located in current directory      : glide
+        | Run tests located in 'test' subdirectory  : glide test
+        | Deploys app to Google App Engine          : glide deploy
+        | Run app located in subdirectory           : glide -a samples/blog run
+        | Deploy app located in subdirectory        : glide -a samples/blog deploy
+        | Export app located in subdirectory        : glide -a samples/blog -o out/blog export
         |
         |Important: Don't give a path that is child directory of glide app as a value of
         | options output (-o) or template (-t) dir.
