@@ -1,0 +1,10 @@
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven { url 'http://snapshots.repository.codehaus.org/' }
+}
+
+
+dependencies {
+    compile "org.codehaus.groovy:groovy-all:2.1.10-SNAPSHOT", {force=true}
+}

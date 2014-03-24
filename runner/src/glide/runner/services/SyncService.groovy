@@ -31,9 +31,9 @@ class SyncService {
                     excludes: "glide.groovy, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, .gradle, build"
 
             targetDir runtime.outputApp.path,
-                    verbose:"yes"
+                    verbose:false, includeEmptyDirs:true
 
-            preserve includes: "**/.sdk-root, .sdk-root, .gradle/, build/**/*, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, app/WEB-INF/appengine-generated/**/*"
+            preserve includes: ".sdk-root, .gradle/, /gradlew*, /gradle, build/**/*, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/appengine-generated/**/*"
 
             syncEvery 3.seconds
 

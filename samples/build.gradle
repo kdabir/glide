@@ -1,0 +1,12 @@
+// just move these samples to dist
+buildDir = "../build/samples"
+
+task copySamples(type: Sync) {
+    description = "Copies samples"
+    from file('.')
+    exclude 'build.gradle'
+
+    into file(buildDir)
+}
+
+

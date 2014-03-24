@@ -1,3 +1,4 @@
+apply plugin: 'groovy'
 apply plugin: 'gaelyk'
 apply plugin: 'idea'
 
@@ -15,9 +16,9 @@ if (new File(projectDir, "glide.gradle").exists()) {
 
 def templateJavaVersion = 1.7
 def templateGroovyVersion = '2.2.2'
-def templateGaeVersion = '1.9.0'
-def templateGaelykVersion = '2.0'
-def templateVersion = '0.1-test'
+def templateGaeVersion = '1.9.1'
+def templateGaelykVersion = '2.1'
+def templateVersion = '0.1'
 def templateGradleVersion = "1.11"
 
 sourceCompatibility = templateJavaVersion
@@ -56,19 +57,30 @@ build.doFirst {
 repositories {
     mavenCentral()
     mavenLocal()
+
+    // https://oss.sonatype.org/content/repositories/snapshots/org/gaelyk/gaelyk/2.1-SNAPSHOT/
+    // http://snapshots.repository.codehaus.org/org/codehaus/groovy/groovy-all/2.1.10-SNAPSHOT/
+    maven { url 'http://snapshots.repository.codehaus.org/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 dependencies {
-    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
+    compile 'javax.servlet:servlet-api:2.5'
+    // workaround for gae/groovy issue
+    // https://jira.codehaus.org/browse/GROOVY-6405
+    //  https://jira.codehaus.org/browse/GROOVY-6471
+    compile "org.codehaus.groovy:groovy-all:2.1.10-SNAPSHOT", {force=true}
+//    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
+
     compile "com.google.appengine:appengine-api-1.0-sdk:$templateGaeVersion",
             "com.google.appengine:appengine-api-labs:$templateGaeVersion"
     compile "org.gaelyk:gaelyk:$templateGaelykVersion"
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
-    compile 'glide:filters:0.3-SNAPSHOT'
+
 
     testCompile 'junit:junit:4.10'
     testCompile "com.google.appengine:appengine-api-stubs:$templateGaeVersion",
-                "com.google.appengine:appengine-testing:$templateGaeVersion"
+            "com.google.appengine:appengine-testing:$templateGaeVersion"
 
     gaeSdk "com.google.appengine:appengine-java-sdk:$templateGaeVersion"
 }

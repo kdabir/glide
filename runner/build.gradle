@@ -17,7 +17,7 @@ dependencies {
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
             'commons-cli:commons-cli:1.2',   // required for CliBuilder
             "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
-            'directree:directree:0.2-alpha-1', // todo - change when released
+            'io.github.kdabir.directree:directree:0.2',
             project(":generators")
 
     runtime 'org.slf4j:slf4j-nop:1.7.2'
@@ -37,10 +37,10 @@ mainClassName = "glide.runner.Main"
 run {
     def argsList = []
 
-    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/sandbox")]
+    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/greet")]
     argsList << ["-t", getPathFromProperty("template", "${project.rootProject.projectDir.path}/base-templates/gae-base-web")]
-    argsList << ["-o", getPathFromProperty("out", "${project.buildDir.path}/generated/sandbox")]
 
+    if (project.hasProperty("out")){ argsList << ["-o", project.getProperty("out")] }
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
     if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
     if (project.hasProperty("task")){ argsList << [ project.getProperty("task")] }
@@ -57,9 +57,10 @@ applicationDistribution.from("${project.rootProject.projectDir.path}/base-templa
     into "base-templates"
 }
 
+
+installApp.dependsOn(":runner:build")
+
 installApp {
-    dependsOn ":runner:build"
-    dependsOn ":filters:publishToMavenLocal"
 
     def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/install")
     into install_location

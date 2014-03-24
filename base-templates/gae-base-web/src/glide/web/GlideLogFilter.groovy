@@ -33,7 +33,9 @@ public class GlideLogFilter implements Filter {
         }
         chain.doFilter(request, response)
 
-        log.info "[${startTime}] returning back from ${request.requestURI} in [${System.currentTimeMillis() - startTime}]"
+        if (logStats){
+            log.info "[${startTime}] returning back from ${request.requestURI} in [${System.currentTimeMillis() - startTime}]"
+        }
     }
 
     @Override

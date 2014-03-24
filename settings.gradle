@@ -1,1 +1,1 @@
-include 'generators' ,'runner', 'filters'
+include 'generators' ,'runner', 'samples'

@@ -6,19 +6,12 @@ This is source code repo of glide. For User guide check the [glide homepage](htt
 [![Build Status](https://travis-ci.org/kdabir/glide.png)](https://travis-ci.org/kdabir/glide)
 
 ## Contributing
-To start developing glide, you need to have `git` and `java` (1.7) available on your machine. It's advisable
+To start developing glide, you need to have `git` and `java` (at least 1.7) available on your machine. It's advisable
 to have `groovy` and `gradle` installed as well (both optional).
 
-Run these commands to see what all is in your PATH and working.
+Run this command to see what all is in your PATH and working.
 
-    java -version
-    git --version
-    gradle --version
-    groovy --version
-
-Google App Engine Java sdk is require to run glide. glide's build script can download it for you by
-`$ ./gradlew installGae`. Once Done, set the APPENGINE_HOME environment variable to point to the installation.
-
+    curl -sL https://raw.github.com/kdabir/dq/master/bin/groovy_dev/dq.sh | sh
 
 ### Source code
 Everything required to build and run glide is checked into the project git repo.

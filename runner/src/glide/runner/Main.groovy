@@ -49,7 +49,7 @@ class Main {
     private GlideRuntime prepareRuntime(OptionAccessor options) {
         def userApp = new UserApp(options.a ?: System.getProperty("user.dir"))
         def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/base-templates/gae-base-web")
-        def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
+        def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}_${userApp.glideConfig.app?.version}")
 
         if (!userApp.validate()) {
             throw new InvalidGlideAppException("A valid Glide app does not exist. Use `glide create` to create one.")
