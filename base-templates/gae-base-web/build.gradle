@@ -1,10 +1,10 @@
 apply plugin: 'groovy'
+apply plugin: 'war'
 apply plugin: 'gaelyk'
 apply plugin: 'idea'
 
-gae {
+appengine {
     disableUpdateCheck = true
-    optimizeWar = false
     appcfg {
         oauth2 = true
     }
@@ -32,19 +32,18 @@ sourceSets {
 
 buildscript {
     repositories {
-        mavenLocal()
+        jcenter()
         mavenCentral()
+        // TODO: remove before release
+        mavenLocal()
     }
 
     dependencies {
-        classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.5'
-        classpath 'org.gradle.api.plugins:gradle-gae-plugin:0.9', {
-            exclude module: "gradle-fatjar-plugin"
-        }
+        classpath 'org.gradle.api.plugins:gradle-gaelyk-plugin:0.6'
     }
 }
 
-import static org.gradle.api.plugins.gae.task.AbstractGaeTask.*
+import static com.google.appengine.task.AbstractTask.*
 build.doFirst {
     // TODO feels little hacky, but there is not way around right now !
     def appEngineHomeEnvVariable = System.getenv(APPENGINE_HOME_ENV_PROP_KEY)
@@ -55,13 +54,17 @@ build.doFirst {
 }
 
 repositories {
+    maven { url 'http://dl.bintray.com/gaelyk/groovy-patches' }
     mavenCentral()
-    mavenLocal()
+    jcenter()
 
     // https://oss.sonatype.org/content/repositories/snapshots/org/gaelyk/gaelyk/2.1-SNAPSHOT/
     // http://snapshots.repository.codehaus.org/org/codehaus/groovy/groovy-all/2.1.10-SNAPSHOT/
     maven { url 'http://snapshots.repository.codehaus.org/' }
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+
+    // TODO: remove before release
+    mavenLocal()
 }
 
 dependencies {
@@ -78,11 +81,12 @@ dependencies {
     compile 'org.sitemesh:sitemesh:3.0-alpha-2'
 
 
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'junit:junit:4.10'
     testCompile "com.google.appengine:appengine-api-stubs:$templateGaeVersion",
             "com.google.appengine:appengine-testing:$templateGaeVersion"
 
-    gaeSdk "com.google.appengine:appengine-java-sdk:$templateGaeVersion"
+    appengineSdk "com.google.appengine:appengine-java-sdk:$templateGaeVersion"
 }
 
 task tempalteVersion << {
@@ -92,3 +96,47 @@ task tempalteVersion << {
 task wrapper(type: Wrapper) {
     gradleVersion = templateGradleVersion
 }
+
+
+//>
+// TODO: remove following lines after export
+gaelykSynchronizeResources.enabled = false
+
+test {
+    System.out.println "\nTesting Glide Application"
+
+    def ident = '  '
+
+    beforeSuite {
+        if (!it.className) return
+        System.out.println "${ ident * countParents(it) }$it.name"
+    }
+    beforeTest {
+        System.out.print "${ ident * countParents(it) }$it.name "
+    }
+    afterTest { descriptor, result ->
+        if (result.exception) {
+            System.out.println "\u001B[31m" + result.resultType + "\u001B[0m"
+            System.out.println( (ident * (countParents(descriptor) + 1)) + result.exception.toString().replace('\n', '\n' +  (ident * (countParents(descriptor) + 1))))
+        } else {
+            System.out.println "\u001B[32m" + result.resultType + "\u001B[0m"
+        }
+    }
+    afterSuite { descriptor, result ->
+        if (descriptor.toString() != 'tests') return
+        if (result.failedTestCount > 0) {
+            System.out.println ("\n\u001B[31m $result.failedTestCount/$result.testCount TESTS FAILED \u001B[0m\n")
+        } else {
+            System.out.println ("\n\u001B[32m ALL TESTS PASSSED\u001B[0m\n")
+        }
+    }
+}
+test.dependsOn cleanTest
+
+
+
+def countParents(testDescriptor) {
+    if (!testDescriptor.parent || !testDescriptor.className) return 0
+    countParents(testDescriptor.parent) + 1
+}
+//<

@@ -25,6 +25,10 @@ class GradleTaskCommand implements Command {
 
         sync.start()
         def gradle = new GradleProjectRunner(runtime.outputApp.dir)
-        gradle.run(command) // hopefully this is a blocking call
+        try {
+            gradle.run(command) // hopefully this is a blocking call
+        } finally {
+            gradle.cleanup()
+        }
     }
 }
