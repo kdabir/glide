@@ -52,7 +52,7 @@ build.doFirst {
 
 repositories {
     maven { url 'http://dl.bintray.com/gaelyk/groovy-patches' }
-//    mavenCentral()
+    mavenCentral()
     jcenter()
     // http://snapshots.repository.codehaus.org/org/codehaus/groovy/groovy-all/2.1.10-SNAPSHOT/
     maven { url 'http://snapshots.repository.codehaus.org/' }
