@@ -15,11 +15,11 @@ class GradleProjectRunner {
                 .connect()
     }
 
-    def run(String taskName) {
+    def run(String ...taskNames) {
         try {
             connection.newBuild()
-                    .forTasks(taskName)
-                    .setJvmArguments("-Xmx512m", "-XX:MaxPermSize=256m")
+                    .forTasks(taskNames)
+                    .setJvmArguments("-Xmx512m")
                     .withArguments("--no-search-upward",'-q')
                     .run();
         } catch (e) {
