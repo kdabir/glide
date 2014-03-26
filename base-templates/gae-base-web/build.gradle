@@ -94,7 +94,9 @@ task wrapper(type: Wrapper) {
 gaelykSynchronizeResources.enabled = false
 
 test {
-    System.out.println "\nTesting Glide Application"
+    doFirst {
+        System.out.println "\nTesting Glide Application"
+    }
 
     def ident = '  '
 
