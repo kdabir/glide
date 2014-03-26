@@ -57,6 +57,10 @@ applicationDistribution.from("${project.rootProject.projectDir.path}/base-templa
     into "base-templates"
 }
 
+applicationDistribution.from("${project.rootProject.projectDir.path}/samples") {
+    into "samples"
+}
+
 
 installApp.dependsOn(":runner:build")
 
@@ -76,9 +80,8 @@ installApp {
     }
 }
 
-distZip {
-    dependsOn ":runner:build"
-}
+distZip.dependsOn ":runner:build"
+distZip.dependsOn ":samples:copySamples"
 
 startScripts {
     applicationName = "glide"       // this will be the name of script that is generated
