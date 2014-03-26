@@ -8,6 +8,13 @@ appengine {
     appcfg {
         oauth2 = true
     }
+    warDir = file('app') // important for Dev App server to read from app dir
+}
+
+// important for the app dir to be complete with lib and classes
+appengineExplodeApp {
+    setOnlyIf { true }
+    explodedAppDirectory = file("app")
 }
 
 if (new File(projectDir, "glide.gradle").exists()) {
