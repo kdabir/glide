@@ -33,9 +33,6 @@ sourceSets {
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
-        // TODO: remove before release
-        mavenLocal()
     }
 
     dependencies {
@@ -45,7 +42,7 @@ buildscript {
 
 import static com.google.appengine.task.AbstractTask.*
 build.doFirst {
-    // TODO feels little hacky, but there is not way around right now !
+    // TODO feels little hacky, but there is no way around right now !
     def appEngineHomeEnvVariable = System.getenv(APPENGINE_HOME_ENV_PROP_KEY)
     def appEngineSdkRoot = System.getProperty(APPENGINE_SDK_ROOT_SYS_PROP_KEY)
 
@@ -55,23 +52,17 @@ build.doFirst {
 
 repositories {
     maven { url 'http://dl.bintray.com/gaelyk/groovy-patches' }
-    mavenCentral()
     jcenter()
 
-    // https://oss.sonatype.org/content/repositories/snapshots/org/gaelyk/gaelyk/2.1-SNAPSHOT/
     // http://snapshots.repository.codehaus.org/org/codehaus/groovy/groovy-all/2.1.10-SNAPSHOT/
     maven { url 'http://snapshots.repository.codehaus.org/' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-
-    // TODO: remove before release
-    mavenLocal()
 }
 
 dependencies {
     compile 'javax.servlet:servlet-api:2.5'
     // workaround for gae/groovy issue
     // https://jira.codehaus.org/browse/GROOVY-6405
-    //  https://jira.codehaus.org/browse/GROOVY-6471
+    // https://jira.codehaus.org/browse/GROOVY-6471
     compile "org.codehaus.groovy:groovy-all:2.1.10-SNAPSHOT", {force=true}
 //    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
 
@@ -132,7 +123,6 @@ test {
     }
 }
 test.dependsOn cleanTest
-
 
 
 def countParents(testDescriptor) {

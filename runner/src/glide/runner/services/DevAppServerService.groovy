@@ -17,16 +17,21 @@ class DevAppServerService {
     }
 
     def run() {
-        ant.java(classname: "com.google.appengine.tools.KickStart",
-                classpath: "${sdkRoot}/lib/appengine-tools-api.jar",
-                fork: "true",
-                failonerror: "true") {
+        def toolsJar = new File("${sdkRoot}/lib/appengine-tools-api.jar")
+        if (toolsJar.exists()){
+            ant.java(classname: "com.google.appengine.tools.KickStart",
+                    classpath: toolsJar.absolutePath,
+                    fork: "true",
+                    failonerror: "true") {
 
-            ant.arg(value: "com.google.appengine.tools.development.DevAppServerMain")
-            ant.arg(value: "--port=${port}")
-            ant.arg(value: "--address=${address}")
-            ant.arg(value: "--disable_update_check")
-            ant.arg(value: new File(runtime.outputApp.dir, "app").absolutePath)
+                ant.arg(value: "com.google.appengine.tools.development.DevAppServerMain")
+                ant.arg(value: "--port=${port}")
+                ant.arg(value: "--address=${address}")
+                ant.arg(value: "--disable_update_check")
+                ant.arg(value: new File(runtime.outputApp.dir, "app").absolutePath)
+            }
+        } else {
+            System.err.println "Valid AppEngine home could not be located!"
         }
     }
 }

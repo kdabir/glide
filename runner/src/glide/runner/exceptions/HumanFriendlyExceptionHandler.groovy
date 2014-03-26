@@ -11,8 +11,9 @@ class HumanFriendlyExceptionHandler {
             aClosureThatMayThrowAnException.call()
         } catch (InvalidGlideAppException e) {
             System.err.println e.message
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println "Duh! Something just went wrong"
+            System.err.println e.message
             e.printStackTrace()
         } finally {
             // do something useful here
