@@ -14,20 +14,23 @@ Run this command to see what all is in your PATH and working.
     curl -sL https://raw.github.com/kdabir/dq/master/bin/groovy_dev/dq.sh | sh
 
 ### Source code
-Everything required to build and run glide is checked into the project git repo.
 
-clone the git repo using `$ git clone git@github.com:kdabir/glide.git` or preferably fork the repo and clone the forked repo
-
+Everything required to build and run glide is checked into the project git repo. fork the repo, make changes, send PR.
 
 ### Building
+
 `cd` into the directory do `$ ./gradlew build`
 
 ### Running
+
+You can directly run the glide app without installing glide using:
+
 `$ ./gradlew run -Papp=~/path/to/glide/app`
 
 `$ ./gradlew run` runs the default sample app
 
 ### Installing
+
 After you have made modifications to glide source code you can install glide using `$ ./gradlew installApp`
 
 

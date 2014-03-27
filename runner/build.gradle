@@ -83,6 +83,10 @@ installApp {
 distZip.dependsOn ":runner:build"
 distZip.dependsOn ":samples:copySamples"
 
+distZip {
+    baseName = "glide"
+}
+
 startScripts {
     applicationName = "glide"       // this will be the name of script that is generated
 

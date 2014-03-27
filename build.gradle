@@ -18,8 +18,8 @@ buildscript {
 subprojects {
     apply plugin: 'groovy'
 
-    group 'glide'
-    version '0.3-SNAPSHOT'
+    group 'io.github.kdabir.glide'
+    version '0.3'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"
