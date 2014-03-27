@@ -1,3 +1,11 @@
+// workaround for using project app dir as exploded app dir.
+// needs to to execute before gae plugin
+project.tasks.whenTaskAdded { task ->
+    if (task instanceof com.google.appengine.task.Explodable) {
+        task.explodedAppDirectory = project.file("app")
+    }
+}
+
 apply plugin: 'groovy'
 apply plugin: 'war'
 apply plugin: 'gaelyk'

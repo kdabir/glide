@@ -16,11 +16,17 @@ class GradleProjectRunner {
     }
 
     def run(String ...taskNames) {
+        OutputStream sink = new OutputStream() { @Override public void write(int b) throws IOException { } };
+        PrintStream out = System.out
+        System.out = new PrintStream(sink)
+
         try {
             connection.newBuild()
                     .forTasks(taskNames)
                     .setJvmArguments("-Xmx512m")
                     .withArguments("--no-search-upward",'-q')
+                    .setStandardInput(System.in)
+                    .setStandardOutput(out)
                     .run();
         } catch (e) {
             System.err.println(e.toString())
