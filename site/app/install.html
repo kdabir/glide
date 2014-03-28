@@ -1,0 +1,10 @@
+if [ -d glide ]; then 
+  cd glide && git pull
+else
+  git clone https://github.com/kdabir/glide.git && cd glide
+fi
+
+PWD=`pwd`
+chmod +x gradlew
+./gradlew build installApp -x test  || { echo 'Installation Failed, please retry...' ; exit 1; }
+

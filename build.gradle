@@ -19,7 +19,7 @@ subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3.1'
+    version '0.3.2'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"
@@ -28,7 +28,6 @@ subprojects {
         mavenLocal()
         mavenCentral()
     }
-
 
     apply plugin: 'maven-publish'
     apply plugin: 'bintray'
@@ -59,8 +58,6 @@ subprojects {
         }
         //dryRun = true // whether to run this as dry-run, without deploying
     }
-
-
 }
 
 allprojects {
