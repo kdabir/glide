@@ -19,7 +19,7 @@ subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3'
+    version '0.3.1'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"

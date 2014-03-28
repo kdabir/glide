@@ -30,6 +30,8 @@ class GradleProjectRunner {
                     .run();
         } catch (e) {
             System.err.println(e.toString())
+        } finally {
+            System.out = out
         }
     }
 

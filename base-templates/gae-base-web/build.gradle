@@ -33,7 +33,7 @@ def templateJavaVersion = 1.7
 def templateGroovyVersion = '2.2.2'
 def templateGaeVersion = '1.9.1'
 def templateGaelykVersion = '2.1'
-def templateVersion = '0.3'
+def templateVersion = '0.3.1'
 def templateGradleVersion = "1.11"
 
 sourceCompatibility = templateJavaVersion

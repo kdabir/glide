@@ -18,7 +18,6 @@ class GlideCli {
             a longOpt: 'app', args: 1, argName: 'APP_DIR', "/path/to/app [default: current dir]"
             o longOpt: 'output', args: 1, argName: 'OUT_DIR', "/path/to/output/app"
             t longOpt: 'template', args: 1, argName: 'TEMPLATE_DIR', "/path/to/template/app"
-            g longOpt: 'gradle-task', args: 1, argName: 'TASK', "gradle task name"
             h longOpt: 'help', "prints this help and exits"
             v longOpt: 'version', "displays version and exits"
             return it
