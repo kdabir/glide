@@ -22,10 +22,10 @@ web {
 
     filters {
         glideFilter {
-            init_params = ['logStats': false]
+            init_params = [logStats: false]
         }
         protectedResourcesFilter {
-            init_params = ['strict': true]
+            init_params = [strict: true]
         }
         routesFilter {
             url_patterns = ['/*']

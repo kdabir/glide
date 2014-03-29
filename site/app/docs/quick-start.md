@@ -6,7 +6,7 @@ So you have [installed](/docs/installing) glide and are all set for your first g
 
         $ glide --app hello-glide create
 
-   Creates a directory for your project `hello-glide`
+   It creates a directory for your project `hello-glide`
 
 2. `cd` into this directory
 
@@ -34,7 +34,7 @@ A Typically glide app looks like following:
     |-- glide.gradle
 
 
-You can create groovlets/gtpl file in `app` dir as well as keep regular html / css and js stuff there.
+You can create `.groovy` / `.gtpl` file in `app` dir as well as keep regular `.html` / `.css` and `.js` stuff there.
 
 
 ## Deploying on the Google App Engine
