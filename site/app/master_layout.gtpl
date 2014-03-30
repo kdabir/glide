@@ -3,11 +3,30 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-  <meta http-equiv="Generator" content="glide">
-  <meta name="keywords" lang="en" content="glide, groovy, gaelyk, google app engine, java, gae, sitemesh">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Glide - <sitemesh:write property='title'/></title>
+
+  <meta name="generator" content="glide">
+  <meta name="powered-by" content="glide">
+
+  <meta name="keywords" lang="en" content="glide, groovy, gaelyk, google app engine, java, gae, sitemesh">
+  <meta name="description" content="Create Awesome Apps on Google App Engine in a Snap" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@kdabir">
+  <meta name="twitter:creator" content="@kdabir">
+  <meta name="twitter:title" content="Glide">
+  <meta name="twitter:description" content="Create Awesome Apps on Google App Engine in a Snap">
+  <meta name="twitter:image" content="http://glide-gae.appspot.com/img/glide_25x.png">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Glide" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://glide-gae.appspot.com" />
+  <meta property="og:image" content="http://glide-gae.appspot.com/img/glide_25x.png" />
+  <meta property="og:description" content="Create Awesome Apps on Google App Engine in a Snap" />
 
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
