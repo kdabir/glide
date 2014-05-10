@@ -48,8 +48,17 @@ class Main {
 
     // read the optional values (flags)
     private GlideRuntime prepareRuntime(OptionAccessor options) {
+        def glideHome = System.env.GLIDE_HOME
+        if (!glideHome) {
+            throw new IllegalStateException("Environment variable GLIDE_HOME is not set.")
+        } else {
+            if (!new File(glideHome).exists()) {
+                throw new IllegalStateException("Directory specified by environment variable GLIDE_HOME does not exist.")
+            }
+        }
+
         def userApp = new UserApp(options.a ?: System.getProperty("user.dir"))
-        def templateApp = new TemplateApp(options.t ?: "${System.env.GLIDE_HOME}/base-templates/gae-base-web")
+        def templateApp = new TemplateApp(options.t ?: "$glideHome/base-templates/gae-base-web")
         def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}_${userApp.glideConfig.app?.version}")
 
         if (!userApp.validate()) {
