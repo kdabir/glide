@@ -90,14 +90,16 @@ distZip {
 startScripts {
     applicationName = "glide"       // this will be the name of script that is generated
 
-    // TODO to check if this works on windows
     doLast {
-        def windowsScriptFile = file getWindowsScript()
         def unixScriptFile    = file getUnixScript()
-        //  windowsScriptFile.text = windowsScriptFile.text.replace('%APP_HOME%\lib\config', '%APP_HOME%\config')
         unixScriptFile.text    = unixScriptFile.text.replace('APP_HOME="`pwd -P`"', 'APP_HOME="`pwd -P`"\nexport GLIDE_HOME=$APP_HOME')
         if (!unixScriptFile.text.contains("export GLIDE_HOME")) {
-            println "GLIDE_HOME is not set. This may lead to improper installation"
+            System.err.println "WARNING: GLIDE_HOME is not set by $unixScriptFile.  This may lead to improper execution of glide runtime"
+        }
+        def windowsScriptFile = file getWindowsScript()
+        windowsScriptFile.text = windowsScriptFile.text.replace('set APP_HOME=%DIRNAME%..', 'set APP_HOME=%DIRNAME%..\r\nset GLIDE_HOME=%APP_HOME%')
+        if (!windowsScriptFile.text.contains("set GLIDE_HOME")) {
+            System.err.println "WARNING: GLIDE_HOME is not set by $windowsScriptFile. This may lead to improper execution of glide runtime"
         }
     }
 }
