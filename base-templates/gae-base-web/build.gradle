@@ -79,7 +79,7 @@ dependencies {
     compile "com.google.appengine:appengine-api-1.0-sdk:$templateGaeVersion",
             "com.google.appengine:appengine-api-labs:$templateGaeVersion"
     compile "org.gaelyk:gaelyk:$templateGaelykVersion"
-    compile 'org.sitemesh:sitemesh:3.0-alpha-2'
+    compile 'org.sitemesh:sitemesh:3.0.0'
 
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
