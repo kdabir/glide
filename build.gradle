@@ -1,9 +1,9 @@
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.2.2'
-    gaeVersion = '1.9.1'
-    gaelykVersion = '2.0'
-    gradleVersion = '1.11'
+    groovyVersion = '2.3.4'
+    gaeVersion = '1.9.7'
+    gaelykVersion = '2.1.2'
+    gradleVersion = '2.0'
 }
 
 buildscript {
@@ -19,7 +19,7 @@ subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3.2'
+    version '0.3.3'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"

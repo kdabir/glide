@@ -25,16 +25,18 @@ appengineExplodeApp {
     explodedAppDirectory = file("app")
 }
 
-if (new File(projectDir, "glide.gradle").exists()) {
-    apply from: 'glide.gradle'
+def GLIDE_BUILD_FILE = "glide.gradle"
+
+if (new File(projectDir, GLIDE_BUILD_FILE).exists()) {
+    apply from: GLIDE_BUILD_FILE
 }
 
 def templateJavaVersion = 1.7
-def templateGroovyVersion = '2.2.2'
-def templateGaeVersion = '1.9.1'
-def templateGaelykVersion = '2.1.1'
-def templateVersion = '0.3.2'
-def templateGradleVersion = "1.11"
+def templateGroovyVersion = '2.3.4'
+def templateGaeVersion = '1.9.7'
+def templateGaelykVersion = '2.1.2'
+def templateVersion = '0.3.3'
+def templateGradleVersion = "2.0"
 
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
@@ -66,20 +68,13 @@ build.doFirst {
 }
 
 repositories {
-    maven { url 'http://dl.bintray.com/gaelyk/groovy-patches' }
     mavenCentral()
     jcenter()
-    // http://snapshots.repository.codehaus.org/org/codehaus/groovy/groovy-all/2.1.10-SNAPSHOT/
-    maven { url 'http://snapshots.repository.codehaus.org/' }
 }
 
 dependencies {
     compile 'javax.servlet:servlet-api:2.5'
-    // workaround for gae/groovy issue
-    // https://jira.codehaus.org/browse/GROOVY-6405
-    // https://jira.codehaus.org/browse/GROOVY-6471
-    compile "org.codehaus.groovy:groovy-all:2.1.10-SNAPSHOT", {force=true}
-//    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
+    compile "org.codehaus.groovy:groovy-all:${templateGroovyVersion}"
 
     compile "com.google.appengine:appengine-api-1.0-sdk:$templateGaeVersion",
             "com.google.appengine:appengine-api-labs:$templateGaeVersion"
