@@ -17,15 +17,15 @@
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@kdabir">
   <meta name="twitter:creator" content="@kdabir">
-  <meta name="twitter:title" content="Glide">
-  <meta name="twitter:description" content="Create Awesome Apps on Google App Engine in a Snap">
-  <meta name="twitter:image" content="http://glide-gae.appspot.com/img/glide_25x.png">
+  <meta name="twitter:title" content="Glide - Create Awesome Apps on Google App Engine">
+  <meta name="twitter:description" content="Glide makes it incredibly easy to develop apps that harness the power of Google App Engine for Java using expressiveness of Groovy and sweetness of Gaelyk's syntactic sugar.">
+  <meta name="twitter:image" content="https://glide-gae.appspot.com/img/glide_25x.png">
 
   <!-- Open Graph -->
   <meta property="og:title" content="Glide" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="http://glide-gae.appspot.com" />
-  <meta property="og:image" content="http://glide-gae.appspot.com/img/glide_25x.png" />
+  <meta property="og:image" content="https://glide-gae.appspot.com/img/glide_25x.png" />
   <meta property="og:description" content="Create Awesome Apps on Google App Engine in a Snap" />
 
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css">
@@ -58,9 +58,9 @@
   <div id="wrap">
     <!-- nav -->
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
-      <div class="container">
+      <div itemscope itemtype="http://schema.org/SoftwareApplication" class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="/">Glide</a>
+          <a class="navbar-brand" href="/"><span itemprop="name">Glide</span></a>
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
@@ -72,11 +72,11 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <% [
-                "home": [href: "/", label: "Home"],
+                "home": [href: "/", label: "Home", itemprop: "url"],
                 "docs": [href: "/docs", label: "Docs"],
                 "samples": [href: "/samples", label: "Samples"],
                 ].each { key, value -> %>
-            <li class="${key==params.page?'active':'inactive'}"><a href="${value.href}">${value.label}</a></li>
+            <li class="${key==params.page?'active':'inactive'}"><a itemprop="${value.itemprop}" href="${value.href}">${value.label}</a></li>
             <%}%>
 
           </ul>
@@ -100,9 +100,9 @@
     <div class="container">
       <div class="row">
         <p class="span12 small mute text-center">
-          <iframe src="http://ghbtns.com/github-btn.html?user=kdabir&amp;repo=glide&amp;type=watch&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
+          <iframe src="http://ghbtns.com/github-btn.html?user=kdabir&repo=glide&type=watch&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
 
-          <iframe src="http://ghbtns.com/github-btn.html?user=kdabir&amp;repo=glide&amp;type=fork&amp;count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
+          <iframe src="http://ghbtns.com/github-btn.html?user=kdabir&repo=glide&type=fork&count=true" allowtransparency="true" frameborder="0" scrolling="0" width="95" height="20"></iframe>
 
         </p>
       </div>

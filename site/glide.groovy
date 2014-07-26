@@ -3,7 +3,7 @@ app {
     version = "site"
 
     resource_files {
-        includes = ["**.gtpl", "**.html", "**.groovy", "**.md", "favicon.ico"]
+        includes = ["**.gtpl", "**.html", "**.groovy", "**.md", "favicon.ico", "robots.txt", "sitemap.xml"]
     }
 }
 

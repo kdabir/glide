@@ -9,21 +9,25 @@ environment variable.
 
 If you use an OS that flaunts a decent Terminal app with `bash` you can choose one of the following three methods:
 
+- ### Using GVM
+
+    If you have [gvm](http://gvmtool.net/) installed, you are just this command away from glide:
+
+        $ gvm install glide
+
+
 - ### Using nixstall
 
     open Terminal and issue:
 
-        $ curl -sL http://git.io/nixstall | bash -s get http://dl.bintray.com/kdabir/apps/glide/glide-0.3.2.zip
+        $ curl -sL http://git.io/nixstall | bash -s get http://dl.bintray.com/kdabir/apps/glide/glide-0.3.3.zip
 
-- ### Using GVM
-
-    > soon to be made available
 
 - ### Manually
 
-    1. Download the [zip](http://dl.bintray.com/kdabir/apps/glide/glide-0.3.2.zip) and extract it lets say in `~`
+    1. Download the [zip](http://dl.bintray.com/kdabir/apps/glide/glide-0.3.3.zip) and extract it lets say in `~`
 
-    2. Add `~/glide-0.3.2/bin` to the `PATH` variable using `$ export PATH=$PATH:~/glide/install/bin`
+    2. Add `~/glide-0.3.3/bin` to the `PATH` variable using `$ export PATH=$PATH:~/glide/install/bin`
 
     > *exports should go in `.bash_profile` or `.bashrc` or `.zshrc` whichever is applicable in your case.
 
@@ -31,9 +35,9 @@ If you use an OS that flaunts a decent Terminal app with `bash` you can choose o
 
 It's fairly straight forward to get glide running on Windows
 
-1. Download the [zip](http://dl.bintray.com/kdabir/apps/glide/glide-0.3.2.zip) and extract it lets say in `C:\`
+1. Download the [zip](http://dl.bintray.com/kdabir/apps/glide/glide-0.3.3.zip) and extract it lets say in `C:\`
 
-2. Add the path to the bin to this directory to `PATH` environment variable e.g. `C:\glide-0.3.2\bin` (make sure the path
+2. Add the path to the bin to this directory to `PATH` environment variable e.g. `C:\glide-0.3.3\bin` (make sure the path
     is valid)
 
 ----
@@ -43,6 +47,10 @@ It's fairly straight forward to get glide running on Windows
 Open a new Teminal (Command prompt) and verify installation using `glide -v`. If you see glide version, we are done.
 
 **Congratulations, you have installed glide**
+
+
+> The first run of glide usually takes long time because it downloads latest Google App Egnine SDK and other dependencies
+> so please grab a coffee and relax. Next run onwards, glide would start almost immediately.
 
 ----
 

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    <url>
+        <loc>http://glide-gae.appspot.com/</loc>
+        <changefreq>daily</changefreq>
+    </url>
+    <url>
+        <loc>http://glide-gae.appspot.com/docs/installing</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    <url>
+        <loc>http://glide-gae.appspot.com/samples</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    <url>
+        <loc>http://glide-gae.appspot.com/docs/quick-start</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    <url>
+        <loc>http://glide-gae.appspot.com/docs/config</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+    <url>
+        <loc>http://glide-gae.appspot.com/docs/about</loc>
+        <changefreq>weekly</changefreq>
+    </url>
+</urlset>

@@ -11,3 +11,5 @@ get "/docs/", redirect: "/docs/installing"
 get "/docs", redirect: "/docs/installing"
 
 all "/install", forward: "/install.html"
+all '/robots.txt', forward: "/robots.txt"
+all '/sitemap.xml', forward: "/sitemap.xml"

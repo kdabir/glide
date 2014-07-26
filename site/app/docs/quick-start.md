@@ -2,6 +2,9 @@
 
 So you have [installed](/docs/installing) glide and are all set for your first glide in the cloud.
 
+> The first run of glide usually takes long time because it downloads latest Google App Egnine SDK and other dependencies
+> so please grab a coffee and relax. Next run onwards, glide would start almost immediately.
+
 1. Glide can create an empty project for you, just fire:
 
         $ glide --app hello-glide create
@@ -24,7 +27,7 @@ So you have [installed](/docs/installing) glide and are all set for your first g
 
 ## Making changes
 
-A Typically glide app looks like following:
+A Typical glide app looks like:
 
     glide-project
     |-- app
