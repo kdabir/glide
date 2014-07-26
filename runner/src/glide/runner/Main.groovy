@@ -49,10 +49,10 @@ class Main {
     // read the optional values (flags)
     private GlideRuntime prepareRuntime(OptionAccessor options) {
         def glideHome = System.env.GLIDE_HOME
-        if (!glideHome) {
+        if (!options.t && !glideHome) {
             throw new IllegalStateException("Environment variable GLIDE_HOME is not set.")
         } else {
-            if (!new File(glideHome).exists()) {
+            if (glideHome && !new File(glideHome).exists()) {
                 throw new IllegalStateException("Directory specified by environment variable GLIDE_HOME does not exist.")
             }
         }
