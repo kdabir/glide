@@ -37,6 +37,7 @@ def templateGaeVersion = '1.9.7'
 def templateGaelykVersion = '2.1.2'
 def templateVersion = '0.3.3'
 def templateGradleVersion = "2.0"
+def templateSitemapVersion = "3.0-alpha-2" // 3.0.0 is not working well for mutliple decorators.
 
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
@@ -79,7 +80,7 @@ dependencies {
     compile "com.google.appengine:appengine-api-1.0-sdk:$templateGaeVersion",
             "com.google.appengine:appengine-api-labs:$templateGaeVersion"
     compile "org.gaelyk:gaelyk:$templateGaelykVersion"
-    compile 'org.sitemesh:sitemesh:3.0.0'
+    compile "org.sitemesh:sitemesh:$templateSitemapVersion"
 
 
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
