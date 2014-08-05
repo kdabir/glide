@@ -1,7 +1,7 @@
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.3.4'
-    gaeVersion = '1.9.7'
+    groovyVersion = '2.3.6'
+    gaeVersion = '1.9.8'
     gaelykVersion = '2.1.2'
     gradleVersion = '2.0'
 }
@@ -11,7 +11,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
     }
 }
 
@@ -19,7 +19,7 @@ subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3.3'
+    version '0.3.4'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"
@@ -30,7 +30,7 @@ subprojects {
     }
 
     apply plugin: 'maven-publish'
-    apply plugin: 'bintray'
+    apply plugin: 'com.jfrog.bintray'
 
     publishing {
         publications {

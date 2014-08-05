@@ -32,10 +32,10 @@ if (new File(projectDir, GLIDE_BUILD_FILE).exists()) {
 }
 
 def templateJavaVersion = 1.7
-def templateGroovyVersion = '2.3.4'
-def templateGaeVersion = '1.9.7'
+def templateGroovyVersion = '2.3.6'
+def templateGaeVersion = '1.9.8'
 def templateGaelykVersion = '2.1.2'
-def templateVersion = '0.3.3'
+def templateVersion = '0.3.4'
 def templateGradleVersion = "2.0"
 def templateSitemapVersion = "3.0-alpha-2" // 3.0.0 is not working well for mutliple decorators.
 
