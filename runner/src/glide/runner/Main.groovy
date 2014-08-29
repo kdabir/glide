@@ -39,11 +39,22 @@ class Main {
             case ['native', 'lite']: new DevAppServerRunCommand(prepareRuntime(options), ant).execute(); break
             case ['new', 'create']: new CreateAppCommand(ant, options).execute(); break
             case ['run', 'start']: new GradleTaskCommand(prepareRuntime(options), ant, "appengineRun").execute(); break
+            case ['clean']: ant.delete(dir:prepareRuntime(options).outputApp.dir); break
+            case ['idea']: generateIdeaProject(options); break
             case ['deploy', 'upload']: new GradleTaskCommand(prepareRuntime(options), ant, "appengineUpdate").execute(); break
             case ['test']: new GradleTaskCommand(prepareRuntime(options), ant, "test").execute(); break
             case ['export']: new GradleTaskCommand(prepareRuntime(options), ant, "wrapper").execute(); break
             default: new GradleTaskCommand(prepareRuntime(options), ant, command).execute(); break
         }
+    }
+
+    private def generateIdeaProject(options) {
+        def runtime = prepareRuntime(options)
+        new GradleTaskCommand(runtime, ant, "idea").execute()
+        ant.copy(toDir:runtime.userApp.dir) {
+            fileset(dir:runtime.outputApp.dir, includes:"*.iml, *.ipr")
+        }
+        println "copied"
     }
 
     // read the optional values (flags)
@@ -59,7 +70,7 @@ class Main {
 
         def userApp = new UserApp(options.a ?: System.getProperty("user.dir"))
         def templateApp = new TemplateApp(options.t ?: "$glideHome/base-templates/gae-base-web")
-        def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}_${userApp.glideConfig.app?.version}")
+        def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
 
         if (!userApp.validate()) {
             throw new InvalidGlideAppException("A valid Glide app does not exist. Use `glide create` to create one.")
