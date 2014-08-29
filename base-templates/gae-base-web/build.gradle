@@ -1,7 +1,10 @@
 // workaround for using project app dir as exploded app dir.
-// needs to to execute before gae plugin
+// Important : needs to to execute before gae plugin, so needs to be at top of script
+// adds `app` dir as explodableAppDirectory of tasks that depends on exploded app
+// tasks like run, upload etc.
 project.tasks.whenTaskAdded { task ->
     if (task instanceof com.google.appengine.task.Explodable) {
+        // println "----------- added explodable task : ${task.name}"
         task.explodedAppDirectory = project.file("app")
     }
 }
@@ -22,7 +25,7 @@ appengine {
 // important for the app dir to be complete with lib and classes
 appengineExplodeApp {
     setOnlyIf { true }
-    explodedAppDirectory = file("app")
+    explodedAppDirectory = file("app") // may not need it because of hackery on top
 }
 
 def GLIDE_BUILD_FILE = "glide.gradle"
@@ -47,6 +50,10 @@ sourceSets {
     main.groovy.srcDir 'src'
     test.groovy.srcDir 'test'
 }
+
+// output the compiled classes from src directly to app
+// so that we may skip war'ing & exploding the app
+sourceSets.main.output.classesDir = 'app/WEB-INF/classes'
 
 buildscript {
     repositories {
