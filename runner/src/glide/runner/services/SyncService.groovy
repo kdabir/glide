@@ -25,15 +25,15 @@ class SyncService {
         this.ant = ant
         this.synchronizer = Synchronizer.build {
             sourceDir runtime.userApp.path,
-                    excludes: "glide.groovy"
+                    includes: "app/, test/, src/, *.gradle"
 
             sourceDir runtime.templateApp.path,
-                    excludes: "glide.groovy, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, .gradle, build"
+                    excludes: "glide.groovy, app/WEB-INF/lib/, app/WEB-INF/classes/, app/WEB-INF/*.xml, app/WEB-INF/routes.groovy, .gradle, build"
 
             targetDir runtime.outputApp.path,
                     verbose:false, includeEmptyDirs:true
 
-            preserve includes: ".sdk-root, .gradle/, /gradlew*, /gradle, build/**/*, app/WEB-INF/lib/**/*, app/WEB-INF/classes/**/*, app/WEB-INF/*.xml, app/WEB-INF/appengine-generated/**/*"
+            preserve includes: ".sdk-root, .gradle/, /gradlew*, /gradle, build/, app/WEB-INF/lib/, app/WEB-INF/classes/, app/WEB-INF/*.xml, app/WEB-INF/appengine-generated/"
 
             syncEvery 3.seconds
 
