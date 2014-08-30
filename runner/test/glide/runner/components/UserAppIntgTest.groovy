@@ -18,6 +18,13 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
                 someRandomConfig {
                     key = 'value'
                 }
+                environments {
+                    prod {
+                        someRandomConfig {
+                            key = 'prodValue'
+                        }
+                    }
+                }
             """
            dir("app"){
 
@@ -25,7 +32,7 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
 
         }
 
-        glideApp = new UserApp("$tempDir/glideTestApp")
+        glideApp = new UserApp("$tempDir/glideTestApp", new ConfigSlurper())
     }
 
     void "test if application is setup by test" () {
@@ -36,6 +43,11 @@ class UserAppIntgTest extends FileSystemIntegrationTestsBase {
     void "test Config should be read from file if exists"() {
         assertNotNull glideApp.glideConfig
         assert glideApp.glideConfig.someRandomConfig.key == 'value'
+    }
+
+    void "test Config with environment"() {
+        assert new UserApp("$tempDir/glideTestApp", new ConfigSlurper('prod'))
+                .glideConfig.someRandomConfig.key == 'prodValue'
     }
 
     void "test App Name should be read from config file if exists"() {

@@ -8,8 +8,15 @@ import directree.DirTree
 class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
 
     final DirTree dirTree
+    final ConfigSlurper configSlurper
 
-    UserApp(String root) {
+    /**
+     *
+     * @param root
+     * @param configSlurper a prepared slurper with environment
+     */
+    UserApp(String root, ConfigSlurper configSlurper) {
+        this.configSlurper = configSlurper
         this.dirTree = DirTree.build(root) {
             dir 'src'
             dir 'test'
@@ -26,9 +33,8 @@ class UserApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
      * Note: every call reads fresh from filesystem, cache the config
      */
     ConfigObject getGlideConfig() {
-        def slurper = new ConfigSlurper()
-        if (glideFile.exists()) slurper.parse(glideFile.toURI().toURL())
-        else slurper.parse("app{ name='${dir.name}'; version='0'}")
+        if (glideFile.exists()) configSlurper.parse(glideFile.toURI().toURL())
+        else configSlurper.parse("app{ name='${dir.name}'; version='0'}")
     }
 
     boolean isRoutesFileModifiedAfter(long timestamp) {

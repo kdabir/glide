@@ -11,13 +11,14 @@ class GlideCli {
     GlideCli(Writer writer) {
         this.writer = writer
         this.cli = new CliBuilder(
-                usage: 'glide [options] <create|run|test|deploy|export>',
+                usage: 'glide [options] <create|run|test|deploy|export|clean|idea>',
                 header: '\nOptions:',
                 writer: writer
         ).with {
             a longOpt: 'app', args: 1, argName: 'APP_DIR', "/path/to/app [default: current dir]"
             o longOpt: 'output', args: 1, argName: 'OUT_DIR', "/path/to/output/app"
             t longOpt: 'template', args: 1, argName: 'TEMPLATE_DIR', "/path/to/template/app"
+            e longOpt: 'env', args: 1, argName: 'ENV', "eg. prod|staging"
             h longOpt: 'help', "prints this help and exits"
             v longOpt: 'version', "displays version and exits"
             return it

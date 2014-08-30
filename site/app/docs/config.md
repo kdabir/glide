@@ -80,6 +80,21 @@ allowed and user should not able access any file directly then set make this cha
 This website uses the same technique for strict url matching so you may refer to it's source to check how it is done.
 
 
+### Environment specific config
+
+sometimes a glide config is specific to an environment, it can we wrapped in `environments` closure.
+
+    someKey = "prodValue"
+
+    environments {
+        prod {
+            someKey = "prodValue"
+        }
+    }
+
+Running glide with `glide -e prod` will provide `prodValue` for `someKey`.
+
+
 ## Understanding `_routes.groovy`
 
 This files is read by gaelyk to configure application routes. This is not glide specific. Check

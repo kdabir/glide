@@ -3,13 +3,15 @@ package glide.runner.components
 import directree.DirTree
 
 /**
- * A Valid gradle app, contains boilerpplate setup
+ * A Valid gradle app, contains boilerplate setup
  */
 class TemplateApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware {
 
     final DirTree dirtree
+    final ConfigSlurper configSlurper
 
-    TemplateApp(String root) {
+    TemplateApp(String root, ConfigSlurper configSlurper) {
+        this.configSlurper = configSlurper
         this.dirtree = DirTree.build(root) {
             dir 'src'
             dir 'test'
@@ -30,7 +32,7 @@ class TemplateApp implements DirectoryAware, RoutesAware, BuildAware, GlideAware
      * Note: every call reads fresh from filesystem, cache the config
      */
     ConfigObject getGlideConfig() {
-        new ConfigSlurper().parse(glideFile.toURI().toURL()) // config file should be always present
+        configSlurper.parse(glideFile.toURI().toURL()) // config file should be always present
     }
 
     @Override

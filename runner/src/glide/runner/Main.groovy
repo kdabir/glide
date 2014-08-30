@@ -68,8 +68,9 @@ class Main {
             }
         }
 
-        def userApp = new UserApp(options.a ?: System.getProperty("user.dir"))
-        def templateApp = new TemplateApp(options.t ?: "$glideHome/base-templates/gae-base-web")
+        def configSlurper = options.e ? new ConfigSlurper(options.e) : new ConfigSlurper()
+        def userApp = new UserApp(options.a ?: System.getProperty("user.dir"), configSlurper)
+        def templateApp = new TemplateApp(options.t ?: "$glideHome/base-templates/gae-base-web", configSlurper)
         def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
 
         if (!userApp.validate()) {

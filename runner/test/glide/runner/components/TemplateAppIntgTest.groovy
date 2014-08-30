@@ -19,10 +19,17 @@ class TemplateAppIntgTest extends FileSystemIntegrationTestsBase {
                     someConfig {
                         key = 'value'
                     }
+                    environments {
+                        prod {
+                            someConfig {
+                                key = 'prodValue'
+                            }
+                        }
+                    }
                 """
         }
 
-        templateApp = new TemplateApp("$tempDir/testTemplateApp")
+        templateApp = new TemplateApp("$tempDir/testTemplateApp", new ConfigSlurper())
     }
 
     void "test if application is setup by test" () {
@@ -32,7 +39,16 @@ class TemplateAppIntgTest extends FileSystemIntegrationTestsBase {
 
     void "test template app config" () {
         assertNotNull templateApp.glideConfig
-        assert templateApp.glideConfig.someConfig.key == 'value'
     }
+
+    void "test get non env value if used default config slurper is used" () {
+        def app = new TemplateApp("$tempDir/testTemplateApp", new ConfigSlurper())
+        assert app.glideConfig.someConfig.key == "value"
+    }
+    void "test get env specific value if used env config slurper is used" () {
+        def app = new TemplateApp("$tempDir/testTemplateApp", new ConfigSlurper('prod'))
+        assert app.glideConfig.someConfig.key == "prodValue"
+    }
+
 
 }

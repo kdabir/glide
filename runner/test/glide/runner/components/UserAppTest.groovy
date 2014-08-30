@@ -1,24 +1,22 @@
 package glide.runner.components
 
 class UserAppTest extends GroovyTestCase {
+    def t = new UserApp("/tmp/glide", new ConfigSlurper())
+
     void "test glide app dir structure"() {
-        def t = new UserApp("/tmp/glide")
-      assert t.glideFile.path == new File("/tmp/glide/glide.groovy").path
+        assert t.glideFile.path == new File("/tmp/glide/glide.groovy").path
     }
 
-    void "test Dir name"(){
-        def t = new UserApp("/tmp/glide")
+    void "test Dir name"() {
         assert t.dir.name == 'glide'
     }
 
-    void "test empty config"(){
-        def t = new UserApp("/tmp/glide")
+    void "test empty config"() {
         assert t.glideConfig.app.name == 'glide'
         assert t.glideConfig.app.version == '0'
     }
 
-    void "test validation"(){
-        def t = new UserApp("/tmp/glide")
+    void "test validation"() {
         assert t.validate() == false
     }
 
