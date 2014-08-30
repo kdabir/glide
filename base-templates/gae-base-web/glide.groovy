@@ -18,6 +18,9 @@ app{
             'groovy.source.encoding' : "UTF-8",
             'java.util.logging.config.file' : "WEB-INF/logging.properties"
     ]
+
+    env_variables = [
+    ]
 }
 
 web {

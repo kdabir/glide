@@ -79,4 +79,19 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
         assert app."system-properties".property*.@value == ["123", "xyz"]
     }
 
+    void testEnvVars(){
+        def app = toXmlObject """
+            app {
+                env_variables = [
+                    "a" : 123 ,
+                    "b" : "xyz"
+                ]
+            }
+        """
+        assert app."env-variables".size() == 1
+        assert app."env-variables"."env-var".size() == 2
+        assert app."env-variables"."env-var"*.@name == ["a", "b"]
+        assert app."env-variables"."env-var"*.@value == ["123", "xyz"]
+    }
+
 }

@@ -19,6 +19,12 @@ class AppEngineWebXmlGenerator {
                 }
             }
 
+            'env-variables' {
+                app.env_variables.each { k, v ->
+                    "env-var"(name: k, value: v)
+                }
+            }
+
             if (app.public_root) {
                 'public-root' app.public_root
             }
