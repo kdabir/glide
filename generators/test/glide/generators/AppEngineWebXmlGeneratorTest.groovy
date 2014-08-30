@@ -64,4 +64,19 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
         assert app."resource-files"."exclude".size() == 2
     }
 
+    void testSystemProperties(){
+        def app = toXmlObject """
+            app {
+                system_properties = [
+                    "a" : 123 ,
+                    "b" : "xyz"
+                ]
+            }
+        """
+        assert app."system-properties".size() == 1
+        assert app."system-properties".property.size() == 2
+        assert app."system-properties".property*.@name == ["a", "b"]
+        assert app."system-properties".property*.@value == ["123", "xyz"]
+    }
+
 }

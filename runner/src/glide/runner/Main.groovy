@@ -60,23 +60,24 @@ class Main {
     // read the optional values (flags)
     private GlideRuntime prepareRuntime(OptionAccessor options) {
         def glideHome = System.env.GLIDE_HOME
-        if (!options.t && !glideHome) {
-            throw new IllegalStateException("Environment variable GLIDE_HOME is not set.")
-        } else {
-            if (glideHome && !new File(glideHome).exists()) {
-                throw new IllegalStateException("Directory specified by environment variable GLIDE_HOME does not exist.")
-            }
-        }
+        validateGlideHome(options, glideHome)
 
         def configSlurper = options.e ? new ConfigSlurper(options.e) : new ConfigSlurper()
         def userApp = new UserApp(options.a ?: System.getProperty("user.dir"), configSlurper)
-        def templateApp = new TemplateApp(options.t ?: "$glideHome/base-templates/gae-base-web", configSlurper)
+        def templateApp = new TemplateApp(options.t ?: "${glideHome}/base-templates/gae-base-web", configSlurper)
         def outputApp = new OutputApp(options.o ?: "${System.getProperty("java.io.tmpdir")}/glide-generated/${userApp.glideConfig.app.name}")
 
         if (!userApp.validate()) {
             throw new InvalidGlideAppException("A valid Glide app does not exist. Use `glide create` to create one.")
         }
         new GlideRuntime(userApp: userApp, templateApp: templateApp, outputApp: outputApp) // form the app
+    }
+
+    private void validateGlideHome(options, glideHome) {
+        if (!options.t && !glideHome)
+            throw new IllegalStateException("Environment variable GLIDE_HOME is not set.")
+        else if (glideHome && !new File(glideHome).exists())
+            throw new IllegalStateException("Directory specified by environment variable GLIDE_HOME does not exist.")
     }
 
     public static void main(String[] args) {

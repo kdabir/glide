@@ -14,9 +14,9 @@ class AppEngineWebXmlGenerator {
             'precompilation-enabled' true
 
             'system-properties' {
-                property(name: 'file.encoding', value: "UTF-8")
-                property(name: 'groovy.source.encoding', value: "UTF-8")
-                property(name: 'java.util.logging.config.file', value: "WEB-INF/logging.properties")
+                app.system_properties.each { k, v ->
+                    property(name: k, value: v)
+                }
             }
 
             if (app.public_root) {

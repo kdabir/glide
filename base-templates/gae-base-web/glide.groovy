@@ -12,6 +12,12 @@ app{
     resource_files {
         includes = ["**.gtpl", "**.html", "**.groovy"]
     }
+
+    system_properties = [
+            'file.encoding' : "UTF-8",
+            'groovy.source.encoding' : "UTF-8",
+            'java.util.logging.config.file' : "WEB-INF/logging.properties"
+    ]
 }
 
 web {
@@ -52,7 +58,6 @@ web {
             filter_class = "glide.web.ProtectedResourcesFilter"
             url_patterns = ['/*']
         }
-
     }
 
     error_pages = [
@@ -62,7 +67,6 @@ web {
     ]
 
     welcome_files = ['index.html']
-
 }
 
 layout {
