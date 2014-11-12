@@ -40,7 +40,7 @@ def templateGaeVersion = '1.9.8'
 def templateGaelykVersion = '2.1.2'
 def templateVersion = '0.3.4'
 def templateGradleVersion = "2.0"
-def templateSitemapVersion = "3.0-alpha-2" // 3.0.0 is not working well for mutliple decorators.
+def templateSitemapVersion = "3.0.1-SNAPSHOT" // 3.0.0 is not working well for mutliple decorators.
 
 sourceCompatibility = templateJavaVersion
 targetCompatibility = templateJavaVersion
@@ -78,6 +78,7 @@ build.doFirst {
 repositories {
     mavenCentral()
     jcenter()
+    mavenLocal()
 }
 
 dependencies {

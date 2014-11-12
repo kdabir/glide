@@ -49,6 +49,13 @@ class AppEngineWebXmlGenerator {
                     }
                 }
             }
+            if (app.inbound_services) {
+                'inbound-services' {
+                    app.inbound_services.each { serviceName ->
+                        service serviceName
+                    }
+                }
+            }
         }
         writer.toString()
     }

@@ -94,4 +94,22 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
         assert app."env-variables"."env-var"*.@value == ["123", "xyz"]
     }
 
+    void testIncomingServices(){
+        def app = toXmlObject """
+            app {
+                inbound_services = ["email", "xmpp_message"]
+            }
+        """
+        assert app."inbound-services".size() == 1
+        assert app."inbound-services"."service"*.text() == ["email", "xmpp_message"]
+    }
+
+    void testIncomingServicesAbsence(){
+        def app = toXmlObject """
+            app {
+            }
+        """
+        assert app."inbound-service".size() == 0
+    }
+
 }
