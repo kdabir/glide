@@ -2,6 +2,7 @@
 *.class
 build/
 /install/
+/glide-snapshot/
 /appengine/
 .gradle/
 .gradletasknamecache

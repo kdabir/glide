@@ -64,7 +64,7 @@ allprojects {
     apply plugin: 'idea'
     idea {
         module {
-            excludeDirs += [file(".gradle"), file('gradle'), file('install'), file('build'), file('out'), file('.idea')]
+            excludeDirs += [file(".gradle"), file('gradle'), file('glide-snapshot'), file('build'), file('out'), file('.idea')]
         }
     }
 }
