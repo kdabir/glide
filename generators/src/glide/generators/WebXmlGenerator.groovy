@@ -1,6 +1,7 @@
 package glide.generators
 
 // TODO multiple filter urls-patterns can have set of dispatchers
+// TODO list value like `listeners` are not additive when two config objects are merged.
 /* url_patterns = [
     '/*': [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR'],
     '/*.abc' : ['INCLUDE']
