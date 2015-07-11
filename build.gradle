@@ -1,25 +1,21 @@
-ext {
-    javaVersion = '1.7'
-    groovyVersion = '2.3.6'
-    gaeVersion = '1.9.8'
-    gaelykVersion = '2.1.2'
-    gradleVersion = '2.0'
+plugins {
+    id "com.jfrog.bintray" version "1.2"
 }
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-    }
+ext {
+    javaVersion = '1.7'
+    groovyVersion = '2.4.3'
+    gaeVersion = '1.9.23'
+    gaelykVersion = '2.1.2'
+    gradleVersion = '2.5'
 }
+
 
 subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3.4'
+    version '0.3.5-dev'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"
