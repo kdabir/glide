@@ -1,8 +1,9 @@
 package glide.generators
 
-class AppEngineWebXmlGenerator {
+class AppEngineWebXmlGenerator implements ContentGenerator {
 
-    String generate(config) {
+    @Override
+    String generate(ConfigObject config) {
         def writer = new StringWriter()
         def appEngineWebXml = new groovy.xml.MarkupBuilder(writer)
         final app = config.app

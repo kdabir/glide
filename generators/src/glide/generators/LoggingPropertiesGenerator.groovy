@@ -3,8 +3,10 @@ package glide.generators
 /**
  * very dumb intentionally.
  */
-class LoggingPropertiesGenerator {
-    String generate(config) {
+class LoggingPropertiesGenerator implements ContentGenerator {
+
+    @Override
+    String generate(ConfigObject config) {
         config.logging.text.toString().stripIndent()
     }
 }

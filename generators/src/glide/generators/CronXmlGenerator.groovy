@@ -1,7 +1,9 @@
 package glide.generators
 
-class CronXmlGenerator {
-    String generate(config) {
+class CronXmlGenerator implements ContentGenerator {
+
+    @Override
+    String generate(ConfigObject config) {
         def writer = new StringWriter()
         def xml = new groovy.xml.MarkupBuilder(writer)
 

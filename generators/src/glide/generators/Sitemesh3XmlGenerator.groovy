@@ -1,8 +1,9 @@
 package glide.generators
 
-class Sitemesh3XmlGenerator {
+class Sitemesh3XmlGenerator implements ContentGenerator {
 
-    String generate(config) {
+    @Override
+    String generate(ConfigObject config) {
         def writer = new StringWriter()
         def sitemesh3Xml = new groovy.xml.MarkupBuilder(writer)
 

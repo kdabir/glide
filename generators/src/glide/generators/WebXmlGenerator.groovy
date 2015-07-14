@@ -12,9 +12,10 @@ package glide.generators
  * takes config object in Groovy Config format and produces web.xml content
  *
  */
-class WebXmlGenerator {
+class WebXmlGenerator implements ContentGenerator {
 
-    String generate(config) {
+    @Override
+    String generate(ConfigObject config) {
         def writer = new StringWriter()
         def webXml = new groovy.xml.MarkupBuilder(writer)
 

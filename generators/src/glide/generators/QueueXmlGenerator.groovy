@@ -1,7 +1,9 @@
 package glide.generators
 
-class QueueXmlGenerator {
-    String generate(config) {
+class QueueXmlGenerator implements ContentGenerator {
+
+    @Override
+    String generate(ConfigObject config) {
         def writer = new StringWriter()
         def xml = new groovy.xml.MarkupBuilder(writer)
 
