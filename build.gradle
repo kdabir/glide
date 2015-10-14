@@ -4,10 +4,13 @@ plugins {
 
 ext {
     javaVersion = '1.7'
-    groovyVersion = '2.4.3'
-    gaeVersion = '1.9.23'
+    groovyVersion = '2.4.3'     // 2.4.5
+    gaeVersion = '1.9.23'       // 1.9.27
     gaelykVersion = '2.1.2'
-    gradleVersion = '2.5'
+    gradleVersion = '2.5'       //'2.8-rc-1'
+
+    // Test
+    junitVersion = '4.12'
 }
 
 
@@ -22,7 +25,15 @@ subprojects {
 
     repositories {
         mavenLocal()
+        jcenter()
         mavenCentral()
+    }
+
+    sourceSets {
+        main.groovy.srcDir 'src'
+        main.resources.srcDir 'resources'
+        test.groovy.srcDir 'test'
+        test.resources.srcDir 'testResources'
     }
 
     apply plugin: 'maven-publish'
