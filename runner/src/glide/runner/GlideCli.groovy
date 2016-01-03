@@ -11,13 +11,11 @@ class GlideCli {
     GlideCli(Writer writer) {
         this.writer = writer
         this.cli = new CliBuilder(
-                usage: 'glide [options] <create|run|test|deploy|export|clean|idea>',
+                usage: 'glide [options] <create|run|test|deploy|clean>',
                 header: '\nOptions:',
                 writer: writer
         ).with {
             a longOpt: 'app', args: 1, argName: 'APP_DIR', "/path/to/app [default: current dir]"
-            o longOpt: 'output', args: 1, argName: 'OUT_DIR', "/path/to/output/app"
-            t longOpt: 'template', args: 1, argName: 'TEMPLATE_DIR', "/path/to/template/app"
             e longOpt: 'env', args: 1, argName: 'ENV', "eg. prod|staging"
             h longOpt: 'help', "prints this help and exits"
             v longOpt: 'version', "displays version and exits"
@@ -38,10 +36,6 @@ class GlideCli {
         | Deploys app to Google App Engine          : glide deploy
         | Run app located in subdirectory           : glide -a samples/blog run
         | Deploy app located in subdirectory        : glide -a samples/blog deploy
-        | Export app located in subdirectory        : glide -a samples/blog -o out/blog export
-        |
-        |Important: Don't give a path that is child directory of glide app as a value of
-        | options output (-o) or template (-t) dir.
         |
         | Home         : http://glide-gae.appspot.com
         | Issues       : https://github.com/kdabir/glide/issues

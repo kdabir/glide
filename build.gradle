@@ -1,81 +1,14 @@
-ext {
-    javaVersion = '1.7'
-    groovyVersion = '2.3.6'
-    gaeVersion = '1.9.8'
-    gaelykVersion = '2.1.2'
-    gradleVersion = '2.0'
-}
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.5'
-    }
-}
-
 subprojects {
     apply plugin: 'groovy'
 
     group 'io.github.kdabir.glide'
-    version '0.3.4'
 
     sourceCompatibility = "$javaVersion"
     targetCompatibility = "$javaVersion"
 
     repositories {
         mavenLocal()
+        jcenter()
         mavenCentral()
     }
-
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
-
-    publishing {
-        publications {
-            groovyMaven(MavenPublication) {
-                from components.java
-            }
-        }
-    }
-
-    // set bintrayUser & bintrayKey in gradle.properties
-    bintray {
-
-        user = getPropertyOrUseDefault("bintrayUser", "fake_user")
-        key = getPropertyOrUseDefault("bintrayKey", "fake_key")
-        publications = ['groovyMaven']
-
-        def projectName = project.name
-        def projectDescription = project.description
-
-        pkg {
-            repo = 'maven' // or your repo name
-            name = projectName      // somehow project.* doesn't work in this closure
-            desc = projectDescription
-            licenses = ['Apache-2.0']
-        }
-        //dryRun = true // whether to run this as dry-run, without deploying
-    }
-}
-
-allprojects {
-    apply plugin: 'idea'
-    idea {
-        module {
-            excludeDirs += [file(".gradle"), file('gradle'), file('glide-snapshot'), file('build'), file('out'), file('.idea')]
-        }
-    }
-}
-
-String getPropertyOrUseDefault(String propertyName, String defaultValue) {
-    hasProperty(propertyName) ? getProperty(propertyName) : defaultValue
-}
-
-
-task wrapper(type: Wrapper) {
-    gradleVersion = "$gradleVersion"
-//    jarFile = file("${project.projectDir}/tools/gradle-wrapper.jar")
-//    scriptFile = file("${project.projectDir}/gradlew")
 }
