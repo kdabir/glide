@@ -35,8 +35,8 @@ publishing {
 
 // set bintrayUser & bintrayKey in gradle.properties
 bintray {
-    user = project.properties.getOrDefault("bintrayUser", "fake_user")
-    key = project.properties.getOrDefault("bintrayKey", "fake_key")
+    user = project.properties.get "bintrayUser"
+    key = project.properties.get "bintrayKey"
     publications = ['mavenJava']
 
     def projectName = project.name
