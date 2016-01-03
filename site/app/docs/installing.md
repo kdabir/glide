@@ -9,11 +9,11 @@ environment variable.
 
 If you use an OS that flaunts a decent Terminal app with `bash` you can choose one of the following three methods:
 
-- ### Using GVM
+- ### Using SDKMAN!
 
-    If you have [gvm](http://gvmtool.net/) installed, you are just this command away from glide:
+    If you have [sdk](http://sdkman.io/) installed, you are just this command away from glide:
 
-        $ gvm install glide
+        $ sdk install glide
 
 
 - ### Using nixstall
