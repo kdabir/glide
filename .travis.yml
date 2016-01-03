@@ -8,4 +8,5 @@ script:
 
 jdk:
   - oraclejdk7
-  - openjdk7
+# weird probs with openjdk
+#  - openjdk7
