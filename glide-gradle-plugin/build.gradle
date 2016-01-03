@@ -1,0 +1,142 @@
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+//    id 'net.researchgate.release' version '2.3.4'
+    id "com.jfrog.bintray" version '1.4'
+    id 'java-gradle-plugin'
+}
+
+version = project.glideGradlePluginVersion
+
+// TODO publish to gradle plugin portal
+//apply plugin: "com.gradle.plugin-publish"
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+// Hackery for gradle test kit:
+// Write the plugin's classpath to a file to share with the tests
+task createClasspathManifest {
+    def outputDir = file("$buildDir/$name")
+
+    inputs.files sourceSets.main.runtimeClasspath
+    outputs.dir outputDir
+
+    println "using gradle - $gradleVersion"
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+    }
+}
+
+/**
+ * If groovy is not excluded in transitive deps, build Fails with:
+ * groovy.lang.GroovyRuntimeException: Conflicting module versions.
+ * Module [groovy-all is loaded in version 2.3.10 and you are trying to load version 2.4.3
+ */
+dependencies {
+    compile gradleApi()
+    compile localGroovy()
+    testCompile gradleTestKit()
+
+    compile "org.gradle.api.plugins:gradle-gaelyk-plugin:${gaelykGradlePluginVersion}", {
+        exclude group: 'io.github.kdabir.directree'
+    }
+
+    compile "com.google.appengine:gradle-appengine-plugin:${gaeVersion}"
+
+    compile "io.github.kdabir.directree:directree:${directreeVersion}", {
+        exclude group: 'org.codehaus.groovy'
+    }
+
+    testCompile "junit:junit:${junitVersion}"
+    testCompile "org.spockframework:spock-core:${spockVersion}", {
+        exclude group: 'org.codehaus.groovy'
+    }
+
+    // Add the classpath file to the test runtime classpath
+    testRuntime files(createClasspathManifest)
+}
+
+
+configurations {
+    testIntegrationCompile.extendsFrom testCompile
+    testIntegrationRuntime.extendsFrom testRuntime
+}
+
+
+sourceSets {
+    main.groovy.srcDirs = ['src']
+    test.groovy.srcDirs = ['test']
+
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testResources']
+
+    main.java.srcDirs = test.java.srcDirs = []
+
+    testIntegration {
+        groovy {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDirs = ['test-intg']
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                "Implementation-Title": "Gradle",
+                "Implementation-Version": project.version
+        )
+    }
+}
+
+import org.apache.tools.ant.filters.*
+
+afterEvaluate {
+    configure(tasks['processResources']) {
+        filter(ReplaceTokens,
+                tokens: (project.properties.findAll { k, v -> k.endsWith("Version") } ))
+    }
+}
+
+
+task integrationTest(type: Test) {
+    testClassesDir = sourceSets.testIntegration.output.classesDir
+    classpath = sourceSets.testIntegration.runtimeClasspath
+}
+
+publishing {
+    publications {
+        gradlePlugin(MavenPublication) {
+            from components.java
+        }
+    }
+    println configurations.runtime.allDependencies
+}
+
+// set bintrayUser & bintrayKey in gradle.properties
+bintray {
+    user = project.properties.getOrDefault("bintrayUser", "fake_user")
+    key = project.properties.getOrDefault("bintrayKey", "fake_key")
+    publications = ['gradlePlugin']
+
+    def projectName = project.name
+    def projectDescription = project.description
+
+    pkg {
+        repo = 'glide'          // or your repo name
+        name = projectName      // somehow project.* doesn't work in this closure
+        desc = projectDescription
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/kdabir/glide.git'
+    }
+//    dryRun = true // whether to run this as dry-run, without deploying
+}
+
+
+

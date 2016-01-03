@@ -7,22 +7,26 @@ repositories {
 }
 
 sourceSets {
-    main.groovy.srcDir 'src'
-    main.resources.srcDir 'resources'
-    test.groovy.srcDir 'test'
+    main.groovy.srcDirs = ['src']
+    test.groovy.srcDirs = ['test']
+
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testResources']
+
+    main.java.srcDirs = test.java.srcDirs = []
 }
+
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
             'org.apache.ant:ant:1.8.4',     // required for AntBuilder
             'commons-cli:commons-cli:1.2',   // required for CliBuilder
             "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
-            'io.github.kdabir.directree:directree:0.2',
-            project(":generators")
+            'io.github.kdabir.directree:directree:0.2'
 
     runtime 'org.slf4j:slf4j-nop:1.7.2'
 
-    testCompile 'junit:junit:4.10'
+    testCompile "junit:junit:${junitVersion}"
 }
 
 mainClassName = "glide.runner.Main"
@@ -38,7 +42,6 @@ run {
     def argsList = []
 
     argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/greet")]
-    argsList << ["-t", getPathFromProperty("template", "${project.rootProject.projectDir.path}/base-templates/gae-base-web")]
 
     if (project.hasProperty("out")){ argsList << ["-o", project.getProperty("out")] }
     if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
@@ -80,7 +83,7 @@ installApp {
     }
 }
 
-distZip.dependsOn ":runner:build"
+//distZip.dependsOn ":runner:build"
 distZip.dependsOn ":samples:copySamples"
 
 distZip {
