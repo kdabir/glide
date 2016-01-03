@@ -99,8 +99,10 @@ import org.apache.tools.ant.filters.*
 
 afterEvaluate {
     configure(tasks['processResources']) {
-        filter(ReplaceTokens,
-                tokens: (project.properties.findAll { k, v -> k.endsWith("Version") } ))
+        def versions = project.properties.findAll { k, v -> k.endsWith("Version") }
+
+        inputs.properties versions // so that resources are processed on version change
+        filter(ReplaceTokens, tokens: versions)
     }
 }
 
