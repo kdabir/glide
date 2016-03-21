@@ -24,7 +24,7 @@ task createClasspathManifest {
     inputs.files sourceSets.main.runtimeClasspath
     outputs.dir outputDir
 
-    println "using gradle - $gradleVersion"
+    println "using gradle - $project.gradleVersion"
 
     doLast {
         outputDir.mkdirs()
@@ -46,7 +46,7 @@ dependencies {
         exclude group: 'io.github.kdabir.directree'
     }
 
-    compile "com.google.appengine:gradle-appengine-plugin:${gaeVersion}"
+    compile "com.google.appengine:gradle-appengine-plugin:${appengineGradlePluginVersion}"
 
     compile "io.github.kdabir.directree:directree:${directreeVersion}", {
         exclude group: 'org.codehaus.groovy'
