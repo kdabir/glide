@@ -10,6 +10,9 @@ import org.junit.rules.TemporaryFolder
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class GlidePluginIntgTests {
+
+    public static final File testKitGradleHome = new File(System.properties['user.home'], '.gradle-testkit')
+
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
     File buildFile
@@ -18,6 +21,8 @@ class GlidePluginIntgTests {
     void setup() {
         buildFile = testProjectDir.newFile('build.gradle')
         def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
+
+//        println "classpath resource - $pluginClasspathResource"
         if (pluginClasspathResource == null) {
             throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
         }
@@ -27,6 +32,7 @@ class GlidePluginIntgTests {
                 .collect { "'$it'" }
                 .join(", ")
 
+//        println "classpath lines : $pluginClasspath"
         buildFile.text = """
             |buildscript {
             |   dependencies {
@@ -40,21 +46,21 @@ class GlidePluginIntgTests {
     }
 
 
-    @Test @Ignore
+    @Test
     void "prints glide version"() {
 
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
-                .withTestKitDir(new File(System.properties['user.home'], '.gradle1')) //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
+                .withTestKitDir(testKitGradleHome) //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
                 .withArguments('glideVersion', '--debug')
                 .build()
 
 
-//        assert result.standardOutput.contains('SNAPSHOT')
+        assert result.output.contains('SNAPSHOT')
         assert result.task(":glideVersion").outcome == SUCCESS
     }
 
-    @Test @Ignore
+    @Test
     void "starts glide app"() {
 
         def result = GradleRunner.create()
@@ -62,7 +68,7 @@ class GlidePluginIntgTests {
                 .withArguments('glideSync')
                 .build()
 
-        assert result.standardOutput.contains('localhost:8080')
+        assert result.output.contains('localhost:8080')
         assert result.task(":glideSync").outcome == SUCCESS
     }
 
