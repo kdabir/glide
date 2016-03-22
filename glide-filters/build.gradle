@@ -27,18 +27,17 @@ sourceSets {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        filters(MavenPublication) {
             from components.java
         }
     }
 }
 
-
 // set bintrayUser & bintrayKey in gradle.properties
 bintray {
     user = project.properties.get "bintrayUser"
     key = project.properties.get "bintrayKey"
-    publications = ['mavenJava']
+    publications = ['filters']
 
     def projectName = project.name
     def projectDescription = project.description
@@ -47,7 +46,7 @@ bintray {
         repo = 'glide'          // or your repo name
         name = projectName      // somehow project.* doesn't work in this closure
         desc = projectDescription
-        licenses = ['Apache-2.0']
+        licenses = ['MIT']
         vcsUrl = 'https://github.com/kdabir/glide.git'
     }
 //    dryRun = true // whether to run this as dry-run, without deploying

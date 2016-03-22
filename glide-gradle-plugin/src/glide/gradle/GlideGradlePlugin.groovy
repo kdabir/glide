@@ -41,7 +41,7 @@ class GlideGradlePlugin implements Plugin<Project> {
                 compile "com.google.appengine:appengine-api-1.0-sdk:${project.glide.gaeVersion}"
                 compile "com.google.appengine:appengine-api-labs:${project.glide.gaeVersion}"
                 compile "org.gaelyk:gaelyk:${project.glide.gaelykVersion}"
-                compile "io.github.kdabir.glide:filters:${project.glide.glideFiltersVersion}"
+                compile "io.github.kdabir.glide:glide-filters:${project.glide.glideFiltersVersion}"
 
                 // add if not disabled
                 compile "org.sitemesh:sitemesh:${project.glide.sitemeshVersion}"
@@ -50,7 +50,7 @@ class GlideGradlePlugin implements Plugin<Project> {
             }
         }
 
-        // TODO add extention here
+        // TODO add extension here
 
         project.webAppDirName = "app"
 
