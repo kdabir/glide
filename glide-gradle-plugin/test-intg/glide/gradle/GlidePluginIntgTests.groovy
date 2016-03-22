@@ -48,7 +48,6 @@ class GlidePluginIntgTests {
 
     @Test
     void "prints glide version"() {
-
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
                 .withTestKitDir(testKitGradleHome) //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
@@ -65,10 +64,10 @@ class GlidePluginIntgTests {
 
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir.root)
+                .withTestKitDir(testKitGradleHome)
                 .withArguments('glideSync')
                 .build()
-
-        assert result.output.contains('localhost:8080')
+        
         assert result.task(":glideSync").outcome == SUCCESS
     }
 
