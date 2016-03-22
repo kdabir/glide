@@ -11,4 +11,12 @@ subprojects {
         jcenter()
         mavenCentral()
     }
+
+    test {
+        testLogging {
+            events "failed"
+            exceptionFormat "short"
+        }
+    }
+
 }
