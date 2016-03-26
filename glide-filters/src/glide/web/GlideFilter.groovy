@@ -7,6 +7,10 @@ import javax.servlet.*
 
 @GaelykBindings
 public class GlideFilter implements Filter {
+    public static final String SLASH = "/"
+    public static final String UNDERSCORE = "_"
+    public static final String AH_URL = '/_ah'
+
     def log = logger['glide']
 
     def filterConfig
@@ -27,10 +31,10 @@ public class GlideFilter implements Filter {
 
         log.info "Reached protected resource filter"
 
-        boolean startWithUnderscore = request.requestURI.split("/").any { it.startsWith("_") }
+        boolean startWithUnderscore = request.requestURI.split(SLASH).any { it.startsWith(UNDERSCORE) }
 
         // if this filter is reached for _* url, we need to block this request!
-        if(strictMode || (startWithUnderscore && !request.requestURI.startsWith('/_ah'))){
+        if(strictMode || (startWithUnderscore && !request.requestURI.startsWith(AH_URL))){
             log.warning "trying to access protected reource, returning NOT_FOUND"
             response.sendError(HttpServletResponse.SC_NOT_FOUND)
             return
