@@ -1,76 +1,87 @@
 package glide.gradle
 
+import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
-import org.junit.Test
 import org.junit.rules.TemporaryFolder
+import spock.lang.Specification
+import spock.lang.Unroll
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class GlidePluginIntgTests {
+// Help with Spock:
+// - http://spockframework.github.io/spock/docs/1.0/spock_primer.html
+// - http://spockframework.github.io/spock/docs/1.0/data_driven_testing.html
+// - http://spockframework.github.io/spock/docs/1.0/extensions.html
 
-    public static final File testKitGradleHome = new File(System.properties['user.home'], '.gradle-testkit')
+class GlidePluginIntgTests extends Specification {
 
-    @Rule
-    public final TemporaryFolder testProjectDir = new TemporaryFolder()
-    File buildFile
+    //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
+    public static final File testKitGradleHome = new File(System.getProperty('user.home'), '.gradle-testkit')
 
-    @Before
-    void setup() {
-        buildFile = testProjectDir.newFile('build.gradle')
+    public static final File testProjectDir = new File("build", "test-project")
+
+    List<File> pluginClasspath
+
+    def setup() {
         def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
 
-//        println "classpath resource - $pluginClasspathResource"
         if (pluginClasspathResource == null) {
             throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
         }
 
-        def pluginClasspath = pluginClasspathResource.readLines()
-                .collect { it.replace('\\', '\\\\') } // escape backslashes in Windows paths
-                .collect { "'$it'" }
-                .join(", ")
+        this.pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
 
-//        println "classpath lines : $pluginClasspath"
-        buildFile.text = """
-            |buildscript {
-            |   dependencies {
-            |       classpath files($pluginClasspath)
-            |   }
-            |}
-            |apply plugin: 'com.appspot.glide-gae'
-            |
-        """.stripMargin()
+        DirTree.create(testProjectDir.absolutePath) {
+            dir "app", {
+                file "index.groovy", "println 'home'"
+                file "index.html", "<h1>hello world</h1>"
+            }
+            file "build.gradle", """\
+                   plugins {
+                    id 'com.appspot.glide-gae'
+                   }
+                """.stripIndent()
+        }
 
     }
 
+    def cleanup() {}        // teardown
+    def setupSpec() {}      // before-class
+    def cleanupSpec() {}    // after-class
 
-    @Test
-    void "prints glide version"() {
+    def "prints glide version"() {
+        when:
         def result = GradleRunner.create()
-                .withProjectDir(testProjectDir.root)
-                .withTestKitDir(testKitGradleHome) //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
+                .withProjectDir(testProjectDir)
+                .withTestKitDir(testKitGradleHome)
+                .withPluginClasspath(pluginClasspath)
                 .withArguments('glideVersion', '--debug')
+
                 .build()
 
-
-        assert result.output.contains('SNAPSHOT')
-        assert result.task(":glideVersion").outcome == SUCCESS
+        then:
+        result.output.contains('SNAPSHOT')
+        result.task(":glideVersion").outcome == SUCCESS
     }
 
-    @Test
-    void "starts glide app"() {
-
+    def "starts glide app"() {
+        when:
         def result = GradleRunner.create()
-                .withProjectDir(testProjectDir.root)
+                .withProjectDir(testProjectDir)
                 .withTestKitDir(testKitGradleHome)
+                .withPluginClasspath(pluginClasspath)
                 .withArguments('glideSync')
                 .build()
-        
-        assert result.task(":glideSync").outcome == SUCCESS
+
+        then:
+        new File(testProjectDir, "build").isDirectory()
+        result.task(":glideSync").outcome == SUCCESS
     }
 
+    def printTree(){
+        println "tree ${testProjectDir.absolutePath}".execute().text
+    }
 
 }
 

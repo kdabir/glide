@@ -110,6 +110,12 @@ afterEvaluate {
 task integrationTest(type: Test) {
     testClassesDir = sourceSets.testIntegration.output.classesDir
     classpath = sourceSets.testIntegration.runtimeClasspath
+
+    testLogging {
+        events "failed"
+        exceptionFormat "short"
+    }
+
 }
 
 publishing {
