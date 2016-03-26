@@ -2,8 +2,6 @@ package glide.gradle
 
 import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
-import org.junit.Rule
-import org.junit.rules.TemporaryFolder
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -57,7 +55,6 @@ class GlidePluginIntgTests extends Specification {
                 .withTestKitDir(testKitGradleHome)
                 .withPluginClasspath(pluginClasspath)
                 .withArguments('glideVersion', '--debug')
-
                 .build()
 
         then:

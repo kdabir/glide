@@ -1,15 +1,13 @@
 plugins {
     id 'groovy'
     id 'maven-publish'
-//    id 'net.researchgate.release' version '2.3.4'
-    id "com.jfrog.bintray" version '1.4'
     id 'java-gradle-plugin'
+//    id 'com.gradle.plugin-publish' // TODO publish to gradle plugin portal
+    id 'net.researchgate.release' version '2.3.4'
+    id 'com.jfrog.bintray' version '1.6'
 }
 
-version = project.glideGradlePluginVersion
-
-// TODO publish to gradle plugin portal
-//apply plugin: "com.gradle.plugin-publish"
+//version = project.glideGradlePluginVersion
 
 repositories {
     jcenter()
@@ -99,9 +97,9 @@ import org.apache.tools.ant.filters.*
 
 afterEvaluate {
     configure(tasks['processResources']) {
-        def versions = project.properties.findAll { k, v -> k.endsWith("Version") }
+        def versions = project.properties.findAll { k, v -> k.endsWith("Version") && v instanceof String }
 
-        inputs.properties versions // so that resources are processed on version change
+//        inputs.properties versions // so that resources are processed on version change
         filter(ReplaceTokens, tokens: versions)
     }
 }
@@ -137,7 +135,7 @@ bintray {
     def projectDescription = project.description
 
     pkg {
-        repo = 'glide'          // or your repo name
+        repo = 'glide'
         name = projectName      // somehow project.* doesn't work in this closure
         desc = projectDescription
         licenses = ['MIT']
@@ -147,4 +145,6 @@ bintray {
 }
 
 
-
+release {
+    tagTemplate = '$name-$version'
+}

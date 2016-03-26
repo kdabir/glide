@@ -20,3 +20,6 @@ subprojects {
     }
 
 }
+
+task releaseFilters(dependsOn: ':glide-filter:release')
+task releasePlugin(dependsOn: ':glide-gradle-plugin:release')

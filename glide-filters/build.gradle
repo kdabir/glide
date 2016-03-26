@@ -1,9 +1,10 @@
 plugins {
     id 'maven-publish'
-    id "com.jfrog.bintray" version '1.4'
+    id 'com.jfrog.bintray' version '1.6'
+    id 'net.researchgate.release' version '2.3.4'
 }
 
-version = project.glideFiltersVersion
+//version = project.glideFiltersVersion
 description = "Filters for glide apps"
 
 dependencies {
@@ -51,3 +52,9 @@ bintray {
     }
 //    dryRun = true // whether to run this as dry-run, without deploying
 }
+
+release {
+    tagTemplate = '$name-$version'
+}
+
+afterReleaseBuild.dependsOn bintrayUpload
