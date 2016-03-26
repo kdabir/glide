@@ -18,12 +18,13 @@ dependencies {
     testCompile "junit:junit:$junitVersion"
 }
 
+final EMPTY_LIST = Collections.unmodifiableList([])
 
 sourceSets {
     main.groovy.srcDirs = ['src']
     test.groovy.srcDirs = ['test']
 
-    main.resources.srcDirs = test.resources.srcDirs = main.java.srcDirs = test.java.srcDirs = []
+    main.resources.srcDirs = test.resources.srcDirs = main.java.srcDirs = test.java.srcDirs = EMPTY_LIST
 }
 
 publishing {
