@@ -1,17 +1,8 @@
 plugins {
-    id 'groovy'
     id 'maven-publish'
     id 'java-gradle-plugin'
-//    id 'com.gradle.plugin-publish' // TODO publish to gradle plugin portal
-    id 'net.researchgate.release' version '2.3.4'
+    id 'net.researchgate.release' version '2.3.5'
     id 'com.jfrog.bintray' version '1.6'
-}
-
-//version = project.glideGradlePluginVersion
-
-repositories {
-    jcenter()
-    mavenLocal()
 }
 
 // Hackery for gradle test kit:
@@ -21,8 +12,6 @@ task createClasspathManifest {
 
     inputs.files sourceSets.main.runtimeClasspath
     outputs.dir outputDir
-
-    println "using gradle - $project.gradleVersion"
 
     doLast {
         outputDir.mkdirs()

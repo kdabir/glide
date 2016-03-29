@@ -4,6 +4,7 @@ import com.google.appengine.AppEnginePlugin
 import com.google.appengine.task.ExplodeAppTask
 import directree.Synchronizer
 import glide.generators.AppEngineWebXmlGenerator
+import glide.generators.ContentGenerator
 import glide.generators.CronXmlGenerator
 import glide.generators.LoggingPropertiesGenerator
 import glide.generators.QueueXmlGenerator
@@ -19,6 +20,10 @@ import org.gradle.api.tasks.TaskAction
  */
 class GlideSyncTask extends DefaultTask {
     public static final String root = "build/exploded-app/WEB-INF/" // TODO externalize/convention
+
+    // glide.groovy must be in root of project
+    def glideFile = new File("glide.groovy")
+    ConfigObject defaultConfig = readDefaultConfig()
 
     def mappings = [
             "${root}/web.xml"           : new WebXmlGenerator(),
@@ -37,17 +42,13 @@ class GlideSyncTask extends DefaultTask {
         getProject().getLogger().info("touched config files")
     }
 
-    def writeToFiles(config) {
-        mappings.each { file, generator ->
+    def writeToFiles(ConfigObject config) {
+        mappings.each { file, ContentGenerator generator ->
             new File(file).text = generator.generate(config)
         }
 
         getProject().getLogger().info("written to config files")
     }
-
-    // glide.groovy must be in root of project
-    def glideFile = new File("glide.groovy")
-    ConfigObject defaultConfig = getDefaultconfig()
 
     void generateFiles() {
 
@@ -59,7 +60,7 @@ class GlideSyncTask extends DefaultTask {
         project.logger.quiet("conf created")
     }
 
-    private ConfigObject getDefaultconfig() {
+    private ConfigObject readDefaultConfig() {
         def glideFile = getClass().getResourceAsStream("/templates/glide.groovy")
 
         new ConfigSlurper().parse(glideFile.getText())
@@ -67,12 +68,12 @@ class GlideSyncTask extends DefaultTask {
 
     @TaskAction
     protected void sync() {
-        ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
+        final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
         final File webAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
-        def sourcePath = webAppDir.absolutePath
-        def targetPath = explodeTask.explodedAppDirectory.absolutePath
+        final String sourcePath = webAppDir.absolutePath
+        final String targetPath = explodeTask.explodedAppDirectory.absolutePath
 
-        if (explodeTask.getArchive().name.endsWith(".ear")) {
+        if (explodeTask.archive.name.endsWith(".ear")) {
             project.logger.error("EAR Not Supported")
             return
         }
