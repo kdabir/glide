@@ -72,10 +72,15 @@ class GlideGradlePlugin implements Plugin<Project> {
         def glideSyncTask = project.tasks.create("glideSync", glide.gradle.GlideSyncTask)
 
         ExplodeAppTask explode = project.tasks.findByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
-        RunTask runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
-
         glideSyncTask.dependsOn explode
+
+        RunTask runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
         runTask.dependsOn glideSyncTask
+
+//        project.tasks.withType(RunTask) {
+//            dependsOn(glideSyncTask)
+//        }
+
     }
 
     private Properties getVersions() {

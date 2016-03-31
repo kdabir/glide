@@ -3,7 +3,7 @@ package glide.gradle
 import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Specification
-import spock.lang.Unroll
+
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
@@ -39,12 +39,25 @@ class GlidePluginIntgTests extends Specification {
                    plugins {
                     id 'com.appspot.glide-gae'
                    }
+                   appengine {
+                        daemon = true
+                   }
                 """.stripIndent()
         }
 
     }
 
-    def cleanup() {}        // teardown
+    def cleanup() {
+        def result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withTestKitDir(testKitGradleHome)
+                .withPluginClasspath(pluginClasspath)
+                .withArguments('appengineStop', '--debug' ,"--stacktrace")
+                .build()
+
+
+
+    }        // teardown
     def setupSpec() {}      // before-class
     def cleanupSpec() {}    // after-class
 
@@ -54,7 +67,7 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(testKitGradleHome)
                 .withPluginClasspath(pluginClasspath)
-                .withArguments('glideVersion', '--debug')
+                .withArguments('glideVersion', '--info')
                 .build()
 
         then:
@@ -62,18 +75,42 @@ class GlidePluginIntgTests extends Specification {
         result.task(":glideVersion").outcome == SUCCESS
     }
 
-    def "starts glide app"() {
+    def "syncs glide app"() {
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(testKitGradleHome)
                 .withPluginClasspath(pluginClasspath)
-                .withArguments('glideSync')
+                .withArguments('glideSync', '--info')
                 .build()
 
+        def buildDir = new File(testProjectDir, "build")
+
         then:
-        new File(testProjectDir, "build").isDirectory()
+        buildDir.isDirectory()
+        new File(buildDir, "exploded-app/index.html").isFile()
+        new File(buildDir, "exploded-app/index.groovy").isFile()
+        new File(buildDir, "exploded-app/WEB-INF/lib").isDirectory()
         result.task(":glideSync").outcome == SUCCESS
+    }
+
+    def "run glide app"() {
+        when:
+        def result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withTestKitDir(testKitGradleHome)
+                .withPluginClasspath(pluginClasspath)
+                .withArguments('appengineRun', '--debug' ,"--stacktrace")
+                .build()
+
+        def buildDir = new File(testProjectDir, "build")
+
+        then:
+        result.output.contains('8080')
+        println result.output
+        result.task(":glideSync").outcome == SUCCESS
+        result.task(":appengineRun").outcome == SUCCESS
+        new URL("http://localhost:8080/index.groovy").text.contains 'home'
     }
 
     def printTree(){

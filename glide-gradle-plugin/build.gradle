@@ -95,6 +95,9 @@ afterEvaluate {
 
 
 task integrationTest(type: Test) {
+    group = "verification"
+    description = "runs the integration tests"
+
     testClassesDir = sourceSets.testIntegration.output.classesDir
     classpath = sourceSets.testIntegration.runtimeClasspath
 

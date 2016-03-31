@@ -19,7 +19,7 @@ import org.gradle.api.tasks.TaskAction
  * Need to clean up this task and make GaelykSync more capable
  */
 class GlideSyncTask extends DefaultTask {
-    public static final String root = "build/exploded-app/WEB-INF/" // TODO externalize/convention
+    final String root = "${project.buildDir}/exploded-app/WEB-INF/" // TODO externalize/convention
 
     // glide.groovy must be in root of project
     def glideFile = new File("glide.groovy")
@@ -51,8 +51,7 @@ class GlideSyncTask extends DefaultTask {
     }
 
     void generateFiles() {
-
-        def userConfig = new ConfigSlurper().parse(glideFile.text)
+        def userConfig = new ConfigSlurper().parse(glideFile.exists()? glideFile.text : "app {}")
 
         project.logger.quiet("creating config files .....")
         createFiles()
@@ -61,9 +60,9 @@ class GlideSyncTask extends DefaultTask {
     }
 
     private ConfigObject readDefaultConfig() {
-        def glideFile = getClass().getResourceAsStream("/templates/glide.groovy")
+        def defaultGlideFile = getClass().getResourceAsStream("/templates/glide.groovy")
 
-        new ConfigSlurper().parse(glideFile.getText())
+        new ConfigSlurper().parse(defaultGlideFile.getText())
     }
 
     @TaskAction
@@ -81,10 +80,11 @@ class GlideSyncTask extends DefaultTask {
         // TODO allow to enhance the preserved files from extension
         final String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF"
 
-
         project.logger.debug("source: " + sourcePath)
         project.logger.debug("target: " + targetPath)
         project.logger.debug("config:" + defaultConfig)
+
+        if (!glideFile.exists()) generateFiles()
 
         // TODO allow to enhance the synchronizer
         Synchronizer.build {
