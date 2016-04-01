@@ -3,13 +3,8 @@ package glide.gradle
 import com.google.appengine.AppEnginePlugin
 import com.google.appengine.task.ExplodeAppTask
 import directree.Synchronizer
-import glide.generators.AppEngineWebXmlGenerator
-import glide.generators.ContentGenerator
-import glide.generators.CronXmlGenerator
-import glide.generators.LoggingPropertiesGenerator
-import glide.generators.QueueXmlGenerator
-import glide.generators.Sitemesh3XmlGenerator
-import glide.generators.WebXmlGenerator
+import glide.config.GlideConfigGenerator
+import glide.config.MappingsFactory
 import org.gradle.api.DefaultTask
 import org.gradle.api.plugins.WarPluginConvention
 import org.gradle.api.tasks.TaskAction
@@ -19,54 +14,37 @@ import org.gradle.api.tasks.TaskAction
  * Need to clean up this task and make GaelykSync more capable
  */
 class GlideSyncTask extends DefaultTask {
-    final String root = "${project.buildDir}/exploded-app/WEB-INF/" // TODO externalize/convention
 
-    // glide.groovy must be in root of project
-    def glideFile = new File("glide.groovy")
-    ConfigObject defaultConfig = readDefaultConfig()
+    final File glideFile = project.file("glide.groovy") // glide.groovy must be in root of project
 
-    def mappings = [
-            "${root}/web.xml"           : new WebXmlGenerator(),
-            "${root}/appengine-web.xml" : new AppEngineWebXmlGenerator(),
-            "${root}/logging.properties": new LoggingPropertiesGenerator(),
-            "${root}/sitemesh3.xml"     : new Sitemesh3XmlGenerator(),
-            "${root}/cron.xml"          : new CronXmlGenerator(),
-            "${root}/queue.xml"         : new QueueXmlGenerator()
-    ]
+    final def slurper = new ConfigSlurper()
 
-    def createFiles() {
-        mappings.each { file, generator ->
-            ant.touch(file: file, mkdirs: true)
+    def defaultConfigScript = getClass().getResourceAsStream("/templates/glide.groovy").text
+    def defaultConfig = slurper.parse(defaultConfigScript)
+
+    def getConfig() {
+        if (glideFile.exists()) {
+            def freshDefaultConfig = slurper.parse(defaultConfigScript)
+            freshDefaultConfig.merge(slurper.parse(glideFile.text))
+            freshDefaultConfig
+        } else {
+            defaultConfig
         }
-
-        getProject().getLogger().info("touched config files")
     }
 
-    def writeToFiles(ConfigObject config) {
-        mappings.each { file, ContentGenerator generator ->
-            new File(file).text = generator.generate(config)
-        }
-
-        getProject().getLogger().info("written to config files")
-    }
-
-    void generateFiles() {
-        def userConfig = new ConfigSlurper().parse(glideFile.exists()? glideFile.text : "app {}")
-
-        project.logger.quiet("creating config files .....")
-        createFiles()
-        writeToFiles(defaultConfig.merge(userConfig))
-        project.logger.quiet("conf created")
-    }
-
-    private ConfigObject readDefaultConfig() {
-        def defaultGlideFile = getClass().getResourceAsStream("/templates/glide.groovy")
-
-        new ConfigSlurper().parse(defaultGlideFile.getText())
+    boolean isGlideConfigModifiedAfter(long timestamp) {
+        glideFile.lastModified() > timestamp
     }
 
     @TaskAction
     protected void sync() {
+        def targetRoot = project.file("${project.buildDir}/exploded-app")
+        def sourceRoot = project.file("${project.webAppDirName}")
+        // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fails
+
+        def mappings = MappingsFactory.getMappingsFor(sourceRoot, targetRoot)
+        GlideConfigGenerator generator = new GlideConfigGenerator(mappings)
+
         final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
         final File webAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
         final String sourcePath = webAppDir.absolutePath
@@ -84,7 +62,7 @@ class GlideSyncTask extends DefaultTask {
         project.logger.debug("target: " + targetPath)
         project.logger.debug("config:" + defaultConfig)
 
-        if (!glideFile.exists()) generateFiles()
+        generator.generate(getConfig())
 
         // TODO allow to enhance the synchronizer
         Synchronizer.build {
@@ -96,16 +74,11 @@ class GlideSyncTask extends DefaultTask {
 
             beforeSync {
                 if (isGlideConfigModifiedAfter(lastSynced)) {
-                    generateFiles()
+                    generator.generate(getConfig())
                 }
             }
         }.start()
 
-    }
-
-
-    boolean isGlideConfigModifiedAfter(long timestamp) {
-        glideFile.lastModified() > timestamp
     }
 
 }

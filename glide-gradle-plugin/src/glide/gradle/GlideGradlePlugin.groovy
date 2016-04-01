@@ -84,8 +84,18 @@ class GlideGradlePlugin implements Plugin<Project> {
     }
 
     private Properties getVersions() {
-        final Properties versions = new Properties();
-        versions.load(this.getClass().getResourceAsStream("/versions.properties"));
+        final Properties versions = new Properties()
+
+        def stream = this.getClass().getResourceAsStream("/versions.properties")/*?:
+            Thread.currentThread().getContextClassLoader().getResourceAsStream("/versions.properties")?:
+            GlideGradlePlugin.classLoader.getResourceAsStream("/versions.properties")*/
+
+        if (stream == null) {
+            throw new RuntimeException("could not load versions.properties")
+        }
+
+        versions.load(stream);
+
         return versions
     }
 }
