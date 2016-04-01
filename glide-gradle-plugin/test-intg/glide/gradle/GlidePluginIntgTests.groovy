@@ -2,6 +2,7 @@ package glide.gradle
 
 import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.IgnoreRest
 import spock.lang.Specification
 
 
@@ -62,6 +63,10 @@ class GlidePluginIntgTests extends Specification {
     def cleanupSpec() {}    // after-class
 
     def "prints glide version"() {
+        File resourcesDir = pluginClasspath.find { it.isDirectory() && new File(it, "versions.properties").isFile() }
+        Properties properties = new Properties()
+        properties.load(new File(resourcesDir, "versions.properties").newInputStream())
+
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
@@ -71,7 +76,7 @@ class GlidePluginIntgTests extends Specification {
                 .build()
 
         then:
-        result.output.contains('SNAPSHOT')
+        result.output.contains(properties.get("selfVersion"))
         result.task(":glideVersion").outcome == SUCCESS
     }
 
