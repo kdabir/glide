@@ -141,3 +141,5 @@ bintray {
 release {
     tagTemplate = '$name-$version'
 }
+
+afterReleaseBuild.dependsOn bintrayUpload
