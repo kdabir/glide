@@ -173,6 +173,6 @@ release {
 }
 
 
-afterReleaseBuild.dependsOn clean
-bintrayUpload.mustRunAfter clean
+//afterReleaseBuild.dependsOn clean
+//bintrayUpload.mustRunAfter clean
 afterReleaseBuild.dependsOn bintrayUpload
