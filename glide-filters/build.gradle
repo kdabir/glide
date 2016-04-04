@@ -16,6 +16,10 @@ dependencies {
     compile "org.gaelyk:gaelyk:$gaelykVersion"
 
     testCompile "junit:junit:$junitVersion"
+    testCompile "org.spockframework:spock-core:${spockVersion}", {
+        exclude group: 'org.codehaus.groovy'
+    }
+
 }
 
 final EMPTY_LIST = Collections.unmodifiableList([])

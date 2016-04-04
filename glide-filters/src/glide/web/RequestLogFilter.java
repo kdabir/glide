@@ -28,7 +28,7 @@ public class RequestLogFilter implements Filter {
         logUser = Boolean.parseBoolean(filterConfig.getInitParameter("logUser"));
 
         logger.info(String.format(
-                "LogFilter loaded logRequest=%b logHeaders=%b logParams=%b logUser=%b",
+                "RequestLogFilter loaded with logRequest=%b logHeaders=%b logParams=%b logUser=%b",
                 logRequest, logHeaders, logParams, logUser));
 
     }
@@ -43,21 +43,21 @@ public class RequestLogFilter implements Filter {
         String uri = request.getRequestURI();
 
         if (logRequest) {
-            logger.info(String.format("request: method=%s uri=%s query=%s",
+            logger.info(String.format("[request] method=%s uri=%s query=%s",
                     request.getMethod(), uri, request.getQueryString()
             ));
         }
 
         if (logHeaders) {
-            logger.info("headers:" + headersString(request));
+            logger.info("[headers]" + headersString(request));
         }
 
         if (logParams) {
-            logger.info("params:" + paramsString(request));
+            logger.info("[params]" + paramsString(request));
         }
 
         if (logUser) {
-            logger.info("user:" + userString(request));
+            logger.info("[user]" + userString(request));
         }
 
         filterChain.doFilter(request, response);
