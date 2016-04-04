@@ -19,6 +19,14 @@ task createClasspathManifest {
     }
 }
 
+
+configurations {
+    testIntegrationCompile.extendsFrom testCompile
+    testIntegrationRuntime.extendsFrom testRuntime
+
+    glideFilters
+}
+
 /**
  * If groovy is not excluded in transitive deps, build Fails with:
  * groovy.lang.GroovyRuntimeException: Conflicting module versions.
@@ -39,6 +47,8 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
 
+    glideFilters project(":glide-filters")
+
     testCompile "junit:junit:${junitVersion}"
     testCompile "org.spockframework:spock-core:${spockVersion}", {
         exclude group: 'org.codehaus.groovy'
@@ -47,13 +57,6 @@ dependencies {
     // Add the classpath file to the test runtime classpath
     testRuntime files(createClasspathManifest)
 }
-
-
-configurations {
-    testIntegrationCompile.extendsFrom testCompile
-    testIntegrationRuntime.extendsFrom testRuntime
-}
-
 
 sourceSets {
     main.groovy.srcDirs = ['src']
@@ -87,8 +90,34 @@ import org.apache.tools.ant.filters.*
 afterEvaluate {
     configure(tasks['processResources']) {
         def versions = project.properties.findAll { k, v -> k.endsWith("Version") && v instanceof String }
-        versions.put("glideGradlePluginVersion", project.version)
-        versions.put("glideFiltersVersion", '0.9.0') // TODO - better way to find latest release stable version (not +)
+
+        def selfVersion = project.version.toString()
+        versions.put("glideGradlePluginVersion", selfVersion)
+
+        if (project.hasProperty("glideFiltersVersion")) {
+            versions.put("glideFiltersVersion", project.glideFiltersVersion)
+
+        } else {
+            if (selfVersion.endsWith("SNAPSHOT")) {
+                logger.quiet "using SNAPSHOT version"
+                def filtersProjectVersion = project.configurations.glideFilters.dependencies.first().version.toString()
+                versions.put("glideFiltersVersion", filtersProjectVersion)
+
+            } else {
+                try {
+                    def metadata = new XmlSlurper().parse("https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/glide-gradle-plugin/maven-metadata.xml")
+                    def latest = metadata.versioning.latest
+
+                    logger.quiet "Following versions are available : ${metadata.versioning.versions.version*.text()}"
+                    logger.quiet "Choosing latest : ${latest}"
+
+                    versions.put("glideFiltersVersion", latest)
+                } catch (e) {
+                    throw new RuntimeException("unable to fetch maven metadata, set Project property 'glideFiltersVersion' explicitly from command line")
+                }
+            }
+        }
+
 //        inputs.properties versions // so that resources are processed on version change
         filter(ReplaceTokens, tokens: versions)
     }
@@ -96,6 +125,7 @@ afterEvaluate {
 
 
 task integrationTest(type: Test) {
+    dependsOn ":glide-filters:publishToMavenLocal"
     group = "verification"
     description = "runs the integration tests"
 
@@ -142,4 +172,7 @@ release {
     tagTemplate = '$name-$version'
 }
 
+
+afterReleaseBuild.dependsOn clean
+bintrayUpload.mustRunAfter clean
 afterReleaseBuild.dependsOn bintrayUpload

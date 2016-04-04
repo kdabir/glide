@@ -39,11 +39,11 @@ web {
     }
 
     filters {
-        glideLogFilter {
-            filter_class = "glide.web.GlideLogFilter"
+        logFilter {
+            filter_class = "glide.web.RequestLogFilter"
             url_patterns = ['/*']
             dispatchers = [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR']
-            init_params = ['logStats' : false]
+            init_params = [logRequest:true, logHeaders:true, logParams:true, logUser:true]
         }
         routesFilter {
             filter_class = "groovyx.gaelyk.routes.RoutesFilter"
@@ -80,7 +80,7 @@ web {
 //}
 
 logging {
-    text = """
-    .level = INFO
+    text = """\
+    .level=INFO
     """.stripMargin()
 }

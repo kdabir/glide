@@ -3,6 +3,7 @@ package glide.gradle
 import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.IgnoreRest
+import spock.lang.Shared
 import spock.lang.Specification
 
 
@@ -15,14 +16,17 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class GlidePluginIntgTests extends Specification {
 
-    //TODO  following is not great option - https://discuss.gradle.org/t/testkit-downloading-dependencies/12305
-    public static final File testKitGradleHome = new File(System.getProperty('user.home'), '.gradle-testkit')
-
     public static final File testProjectDir = new File("build", "test-project")
 
-    List<File> pluginClasspath
+    @Shared List<File> pluginClasspath
 
     def setup() {
+    }
+
+    def cleanup() {
+    }        // teardown
+
+    def setupSpec() {    // before-class
         def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
 
         if (pluginClasspathResource == null) {
@@ -48,19 +52,9 @@ class GlidePluginIntgTests extends Specification {
 
     }
 
-    def cleanup() {
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
-                .withArguments('appengineStop', '--debug' ,"--stacktrace")
-                .build()
+    def cleanupSpec() {     // after-class
 
-
-
-    }        // teardown
-    def setupSpec() {}      // before-class
-    def cleanupSpec() {}    // after-class
+    }
 
     def "prints glide version"() {
         File resourcesDir = pluginClasspath.find { it.isDirectory() && new File(it, "versions.properties").isFile() }
@@ -70,7 +64,7 @@ class GlidePluginIntgTests extends Specification {
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
-                .withTestKitDir(testKitGradleHome)
+                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath(pluginClasspath)
                 .withArguments('glideVersion', '--info')
                 .build()
@@ -84,7 +78,7 @@ class GlidePluginIntgTests extends Specification {
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
-                .withTestKitDir(testKitGradleHome)
+                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath(pluginClasspath)
                 .withArguments('glideSync', '--info')
                 .build()
@@ -96,27 +90,12 @@ class GlidePluginIntgTests extends Specification {
         new File(buildDir, "exploded-app/index.html").isFile()
         new File(buildDir, "exploded-app/index.groovy").isFile()
         new File(buildDir, "exploded-app/WEB-INF/lib").isDirectory()
+        new File(buildDir, "exploded-app/WEB-INF/web.xml").isFile()
+        new File(buildDir, "exploded-app/WEB-INF/appengine-web.xml").isFile()
+
         result.task(":glideSync").outcome == SUCCESS
     }
 
-    def "run glide app"() {
-        when:
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
-                .withArguments('appengineRun', '--debug' ,"--stacktrace")
-                .build()
-
-        def buildDir = new File(testProjectDir, "build")
-
-        then:
-        result.output.contains('8080')
-        println result.output
-        result.task(":glideSync").outcome == SUCCESS
-        result.task(":appengineRun").outcome == SUCCESS
-        new URL("http://localhost:8080/index.groovy").text.contains 'home'
-    }
 
     def printTree(){
         println "tree ${testProjectDir.absolutePath}".execute().text
