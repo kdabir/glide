@@ -56,7 +56,7 @@ class GlideSyncTask extends DefaultTask {
         }
 
         // TODO allow to enhance the preserved files from extension
-        final String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF"
+        final String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF WEB-INF/appengine-generated/**"
 
         project.logger.debug("source: " + sourcePath)
         project.logger.debug("target: " + targetPath)
