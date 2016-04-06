@@ -56,7 +56,7 @@ web {
             url_patterns = ['/*']
             dispatchers = [ 'FORWARD', 'REQUEST']
         }
-        glideFilter {
+        protectedResourcesFilter {
             filter_class = "glide.web.ProtectedResourcesFilter"
             url_patterns = ['/*']
             init_params = [strict:false, block: '.*/_.*', allow: '/_ah/.*']
