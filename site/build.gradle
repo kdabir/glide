@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        maven { url 'http://dl.bintray.com/kdabir/glide'}
+    }
+    dependencies { classpath "io.github.kdabir.glide:glide-gradle-plugin:0.9.3-SNAPSHOT" }
+}
+apply plugin: 'com.appspot.glide-gae'
+
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile "com.github.rjeschke:txtmark:0.10"
+}

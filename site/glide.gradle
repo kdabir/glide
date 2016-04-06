@@ -1,3 +1,0 @@
-dependencies {
-    compile "com.github.rjeschke:txtmark:0.10"
-}

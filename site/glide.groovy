@@ -1,6 +1,6 @@
 app {
     name = "glide-gae"
-    version = "site"
+    version = "previous"
 
     resource_files {
         includes = ["**.gtpl", "**.html", "**.groovy", "**.md", "favicon.ico", "robots.txt", "sitemap.xml"]
@@ -21,9 +21,6 @@ web {
     ]
 
     filters {
-        glideFilter {
-            init_params = [logStats: false]
-        }
         protectedResourcesFilter {
             init_params = [strict: true]
         }
