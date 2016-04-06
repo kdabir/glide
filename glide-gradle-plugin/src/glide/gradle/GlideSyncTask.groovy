@@ -17,11 +17,11 @@ class GlideSyncTask extends DefaultTask {
 
     final File glideFile = project.file("glide.groovy") // glide.groovy must be in root of project
 
-    final def slurper = new ConfigSlurper()
-
+    def slurper
     def defaultConfigScript = getClass().getResourceAsStream("/templates/glide.groovy").text
-    def defaultConfig = slurper.parse(defaultConfigScript)
+    def defaultConfig
 
+    // must be called after defaultConfig is loaded
     def getConfig() {
         if (glideFile.exists()) {
             def freshDefaultConfig = slurper.parse(defaultConfigScript)
@@ -41,6 +41,9 @@ class GlideSyncTask extends DefaultTask {
         def targetRoot = project.file("${project.buildDir}/exploded-app")
         def sourceRoot = project.file("${project.webAppDirName}")
         // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fails
+
+        // ugly
+        defaultConfig = slurper.parse(defaultConfigScript)
 
         def mappings = MappingsFactory.getMappingsFor(sourceRoot, targetRoot)
         GlideConfigGenerator generator = new GlideConfigGenerator(mappings)

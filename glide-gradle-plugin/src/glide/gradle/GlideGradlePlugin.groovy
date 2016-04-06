@@ -36,6 +36,10 @@ class GlideGradlePlugin implements Plugin<Project> {
             GlideExtension glideExtension = project.glide
             Versions versions = glideExtension.versions
 
+            project.tasks.withType(GlideSyncTask) { task ->
+                task.slurper = new ConfigSlurper(glideExtension.env)
+            }
+
             project.dependencies {
                 compile "com.google.appengine:appengine-api-1.0-sdk:${versions.appengineVersion}"
                 compile "com.google.appengine:appengine-api-labs:${versions.appengineVersion}"
@@ -63,7 +67,7 @@ class GlideGradlePlugin implements Plugin<Project> {
             functionalTests.groovy.srcDir 'functionalTests'
         }
 
-        project.tasks.withType(GaelykSynchronizeResourcesTask){
+        project.tasks.withType(GaelykSynchronizeResourcesTask) {
             enabled = false
         }
 

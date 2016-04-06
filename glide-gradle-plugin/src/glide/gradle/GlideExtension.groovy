@@ -7,6 +7,7 @@ class GlideExtension {
     Project project
     Versions versions
     boolean useSitemesh = true
+    String env
 
     GlideExtension(Project project, Properties defaultVersions) {
         this.project = project
