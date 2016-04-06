@@ -1,6 +1,7 @@
 package glide.gradle
 
 import directree.DirTree
+import groovy.util.slurpersupport.GPathResult
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.IgnoreRest
 import spock.lang.Shared
@@ -35,6 +36,7 @@ class GlideConfigIntgTests extends Specification {
             file "glide.groovy", """\
             app {
                 name = "sample"
+                version = "1"
             }
             environments {
                 dev {
@@ -67,7 +69,6 @@ class GlideConfigIntgTests extends Specification {
     }
 
 
-    @IgnoreRest
     def "should honor env in glide block"() {
         when:
         def result = GradleRunner.create()
@@ -77,8 +78,12 @@ class GlideConfigIntgTests extends Specification {
                 .withArguments('glideSync', '--info', '-s')
                 .build()
 
+
+        def xml = new XmlSlurper().parse(new File(testProjectDir, "build/exploded-app/WEB-INF/appengine-web.xml"))
+
         then:
-        new XmlSlurper().parse(new File(testProjectDir, "build/exploded-app/WEB-INF/appengine-web.xml")).application == "sample-dev"
+        xml.application == "sample-dev"
+        xml.version == "1"
     }
 
 
