@@ -28,7 +28,7 @@
   <meta property="og:image" content="https://glide-gae.appspot.com/img/glide_25x.png" />
   <meta property="og:description" content="Create Awesome Apps on Google App Engine in a Snap" />
 
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css">
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
 
   <!-- included end to override bootstrap values-->
@@ -78,7 +78,10 @@
                 ].each { key, value -> %>
             <li class="${key==params.page?'active':'inactive'}"><a itemprop="${value.itemprop}" href="${value.href}">${value.label}</a></li>
             <%}%>
+            <li>
+            <a href="https://github.com/kdabir/glide/releases"><span class="label label-success">New version releasing soon</span></a>
 
+            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="https://groups.google.com/forum/#!forum/glide-groovy">Support</a></li>
@@ -128,7 +131,7 @@
 
   <script src="/js/app.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <script>
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
