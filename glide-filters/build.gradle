@@ -9,13 +9,10 @@ description = "Filters for glide apps"
 
 dependencies {
     compile 'javax.servlet:servlet-api:2.5'
-    compile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
-
     compile "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
     compile "com.google.appengine:appengine-api-labs:$appengineVersion"
-    compile "org.gaelyk:gaelyk:$gaelykVersion"
 
-    testCompile "junit:junit:$junitVersion"
+    testCompile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
     testCompile "org.spockframework:spock-core:${spockVersion}", {
         exclude group: 'org.codehaus.groovy'
     }
@@ -25,10 +22,10 @@ dependencies {
 final EMPTY_LIST = Collections.unmodifiableList([])
 
 sourceSets {
-    main.groovy.srcDirs = ['src']
+    main.java.srcDirs = ['src']
     test.groovy.srcDirs = ['test']
 
-    main.resources.srcDirs = test.resources.srcDirs = main.java.srcDirs = test.java.srcDirs = EMPTY_LIST
+    main.resources.srcDirs = test.resources.srcDirs = main.groovy.srcDirs = test.java.srcDirs = EMPTY_LIST
 }
 
 publishing {
