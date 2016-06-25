@@ -13,8 +13,6 @@ class GlideAppRunIntgTests extends Specification {
     public static final File testProjectDir = new File("build", "test-run-project")
 
     @Shared def runResult
-    @Shared List<File> pluginClasspath
-
 
     def setup() {
 
@@ -26,14 +24,6 @@ class GlideAppRunIntgTests extends Specification {
     }
 
     def setupSpec() {  // before-class
-
-        def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
-
-        if (pluginClasspathResource == null) {
-            throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
-        }
-
-        this.pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
 
         DirTree.create(testProjectDir.absolutePath) {
             dir "app", {
@@ -54,13 +44,11 @@ class GlideAppRunIntgTests extends Specification {
         runResult = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('appengineRun', '--debug' ,"--stacktrace")
                 .build()
 
         println runResult.output
-
-        def buildDir = new File(testProjectDir, "build")
 
 
     }
@@ -69,7 +57,7 @@ class GlideAppRunIntgTests extends Specification {
         def stopResult = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('appengineStop', '--debug' ,"--stacktrace")
                 .build()
     }
@@ -101,9 +89,6 @@ class GlideAppRunIntgTests extends Specification {
         expect:
         resp.contains 'home'
     }
-
-
-
 
 }
 

@@ -18,16 +18,7 @@ class GlideConfigIntgTests extends Specification {
 
     public static final File testProjectDir = new File("build", "test-project-config")
 
-    @Shared List<File> pluginClasspath
-
     def setupSpec() {    // before-class
-        def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
-
-        if (pluginClasspathResource == null) {
-            throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
-        }
-
-        this.pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
 
         DirTree.create(testProjectDir.absolutePath) {
             dir "app", {
@@ -74,7 +65,7 @@ class GlideConfigIntgTests extends Specification {
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('glideSync', '--info', '-s')
                 .build()
 

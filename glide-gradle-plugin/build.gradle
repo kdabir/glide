@@ -5,21 +5,6 @@ plugins {
     id 'com.jfrog.bintray' version '1.6'
 }
 
-// Hackery for gradle test kit:
-// Write the plugin's classpath to a file to share with the tests
-task createClasspathManifest {
-    def outputDir = file("$buildDir/$name")
-
-    inputs.files sourceSets.main.runtimeClasspath
-    outputs.dir outputDir
-
-    doLast {
-        outputDir.mkdirs()
-        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
-    }
-}
-
-
 configurations {
     testIntegrationCompile.extendsFrom testCompile
     testIntegrationRuntime.extendsFrom testRuntime
@@ -54,8 +39,6 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
 
-    // Add the classpath file to the test runtime classpath
-    testRuntime files(createClasspathManifest)
 }
 
 sourceSets {
@@ -74,6 +57,10 @@ sourceSets {
             srcDirs = ['test-intg']
         }
     }
+}
+
+gradlePlugin { // to make int test classes available to tests
+    testSourceSets sourceSets.testIntegration
 }
 
 jar {

@@ -18,8 +18,6 @@ class GlidePluginIntgTests extends Specification {
 
     public static final File testProjectDir = new File("build", "test-project")
 
-    @Shared List<File> pluginClasspath
-
     def setup() {
     }
 
@@ -27,14 +25,6 @@ class GlidePluginIntgTests extends Specification {
     }        // teardown
 
     def setupSpec() {    // before-class
-        def pluginClasspathResource = getClass().classLoader.findResource("plugin-classpath.txt")
-
-        if (pluginClasspathResource == null) {
-            throw new IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
-        }
-
-        this.pluginClasspath = pluginClasspathResource.readLines().collect { new File(it) }
-
         DirTree.create(testProjectDir.absolutePath) {
             dir "app", {
                 file "index.groovy", "println 'home'"
@@ -49,7 +39,6 @@ class GlidePluginIntgTests extends Specification {
                    }
                 """.stripIndent()
         }
-
     }
 
     def cleanupSpec() {     // after-class
@@ -57,15 +46,14 @@ class GlidePluginIntgTests extends Specification {
     }
 
     def "prints glide version"() {
-        File resourcesDir = pluginClasspath.find { it.isDirectory() && new File(it, "versions.properties").isFile() }
         Properties properties = new Properties()
-        properties.load(new File(resourcesDir, "versions.properties").newInputStream())
+        properties.load(this.class.getClassLoader().getResourceAsStream("versions.properties"))
 
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('glideVersion', '--info')
                 .build()
 
@@ -79,7 +67,7 @@ class GlidePluginIntgTests extends Specification {
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath(pluginClasspath)
+                .withPluginClasspath()
                 .withArguments('glideSync', '--info')
                 .build()
 
