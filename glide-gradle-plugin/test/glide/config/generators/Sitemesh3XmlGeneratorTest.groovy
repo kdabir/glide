@@ -1,4 +1,4 @@
-package glide.generators
+package glide.config.generators
 
 class Sitemesh3XmlGeneratorTest extends GroovyTestCase {
 

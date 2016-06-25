@@ -1,12 +1,12 @@
 package glide.config
 
-import glide.generators.AppEngineWebXmlGenerator
-import glide.generators.ConfigGenerator
-import glide.generators.CronXmlGenerator
-import glide.generators.LoggingPropertiesGenerator
-import glide.generators.QueueXmlGenerator
-import glide.generators.Sitemesh3XmlGenerator
-import glide.generators.WebXmlGenerator
+import glide.config.generators.AppEngineWebXmlGenerator
+import glide.config.generators.ConfigGenerator
+import glide.config.generators.CronXmlGenerator
+import glide.config.generators.LoggingPropertiesGenerator
+import glide.config.generators.QueueXmlGenerator
+import glide.config.generators.Sitemesh3XmlGenerator
+import glide.config.generators.WebXmlGenerator
 
 class MappingsFactory {
 

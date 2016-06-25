@@ -1,6 +1,6 @@
 package glide.config
 
-import glide.generators.ConfigGenerator
+import glide.config.generators.ConfigGenerator
 import spock.lang.Specification
 
 import static directree.DirTree.create

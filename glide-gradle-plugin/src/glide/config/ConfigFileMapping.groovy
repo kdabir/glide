@@ -1,6 +1,6 @@
 package glide.config
 
-import glide.generators.ConfigGenerator
+import glide.config.generators.ConfigGenerator
 
 
 class ConfigFileMapping {
