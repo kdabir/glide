@@ -134,7 +134,7 @@ task integrationTest(type: Test) {
 
     testLogging {
         events "failed"
-        exceptionFormat "short"
+        exceptionFormat "full"
     }
 
 }
