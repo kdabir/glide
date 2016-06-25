@@ -1,6 +1,6 @@
 package glide.config
 
-import glide.generators.ContentGenerator
+import glide.generators.ConfigGenerator
 import spock.lang.Specification
 
 import static directree.DirTree.create
@@ -8,7 +8,7 @@ import static directree.DirTree.create
 
 class GlideConfigGeneratorSpec extends Specification {
 
-    static final ContentGenerator generator = { "some generated content" } as ContentGenerator
+    static final ConfigGenerator generator = { "some generated content" } as ConfigGenerator
     def fsRoot = new File("build/configTest")
     def sourceRoot = new File(fsRoot, "app")
     def targetRoot = new File(fsRoot, "build")

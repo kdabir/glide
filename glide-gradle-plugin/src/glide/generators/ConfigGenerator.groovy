@@ -1,5 +1,5 @@
 package glide.generators
 
-interface ContentGenerator {
+interface ConfigGenerator {
     String generate(ConfigObject config)
 }

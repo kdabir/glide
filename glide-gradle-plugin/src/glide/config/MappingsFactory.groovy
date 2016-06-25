@@ -1,7 +1,7 @@
 package glide.config
 
 import glide.generators.AppEngineWebXmlGenerator
-import glide.generators.ContentGenerator
+import glide.generators.ConfigGenerator
 import glide.generators.CronXmlGenerator
 import glide.generators.LoggingPropertiesGenerator
 import glide.generators.QueueXmlGenerator
@@ -38,7 +38,7 @@ class MappingsFactory {
         new File(parent, name)
     }
 
-    static def mapping(ContentGenerator generator, File target, List<File> excludeIfPresent) {
+    static def mapping(ConfigGenerator generator, File target, List<File> excludeIfPresent) {
         new ConfigFileMapping(generator, target, excludeIfPresent)
     }
 

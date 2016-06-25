@@ -1,12 +1,11 @@
 package glide.generators
 
-class QueueXmlGenerator implements ContentGenerator {
+import groovy.xml.MarkupBuilder
+
+class QueueXmlGenerator extends XmlBasedConfigGenerator {
 
     @Override
-    String generate(ConfigObject config) {
-        def writer = new StringWriter()
-        def xml = new groovy.xml.MarkupBuilder(writer)
-
+    void enrichXml(ConfigObject config, MarkupBuilder xml) {
         xml."queue-entries" {
             if (config.queue.total_storage_limit) {
                 "total-storage-limit" config.queue.total_storage_limit
@@ -28,7 +27,6 @@ class QueueXmlGenerator implements ContentGenerator {
                 }
             }
         }
-
-        writer.toString()
     }
+
 }

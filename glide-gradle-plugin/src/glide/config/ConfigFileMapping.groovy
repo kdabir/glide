@@ -1,15 +1,15 @@
 package glide.config
 
-import glide.generators.ContentGenerator
+import glide.generators.ConfigGenerator
 
 
 class ConfigFileMapping {
-    final ContentGenerator generator
+    final ConfigGenerator generator
     final File outputFile
     final List<File> excludeIfPresent
 
 
-    ConfigFileMapping(ContentGenerator generator, File outputFile, List<File> excludeIfPresent) {
+    ConfigFileMapping(ConfigGenerator generator, File outputFile, List<File> excludeIfPresent) {
         this.outputFile = outputFile
         this.excludeIfPresent = excludeIfPresent
         this.generator = generator

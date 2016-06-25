@@ -1,12 +1,11 @@
 package glide.generators
 
-class Sitemesh3XmlGenerator implements ContentGenerator {
+import groovy.xml.MarkupBuilder
+
+class Sitemesh3XmlGenerator extends XmlBasedConfigGenerator {
 
     @Override
-    String generate(ConfigObject config) {
-        def writer = new StringWriter()
-        def sitemesh3Xml = new groovy.xml.MarkupBuilder(writer)
-
+    void enrichXml(ConfigObject config, MarkupBuilder sitemesh3Xml) {
         sitemesh3Xml.sitemesh {
             config.layout.mappings.each { path_pattern, decorators ->
                 if (decorators instanceof String)
@@ -29,6 +28,5 @@ class Sitemesh3XmlGenerator implements ContentGenerator {
                     }
             }
         }
-        writer.toString()
     }
 }

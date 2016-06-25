@@ -1,5 +1,7 @@
 package glide.generators
 
+import groovy.xml.MarkupBuilder
+
 // TODO multiple filter urls-patterns can have set of dispatchers
 // TODO list value like `listeners` are not additive when two config objects are merged.
 /* url_patterns = [
@@ -12,12 +14,10 @@ package glide.generators
  * takes config object in Groovy Config format and produces web.xml content
  *
  */
-class WebXmlGenerator implements ContentGenerator {
+class WebXmlGenerator extends XmlBasedConfigGenerator {
 
     @Override
-    String generate(ConfigObject config) {
-        def writer = new StringWriter()
-        def webXml = new groovy.xml.MarkupBuilder(writer)
+    void enrichXml(ConfigObject config, MarkupBuilder webXml) {
 
         webXml.'web-app'(xmlns: "http://java.sun.com/xml/ns/javaee", version: "2.5") {
 
@@ -110,7 +110,6 @@ class WebXmlGenerator implements ContentGenerator {
 
         }
 
-        writer.toString()
     }
 
 }

@@ -1,12 +1,11 @@
 package glide.generators
 
-class CronXmlGenerator implements ContentGenerator {
+import groovy.xml.MarkupBuilder
+
+class CronXmlGenerator extends XmlBasedConfigGenerator {
 
     @Override
-    String generate(ConfigObject config) {
-        def writer = new StringWriter()
-        def xml = new groovy.xml.MarkupBuilder(writer)
-
+    void enrichXml(ConfigObject config, MarkupBuilder xml) {
         xml.cronentries {
             config.cron.entries.each { entry ->
                 cron {
@@ -17,6 +16,5 @@ class CronXmlGenerator implements ContentGenerator {
             }
         }
 
-        writer.toString()
     }
 }

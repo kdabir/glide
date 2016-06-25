@@ -3,7 +3,7 @@ package glide.generators
 /**
  * very dumb intentionally.
  */
-class LoggingPropertiesGenerator implements ContentGenerator {
+class LoggingPropertiesGenerator implements ConfigGenerator {
 
     @Override
     String generate(ConfigObject config) {

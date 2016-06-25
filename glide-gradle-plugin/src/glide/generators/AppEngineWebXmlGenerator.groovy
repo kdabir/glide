@@ -1,11 +1,11 @@
 package glide.generators
 
-class AppEngineWebXmlGenerator implements ContentGenerator {
+import groovy.xml.MarkupBuilder
+
+class AppEngineWebXmlGenerator extends XmlBasedConfigGenerator {
 
     @Override
-    String generate(ConfigObject config) {
-        def writer = new StringWriter()
-        def appEngineWebXml = new groovy.xml.MarkupBuilder(writer)
+    void enrichXml(ConfigObject config, MarkupBuilder appEngineWebXml) {
         final app = config.app
 
         appEngineWebXml.'appengine-web-app'(xmlns: "http://appengine.google.com/ns/1.0") {
@@ -58,6 +58,5 @@ class AppEngineWebXmlGenerator implements ContentGenerator {
                 }
             }
         }
-        writer.toString()
     }
 }
