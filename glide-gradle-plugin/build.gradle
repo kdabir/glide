@@ -160,6 +160,11 @@ release {
 }
 
 
+task jarWithLibs(type: Copy, dependsOn: 'jar') {
+    from configurations.runtime
+    into "build/libs/deps"
+}
+
 //afterReleaseBuild.dependsOn clean
 //bintrayUpload.mustRunAfter clean
 afterReleaseBuild.dependsOn bintrayUpload
