@@ -19,7 +19,7 @@ class MappingsFactory {
     public static final String QUEUE_XML = "queue.xml"
 
 
-    static def getMappingsFor(File sourceRoot, File targetRoot) {
+    static List<ConfigFileMapping> getMappingsFor(File sourceRoot, File targetRoot) {
         File sourceWebInf = file(sourceRoot, WEB_INF)
         File targetWebInf = file(targetRoot, WEB_INF)
 
@@ -34,11 +34,11 @@ class MappingsFactory {
 
     }
 
-    static File file(File parent, String name) {
+    private static File file(File parent, String name) {
         new File(parent, name)
     }
 
-    static def mapping(ConfigGenerator generator, File target, List<File> excludeIfPresent) {
+    private static def mapping(ConfigGenerator generator, File target, List<File> excludeIfPresent) {
         new ConfigFileMapping(generator, target, excludeIfPresent)
     }
 
