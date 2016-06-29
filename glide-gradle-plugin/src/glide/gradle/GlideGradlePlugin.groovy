@@ -21,7 +21,6 @@ class GlideGradlePlugin implements Plugin<Project> {
             jcenter()
             maven { url GLIDE_MAVEN_REPO }
             mavenCentral()
-            mavenLocal()
         }
 
         project.sourceCompatibility = javaVersion

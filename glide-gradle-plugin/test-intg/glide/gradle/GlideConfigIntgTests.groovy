@@ -43,6 +43,8 @@ class GlideConfigIntgTests extends Specification {
                     id 'com.appspot.glide-gae'
                    }
 
+                   repositories { mavenLocal() }
+
                    glide {
                         env = "dev"
                    }

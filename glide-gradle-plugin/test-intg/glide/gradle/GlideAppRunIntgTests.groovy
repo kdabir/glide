@@ -35,6 +35,7 @@ class GlideAppRunIntgTests extends Specification {
                    plugins {
                     id 'com.appspot.glide-gae'
                    }
+                   repositories { mavenLocal() }
                    appengine {
                         daemon = true
                    }
