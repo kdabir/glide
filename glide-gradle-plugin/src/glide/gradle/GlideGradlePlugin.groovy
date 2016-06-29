@@ -6,13 +6,20 @@ import com.google.appengine.task.RunTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.gaelyk.tasks.GaelykSynchronizeResourcesTask
+import org.gradle.util.GradleVersion
 
 class GlideGradlePlugin implements Plugin<Project> {
 
     public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
-    def javaVersion = 1.7
+    public static final String SUPPORTED_JAVA_VERSION = "1.7"
+
+    public static final GradleVersion MIN_GRADLE_VERSION = GradleVersion.version('2.13')
 
     void apply(Project project) {
+
+        if (GradleVersion.current() < MIN_GRADLE_VERSION) {
+            throw new GradleException("${MIN_GRADLE_VERSION} or above is required")
+        }
         project.apply(plugin: 'war')
         project.apply(plugin: 'groovy')
         project.apply(plugin: 'org.gaelyk')
@@ -23,8 +30,8 @@ class GlideGradlePlugin implements Plugin<Project> {
             mavenCentral()
         }
 
-        project.sourceCompatibility = javaVersion
-        project.targetCompatibility = javaVersion
+        project.sourceCompatibility = SUPPORTED_JAVA_VERSION
+        project.targetCompatibility = SUPPORTED_JAVA_VERSION
 
         project.extensions.create('glide', GlideExtension, project, getVersions())
 
