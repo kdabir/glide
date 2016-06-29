@@ -19,7 +19,7 @@ class ChainedConfigLoaderIntgTest extends Specification {
         def config = new ChainedConfigLoader()
                 .load(ChainedConfigLoader.getResourceAsStream('/config/base.groovy').text)
                 .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelyk.groovy').text)
-                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGtpl.groovy').text)
+                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelykTemplates.groovy').text)
                 .load(ChainedConfigLoader.getResourceAsStream('/config/enableSitemesh.groovy').text)
                 .config
 
@@ -33,7 +33,7 @@ class ChainedConfigLoaderIntgTest extends Specification {
         when:
         def config = new ChainedConfigLoader()
                 .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelyk.groovy').text)
-                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGtpl.groovy').text)
+                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelykTemplates.groovy').text)
                 .config
 
         then:
@@ -43,7 +43,7 @@ class ChainedConfigLoaderIntgTest extends Specification {
     def "honours loading order in case of list correctly" (){
         when:
         def config = new ChainedConfigLoader()
-                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGtpl.groovy').text)
+                .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelykTemplates.groovy').text)
                 .load(ChainedConfigLoader.getResourceAsStream('/config/enableGaelyk.groovy').text)
                 .config
 
