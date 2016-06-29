@@ -9,57 +9,61 @@ import java.util.regex.Pattern;
 
 
 /**
- * This filter responds with a 404 for resources that are marked as protected.
+ * This filter responds with a 404 for requests for resources that are marked as protected.
  * <p>
- * Resources can be marked as protected by providing a {@code strict} init param.
- * in strict mode <code>strict == true</code>, every client request reaching this filter will be essentially served a 404
+ * All resources can be marked as protected by providing a {@code strict} init param.
+ * in strict mode, <code>strict == true</code>, every client request reaching this filter will be essentially served a 404
  * <p>
- * If <code>strict</code> mode if <code>false</code>,
+ * If <code>strict</code> mode is <code>false</code>,
  * and if the request matches <code>block<code/> pattern, and the client will be served a 404
- * but if the request matches <code>allow<code/> pattern, and the request will pass through.
+ * BUT if the request also matches <code>except<code/> pattern, then the request will pass through.
  *
  * <p>
- * This filter should be applied to only direct requests from client, i.e. dispatcher type REQUEST (which is default)
+ * This filter should be applied to only direct requests from client, i.e. dispatcher type <code>REQUEST</code> (which is default)
  * <p>
- * This filter should be the last filter in the filter chain. a routing filter should have routed the request and hence
- * no well-intentioned request should reach this filter
+ * This filter should be the last filter in the filter chain. A routing filter should have routed the request already
+ * and hence no well-intentioned request should reach this filter
  * <p>
- * Strict mode take preference above all.
+ * Strict mode takes preference above all and in strict mode, <code>block</code> / <code>except</code>  values will be simply ignored
+ * <p>
+ * In non strict mode, without providing <code>block</code> value, providing <code>except</code> value does not
+ * make sense as every url will be  allowed (hence <code>except</code> value is ignored)
+ *
+ *
  */
 public class ProtectedResourcesFilter implements Filter {
 
     private static final Logger logger = Logger.getLogger(ProtectedResourcesFilter.class.getName());
 
     private boolean strictMode;
-    private Pattern allowPattern = null, blockPattern = null;
-
-
-    private String initParamOrDefault(FilterConfig config, String key, String defaultValue) {
-        String value = config.getInitParameter(key);
-        if (value == null) {
-            return defaultValue;
-        }
-        return value;
-    }
-
+    private Pattern blockPattern = null, exceptPattern = null;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
         strictMode = Boolean.parseBoolean(filterConfig.getInitParameter("strict"));
 
-        String blockPatternParam = filterConfig.getInitParameter("block");
-        if (blockPatternParam != null) {
-            blockPattern = Pattern.compile(blockPatternParam);
+        String blockPatternParam = "ignored", exceptPatternParam = "ignored"; // just for better logging
+
+        // nesting this logic saves setting of unnecessary patterns
+
+        // if it's strict mode, we need not check anything else
+        if (!strictMode) {
+            blockPatternParam = filterConfig.getInitParameter("block");
+
+            // if its not strict and block is null, then there is no point of checking except, as every url will be allowed
+            if (blockPatternParam != null) {
+                blockPattern = Pattern.compile(blockPatternParam);
+
+                exceptPatternParam = filterConfig.getInitParameter("except");
+                if (exceptPatternParam != null) {
+                    exceptPattern = Pattern.compile(exceptPatternParam);
+                }
+            }
         }
 
-        String allowPatternParam = filterConfig.getInitParameter("allow");
-        if (allowPatternParam != null) {
-            allowPattern = Pattern.compile(allowPatternParam);
-        }
-
-        logger.info(String.format("ProtectedResourcesFilter loaded with strict=%b block=%s allow=%s ",
-                strictMode, blockPatternParam, allowPatternParam));
+        logger.info(String.format("ProtectedResourcesFilter loaded with effective config strict=%b block=%s except=%s ",
+                strictMode, blockPatternParam, exceptPatternParam));
 
     }
 
@@ -70,8 +74,8 @@ public class ProtectedResourcesFilter implements Filter {
 
         String requestURI = request.getRequestURI();
 
-        if (strictMode || (isBlocked(requestURI) && !isAllowed(requestURI))) {
-            logger.warning(String.format("protected url reached method=%s uri=%s query=%s Returning 404",
+        if (strictMode || (isBlocked(requestURI) && !isExempted(requestURI))) {
+            logger.warning(String.format("request for protected resource received with method=%s uri=%s query=%s; returning 404",
                     request.getMethod(), requestURI, request.getQueryString()));
 
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -82,14 +86,13 @@ public class ProtectedResourcesFilter implements Filter {
 
     }
 
-    private boolean isAllowed(String requestURI) {
-        return allowPattern != null && allowPattern.matcher(requestURI).matches();
-    }
-
     private boolean isBlocked(String requestURI) {
         return blockPattern != null && blockPattern.matcher(requestURI).matches();
     }
 
+    private boolean isExempted(String requestURI) {
+        return exceptPattern != null && exceptPattern.matcher(requestURI).matches();
+    }
 
     @Override
     public void destroy() {
