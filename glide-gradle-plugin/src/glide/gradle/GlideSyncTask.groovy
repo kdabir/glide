@@ -15,7 +15,10 @@ import org.gradle.api.tasks.TaskAction
  */
 class GlideSyncTask extends DefaultTask {
 
-    final File glideFile = project.file("glide.groovy") // glide.groovy must be in root of project
+    public static final String GLIDE_FILE_NAME = "glide.groovy"
+    public static final String EXPLODED_APP_DIR_NAME = "exploded-app"
+
+    final File glideFile = project.file(GLIDE_FILE_NAME) // glide.groovy must be in root of project
 
     def slurper
     def defaultConfigScript = getClass().getResourceAsStream("/templates/glide.groovy").text
@@ -36,11 +39,14 @@ class GlideSyncTask extends DefaultTask {
         glideFile.lastModified() > timestamp
     }
 
+
+    // TODO, this starts sync at given freq. Provide something for syncOnce semantics.
+
     @TaskAction
     protected void sync() {
-        def targetRoot = project.file("${project.buildDir}/exploded-app")
+        def targetRoot = project.file("${project.buildDir}/$EXPLODED_APP_DIR_NAME")
         def sourceRoot = project.file("${project.webAppDirName}")
-        // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fails
+        // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fail
 
         // ugly
         defaultConfig = slurper.parse(defaultConfigScript)
@@ -74,6 +80,7 @@ class GlideSyncTask extends DefaultTask {
             targetDir targetPath, includeEmptyDirs: true
             preserve includes: preserved, preserveEmptyDirs: true
             syncFrequencyInSeconds 3        // TODO allow from extension
+            withTimer(new Timer("Synchronizer Daemon Thread", true))
 
             beforeSync {
                 if (isGlideConfigModifiedAfter(lastSynced)) {

@@ -12,7 +12,7 @@ class GlideExtensionTest extends Specification {
         def extension = new GlideExtension(Mock(Project), testVersions)
 
         then:
-        extension.useSitemesh == true
+        extension.features.enableSitemesh == true
         testVersions.collect { k,v -> extension.versions[k] == v }.every()
     }
 
@@ -27,5 +27,18 @@ class GlideExtensionTest extends Specification {
 
         then:
         extension.versions.appengineVersion == "newVersion"
+    }
+
+    def "should update features from closure"() {
+        given:
+        def extension = new GlideExtension(Mock(Project), testVersions)
+
+        when:
+        extension.features {
+            enableGaelyk = false
+        }
+
+        then:
+        extension.features.enableGaelyk == false
     }
 }

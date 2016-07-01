@@ -46,7 +46,7 @@ class GlideAppRunIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('appengineRun', '--debug' ,"--stacktrace")
+                .withArguments('appengineRun', '--info' ,"--stacktrace")
                 .build()
 
         println runResult.output
@@ -59,7 +59,7 @@ class GlideAppRunIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('appengineStop', '--debug' ,"--stacktrace")
+                .withArguments('appengineStop', '--info' ,"--stacktrace")
                 .build()
     }
 
