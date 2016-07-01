@@ -1,0 +1,27 @@
+# http://editorconfig.org
+
+root = true
+
+# Defaults
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.{groovy, java, gradle}]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{js, css, html, json, yaml, coffee}]
+indent_size = 2
+indent_style = space
+
+[{Makefile, makefile}]
+indent_style = tab
+indent_size = 4
