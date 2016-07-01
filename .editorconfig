@@ -12,13 +12,14 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
-[*.{groovy, java, gradle}]
+[*.{groovy,java,gradle}]
 indent_size = 4
+indent_style = space
 
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{js, css, html, json, yaml, coffee}]
+[*.{js,css,html,json,yaml,coffee}]
 indent_size = 2
 indent_style = space
 
