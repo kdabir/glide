@@ -1,0 +1,40 @@
+//---------------------------------------------------------------------------//
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+        maven { url 'http://dl.bintray.com/kdabir/glide' }
+    }
+
+    dependencies {
+        def localJars = fileTree(dir: "../glide-gradle-plugin/build/libs", include: "**/*.jar")
+
+        if (localJars.files.size() > 10) {
+            // Following block brings in the plugin's development version in to classpath
+            // which may not have been published to mavenLocal,
+            classpath localJars
+            logger.quiet "Using local jars for sandbox"
+        } else {
+            // if that's not found then tries to use the latest possible version from repo.
+            classpath "io.github.kdabir.glide:glide-gradle-plugin:+"
+        }
+    }
+}
+
+//---------------------------------------------------------------------------//
+
+apply plugin: 'com.appspot.glide-gae'
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += file('app')
+    }
+}
+
+glide {
+    versions {
+        appengineVersion = "1.9.38" // override appengine version
+    }
+
+}

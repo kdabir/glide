@@ -1,0 +1,1 @@
+println new MyGroovyClass().get()
