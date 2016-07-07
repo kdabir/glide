@@ -55,12 +55,12 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('glideVersion', '--info')
+                .withArguments('glideInfo', '--info')
                 .build()
 
         then:
         result.output.contains(properties.get("selfVersion"))
-        result.task(":glideVersion").outcome == SUCCESS
+        result.task(":glideInfo").outcome == SUCCESS
     }
 
     def "syncs glide app"() {
@@ -69,20 +69,23 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('glideSync', '--info')
+                .withArguments('glideSyncOnce', '--info', "--stacktrace")
+//                .withDebug(true)
                 .build()
 
         def buildDir = new File(testProjectDir, "build")
 
+        println result.output
+
         then:
         buildDir.isDirectory()
+        result.task(":glideSyncOnce").outcome == SUCCESS
+
         new File(buildDir, "exploded-app/index.html").isFile()
         new File(buildDir, "exploded-app/index.groovy").isFile()
         new File(buildDir, "exploded-app/WEB-INF/lib").isDirectory()
         new File(buildDir, "exploded-app/WEB-INF/web.xml").isFile()
         new File(buildDir, "exploded-app/WEB-INF/appengine-web.xml").isFile()
-
-        result.task(":glideSync").outcome == SUCCESS
     }
 
 

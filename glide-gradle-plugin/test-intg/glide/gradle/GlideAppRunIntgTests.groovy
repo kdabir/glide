@@ -28,7 +28,7 @@ class GlideAppRunIntgTests extends Specification {
         DirTree.create(testProjectDir.absolutePath) {
             dir "app", {
                 file "index.groovy", "println 'home'"
-                file "index.html", "<h1>hello world</h1>"
+                file "home.html", "<h1>hello world</h1>"
                 file "_routes.groovy", "get '/', forward:'index.groovy'"
             }
             file "build.gradle", """\
