@@ -15,3 +15,9 @@ app {
 web {
     welcome_files = ['index.html']
 }
+
+logging {
+    text = """\
+    .level=INFO
+    """.stripMargin()
+}
