@@ -15,7 +15,7 @@ web {
         }
     }
 
-    filter {
+    filters {
         routesFilter {
             filter_class = "groovyx.gaelyk.routes.RoutesFilter"
             url_patterns = ['/*']
