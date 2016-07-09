@@ -1,7 +1,7 @@
 plugins {
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.6'
-    id 'net.researchgate.release' version '2.3.5'
+    id 'com.jfrog.bintray' version '1.7'
+    id 'net.researchgate.release' version '2.4.0'
 }
 
 //version = project.glideFiltersVersion
@@ -9,10 +9,10 @@ description = "Filters for glide apps"
 
 dependencies {
     compile 'javax.servlet:servlet-api:2.5'
-    compile "com.google.appengine:appengine-api-1.0-sdk:$appengineVersion"
-    compile "com.google.appengine:appengine-api-labs:$appengineVersion"
+    compile "com.google.appengine:appengine-api-1.0-sdk:${appengineVersion}"
+    compile "com.google.appengine:appengine-api-labs:${appengineVersion}"
 
-    testCompile "org.codehaus.groovy:groovy-all:${project.groovyVersion}"
+    testCompile "org.codehaus.groovy:groovy-all:${groovyVersion}"
     testCompile "org.spockframework:spock-core:${spockVersion}", {
         exclude group: 'org.codehaus.groovy'
     }

@@ -1,8 +1,8 @@
 plugins {
     id 'maven-publish'
     id 'java-gradle-plugin'
-    id 'net.researchgate.release' version '2.3.5'
-    id 'com.jfrog.bintray' version '1.6'
+    id 'net.researchgate.release' version '2.4.0'
+    id 'com.jfrog.bintray' version '1.7'
 }
 
 configurations {

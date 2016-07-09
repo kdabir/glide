@@ -1,6 +1,6 @@
 app {
     name = "glide-gae"
-    version = "previous"
+    version = "beta"
 
     resource_files {
         includes = ["**.gtpl", "**.html", "**.groovy", "**.md", "favicon.ico", "robots.txt", "sitemap.xml"]
