@@ -16,7 +16,8 @@ class GlideGenerateConf extends DefaultTask {
 
     ConfigPipeline configPipeline
 
-    @Input
+    // TODO - with @Input enabled this is not accepting null values, need to check
+    //@Input
     String env
 
     @TaskAction

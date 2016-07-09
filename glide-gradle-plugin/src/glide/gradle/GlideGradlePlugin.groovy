@@ -8,6 +8,7 @@ import glide.config.ConfigPipeline
 import glide.gradle.tasks.ForgivingSync
 import glide.gradle.tasks.GlideGenerateConf
 import glide.gradle.tasks.GlideInfo
+import glide.gradle.tasks.GlidePrepare
 import glide.gradle.tasks.GlideStartSync
 import glide.gradle.tasks.GlideSyncOnce
 import org.gradle.api.GradleException
@@ -29,89 +30,155 @@ class GlideGradlePlugin implements Plugin<Project> {
     public static final String SUPPORTED_JAVA_VERSION = '1.7'
     public static final GradleVersion MIN_GRADLE_VERSION = GradleVersion.version('2.13')
 
-    // Source Directories
+    // Source Directories and files
     public static final String WEB_APP_DIR = 'app'
     public static final String SRC_DIR = 'src'
     public static final String TEST_DIR = 'test'
     public static final String FUNCTIONAL_TESTS_DIR = 'functionalTests'
     public static final String PUBLIC_DIR = 'public'
+    public static final String GLIDE_CONFIG_FILE = 'glide.groovy'
 
     // ConfigOutput
-    public static final String OUTPUT_WEB_APP_DIR = 'warRoot'
-    public static final String OUTPUT_WEB_INF_DIR = "${OUTPUT_WEB_APP_DIR}/WEB-INF"
-    public static final String OUTPUT_LIB_DIR = "${OUTPUT_WEB_INF_DIR}/lib"
-    public static final String OUTPUT_CLASSES_DIR = "${OUTPUT_WEB_INF_DIR}/classes"
+    public static final String DEFAULT_OUTPUT_WEB_APP_DIR = 'warRoot'
+    public static final String WEB_INF_DIR = "WEB-INF"
+    public static final String LIB_DIR = "lib"
+    public static final String CLASSES_DIR = "classes"
+
+    // Task Names
+    public static final String GLIDE_PREPARE_TASK = "glidePrepare"
+    public static final String GLIDE_COPY_LIBS_TASK = "glideCopyLibs"
+    public static final String GLIDE_APP_SYNC_TASK = "glideAppSync"
+    public static final String GLIDE_RUN_DEV_DAEMON_TASK = "glideRunDevDaemon"
+    public static final String GLIDE_INFO_TASK = "glideInfo"
+    public static final String GLIDE_GENERATE_CONFIG_TASK = "glideGenerateConfig"
+    public static final String GLIDE_SYNC_TASK = "glideSync"
+    public static final String GLIDE_SYNC_ONCE_TASK = "glideSyncOnce"
+    public static final String WATCH_TASK = 'watch'
 
     // called by Gradle when the glide plugin is applied on project
     void apply(Project project) {
 
         ensureMinimumGradleVersion()
-
         applyRequiredPlugins(project)
-
         configureRepos(project)
-
         configureJavaCompatibility(project)
-
         configureSourceDirectories(project)
 
+        // Create extension on project. We need to wait till its configured in the build script.
+        // Try not to use `conventionMappings` for loading values from configured extension object.
+        // Use the extension's instance only in `project.afterEvaluate` closure.
         project.extensions.create(GLIDE_EXTENSION_NAME, GlideExtension, project, DefaultVersions.get())
 
-        // Configure ConfigOutput
-        def warRoot = project.file("${project.buildDir}/$OUTPUT_WEB_APP_DIR")
-        def webInfDir = project.file("${project.buildDir}/$OUTPUT_WEB_INF_DIR")
-        def libRoot = project.file("${project.buildDir}/$OUTPUT_LIB_DIR")
-        def classesRoot = project.file("${project.buildDir}/$OUTPUT_CLASSES_DIR")
+        // File must be in project root as glide.gradle
+        File glideConfigFile = project.file(GLIDE_CONFIG_FILE)
 
+        // Output dir for the continuous mode + classes Dir for src
+        // Note: Currently warRoot is not configurable through build script
+        File warRoot = fileIn(project.buildDir, DEFAULT_OUTPUT_WEB_APP_DIR),
+             webInfDir = fileIn(warRoot, WEB_INF_DIR),
+             classesRoot = fileIn(webInfDir, CLASSES_DIR),
+             libRoot = fileIn(webInfDir, LIB_DIR)
+
+        //** Following configuration does not depend on configured extension **//
         project.sourceSets.main.output.classesDir = project.sourceSets.main.output.resourcesDir = classesRoot
 
+        // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fail
 
+        // Create Glide tasks
 
+        GlidePrepare glidePrepare = project.tasks.create(GLIDE_PREPARE_TASK, GlidePrepare)
+        glidePrepare.webInfDir = webInfDir
 
+        GlideInfo glideInfo = project.tasks.create(GLIDE_INFO_TASK, GlideInfo)
 
+        GlideGenerateConf glideGenerateConfig = project.tasks.create(GLIDE_GENERATE_CONFIG_TASK, GlideGenerateConf)
+        glideGenerateConfig.dependsOn glidePrepare
+
+        Task glideCopyLibs = project.tasks.create(GLIDE_COPY_LIBS_TASK, Copy)
+        glideCopyLibs.dependsOn glidePrepare
+        glideCopyLibs.into { libRoot }
+        glideCopyLibs.from { project.configurations.runtime }
+
+        ForgivingSync glideAppSync = project.tasks.create(GLIDE_APP_SYNC_TASK, ForgivingSync)
+        glideAppSync.dependsOn glidePrepare
+
+        // This task is repeat of appengineRun with very focused settings
+        // do that users setting don't matter
+        // we also dont want this instance of run task to depend on explode-war
+        RunTask glideRunDevDaemon = project.tasks.create(GLIDE_RUN_DEV_DAEMON_TASK, RunTask)
+        glideRunDevDaemon.httpAddress = "localhost" // TODO
+        glideRunDevDaemon.httpPort = 8080
+        glideRunDevDaemon.daemon = true
+        glideRunDevDaemon.disableUpdateCheck = true
+        glideRunDevDaemon.disableDatagram = false
+        glideRunDevDaemon.jvmFlags = ["-Dappengine.fullscan.seconds=3"]
+        glideRunDevDaemon.explodedAppDirectory = warRoot
+
+        def explode = project.tasks.findByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
+        def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
+        def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
+        def downloadSdk = project.tasks.findByName(AppEnginePlugin.APPENGINE_DOWNLOAD_SDK)
+        def compileGroovy = project.tasks.findByName('compileGroovy')
+        def compileJava = project.tasks.findByName('compileJava')
+
+        glideRunDevDaemon.dependsOn downloadSdk, glideGenerateConfig, glideAppSync, compileJava, compileGroovy, glideCopyLibs
+
+        Task watch = project.tasks.create(WATCH_TASK)
+        watch.dependsOn glideGenerateConfig, glideAppSync, compileJava, compileGroovy
+
+        //******* this is enhancement to existing flow ***********//
+        GlideStartSync glideSyncTask = project.tasks.create(GLIDE_SYNC_TASK, GlideStartSync)
+        GlideSyncOnce glideSyncOnce = project.tasks.create(GLIDE_SYNC_ONCE_TASK, GlideSyncOnce)
+
+        glideSyncTask.dependsOn explode
+        glideSyncOnce.dependsOn explode
+        runTask.dependsOn glideSyncTask
+        update.dependsOn glideSyncOnce
+
+        // disable Gaelyk's sync because we have our own sync
+        project.tasks.withType(GaelykSynchronizeResourcesTask) { enabled = false }
+
+        //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
-            // We need after evaluate to let user configure the glide {} block in buildscript and
+            // We need after evaluate to let user configure the glide {} block in build script and
             // then we add the dependencies to the project
-            // TODO ensure WEB-INF dir in both source and target already exists, otherwise file writing may fail
-            GlideExtension configuredGlideExtension = project.extensions.getByType(GlideExtension)
 
-            configureDependencies(project, configuredGlideExtension)
+            final GlideExtension configuredGlideExtension = project.extensions.getByType(GlideExtension)
+            final Versions versions = configuredGlideExtension.versions
+            final FeaturesExtension features = configuredGlideExtension.features
+            final String env = configuredGlideExtension.env
+
+            // TODO allow following two from extension
+            final int frequency = 3 // seconds
+            final String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF WEB-INF/appengine-generated/**"
 
             final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
 
-            if (explodeTask.archive.name.endsWith(".ear")) {
-                project.logger.error("EAR Not Supported")
-                throw new GradleException("EAR Not Supported")
-            }
+            ensureNonEarArchive(explodeTask)
+            configureDependencies(project, features, versions)
 
-            def glideConfig = project.file('glide.groovy')
-            String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF WEB-INF/appengine-generated/**"
-            final File webAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
-            final String sourcePath = webAppDir.absolutePath
-            final String targetPath = explodeTask.explodedAppDirectory.absolutePath
+            final File sourceWebAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
+            final File targetWebAppDir = explodeTask.explodedAppDirectory
 
             ConfigPipeline pipelineForSync = new ConfigPipelineBuilder()
-                .withFeaturesExtension(configuredGlideExtension.features)
-                .withUserConfig(glideConfig)
-                .withWebAppSourceRoot(project.convention.getPlugin(WarPluginConvention).webAppDir)
-                .withWebAppTargetRoot(explodeTask.explodedAppDirectory)
+                .withFeaturesExtension(features)
+                .withUserConfig(glideConfigFile)
+                .withWebAppSourceRoot(sourceWebAppDir)
+                .withWebAppTargetRoot(targetWebAppDir)
                 .build()
 
-
-            String env = configuredGlideExtension.env
-
-            Synchronizer synchronizer =  Synchronizer.build {
+            Synchronizer synchronizer = Synchronizer.build {
                 withAnt(ant)
-                sourceDir sourcePath
-                targetDir targetPath, includeEmptyDirs: true
+                sourceDir sourceWebAppDir.absolutePath
+                targetDir targetWebAppDir.absolutePath, includeEmptyDirs: true
                 preserve includes: preserved, preserveEmptyDirs: true
-                syncFrequencyInSeconds 3        // TODO allow from extension
+                syncFrequencyInSeconds frequency
                 withTimer(new Timer("Synchronizer Daemon Thread", true))
 
                 beforeSync {
                     // project.logger.quiet("performing before sync checks..."  + glideConfig.lastModified())
-                    if (glideConfig.lastModified() >= lastSynced) {
-                        project.logger.quiet("Going to generate files")
+                    if (glideConfigFile.lastModified() >= lastSynced) {
+                        project.logger.quiet("generating config files...")
                         pipelineForSync.execute(env)
                     }
                 }
@@ -119,7 +186,7 @@ class GlideGradlePlugin implements Plugin<Project> {
 
             ConfigPipeline configPipeline = new ConfigPipelineBuilder()
                 .withFeaturesExtension(configuredGlideExtension.features)
-                .withUserConfig(project.file('glide.groovy'))
+                .withUserConfig(glideConfigFile)
                 .withWebAppSourceRoot(project.convention.getPlugin(WarPluginConvention).webAppDir)
                 .withWebAppTargetRoot(warRoot)
                 .build()
@@ -137,52 +204,26 @@ class GlideGradlePlugin implements Plugin<Project> {
             project.tasks.withType(GlideSyncOnce) { GlideSyncOnce task ->
                 task.synchronizer = synchronizer
             }
+
+            // project applies war plugin, hence this property should be present on Project
+            // but user should not have changed it in build script
+            glideAppSync.from = sourceWebAppDir
+            glideAppSync.into = warRoot
         }
 
-        project.tasks.withType(GaelykSynchronizeResourcesTask) {
-            enabled = false
+        //** Following code executes when task graph is ready **//
+        project.gradle.taskGraph.whenReady { graph ->
+            project.logger.info("task graph ready..")
         }
+    }
 
+    // must call after project eval done
+    private void ensureNonEarArchive(ExplodeAppTask explodeTask) {
 
-        project.task("glidePrepare") << { warRoot.mkdirs() }
-
-        Task glideCoptLibs = project.tasks.create("glideCopyLibs", Copy)
-        glideCoptLibs.into libRoot
-        glideCoptLibs.from project.configurations.runtime
-
-
-        Task generateConf = project.tasks.create("glideGenerateConfing", GlideGenerateConf)
-        Task fSync = project.tasks.create("forgivingSync", ForgivingSync)
-        // project applies war plugin, hence this property should be present on Project
-        // but user should not have changed it in build script
-        fSync.from project.convention.getPlugin(WarPluginConvention).webAppDir
-        fSync.into warRoot
-
-
-        def glideRunDevDaemon = project.tasks.create("glideRunDevDaemon", RunTask)
-        glideRunDevDaemon.httpAddress = "localhost"
-        glideRunDevDaemon.httpPort = 8080
-        glideRunDevDaemon.daemon = false
-        glideRunDevDaemon.disableUpdateCheck = true
-        glideRunDevDaemon.disableDatagram = false
-        glideRunDevDaemon.jvmFlags = ["-Dappengine.fullscan.seconds=3"]
-        glideRunDevDaemon.explodedAppDirectory = warRoot
-        glideRunDevDaemon.dependsOn project.tasks.findByName(AppEnginePlugin.APPENGINE_DOWNLOAD_SDK)
-
-
-        project.tasks.create("glideInfo", GlideInfo)
-        project.tasks.create("glideGenerateConfig", GlideGenerateConf)
-
-        def glideSyncTask = project.tasks.create("glideSync", GlideStartSync)
-        def glideSyncOnce = project.tasks.create("glideSyncOnce", GlideSyncOnce)
-
-        ExplodeAppTask explode = project.tasks.findByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
-        glideSyncTask.dependsOn explode
-        glideSyncOnce.dependsOn explode
-
-        RunTask runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
-        runTask.dependsOn glideSyncTask
-
+        if (explodeTask.archive.name.endsWith(".ear")) {
+            project.logger.error("EAR Not Supported")
+            throw new GradleException("EAR Not Supported")
+        }
     }
 
     private void configureJavaCompatibility(Project project) { // assumes java plugin is already applied
@@ -210,7 +251,6 @@ class GlideGradlePlugin implements Plugin<Project> {
     }
 
     private void configureSourceDirectories(Project project) {
-
         project.sourceSets {
             main.groovy.srcDirs = [SRC_DIR]
             test.groovy.srcDirs = [TEST_DIR]
@@ -224,10 +264,7 @@ class GlideGradlePlugin implements Plugin<Project> {
         project.webAppDirName = WEB_APP_DIR
     }
 
-    private configureDependencies(Project project, GlideExtension configuredGlideExtension) {
-        Versions versions = configuredGlideExtension.versions
-        FeaturesExtension features = configuredGlideExtension.features
-
+    private void configureDependencies(Project project, FeaturesExtension features, Versions versions) {
         project.dependencies {
             // App Engine Specific Dependencies
             compile "com.google.appengine:appengine-api-1.0-sdk:${versions.appengineVersion}"
@@ -252,5 +289,6 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
     }
 
+    public static File fileIn(File parent, String filename) { new File(parent, filename) }
 }
 
