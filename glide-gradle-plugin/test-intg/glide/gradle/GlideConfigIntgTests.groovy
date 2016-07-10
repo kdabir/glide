@@ -68,9 +68,9 @@ class GlideConfigIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('glideSync', '--info', '-s')
+                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK, '--info', '-s')
+                .forwardOutput()
                 .build()
-
 
         def xml = new XmlSlurper().parse(new File(testProjectDir, "build/exploded-app/WEB-INF/appengine-web.xml"))
 

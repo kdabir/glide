@@ -55,12 +55,12 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('glideInfo', '--info')
+                .withArguments(GlideGradlePlugin.GLIDE_INFO_TASK, '--info')
                 .build()
 
         then:
         result.output.contains(properties.get("selfVersion"))
-        result.task(":glideInfo").outcome == SUCCESS
+        result.task(":${GlideGradlePlugin.GLIDE_INFO_TASK}").outcome == SUCCESS
     }
 
     def "syncs glide app"() {
@@ -69,7 +69,7 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('glideSyncOnce', '--info', "--stacktrace")
+                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK, '--info', "--stacktrace")
 //                .withDebug(true)
                 .build()
 
@@ -79,7 +79,7 @@ class GlidePluginIntgTests extends Specification {
 
         then:
         buildDir.isDirectory()
-        result.task(":glideSyncOnce").outcome == SUCCESS
+        result.task(":${GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK}").outcome == SUCCESS
 
         new File(buildDir, "exploded-app/index.html").isFile()
         new File(buildDir, "exploded-app/index.groovy").isFile()

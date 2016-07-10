@@ -45,15 +45,19 @@ class GlideGradlePlugin implements Plugin<Project> {
     public static final String CLASSES_DIR = "classes"
 
     // Task Names
+    public static final String GLIDE_INFO_TASK = "glideInfo"
     public static final String GLIDE_PREPARE_TASK = "glidePrepare"
     public static final String GLIDE_COPY_LIBS_TASK = "glideCopyLibs"
     public static final String GLIDE_APP_SYNC_TASK = "glideAppSync"
-    public static final String GLIDE_RUN_DEV_DAEMON_TASK = "glideRunDevDaemon"
-    public static final String GLIDE_INFO_TASK = "glideInfo"
     public static final String GLIDE_GENERATE_CONFIG_TASK = "glideGenerateConfig"
-    public static final String GLIDE_SYNC_TASK = "glideSync"
-    public static final String GLIDE_SYNC_ONCE_TASK = "glideSyncOnce"
     public static final String WATCH_TASK = 'watch'
+    public static final String COMPILE_GROOVY = 'compileGroovy'
+    public static final String COMPILE_JAVA = 'compileJava'
+    public static final String GLIDE_RUN_DEV_DAEMON_TASK = "glideRunDevDaemon"
+
+    //
+    public static final String GLIDE_START_SYNC_TASK = "glideStartSync"
+    public static final String GLIDE_SYNC_ONCE_TASK = "glideSyncOnce"
 
     // called by Gradle when the glide plugin is applied on project
     void apply(Project project) {
@@ -118,8 +122,8 @@ class GlideGradlePlugin implements Plugin<Project> {
         def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
         def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
         def downloadSdk = project.tasks.findByName(AppEnginePlugin.APPENGINE_DOWNLOAD_SDK)
-        def compileGroovy = project.tasks.findByName('compileGroovy')
-        def compileJava = project.tasks.findByName('compileJava')
+        def compileGroovy = project.tasks.findByName(COMPILE_GROOVY)
+        def compileJava = project.tasks.findByName(COMPILE_JAVA)
 
         glideRunDevDaemon.dependsOn downloadSdk, glideGenerateConfig, glideAppSync, compileJava, compileGroovy, glideCopyLibs
 
@@ -127,7 +131,7 @@ class GlideGradlePlugin implements Plugin<Project> {
         watch.dependsOn glideGenerateConfig, glideAppSync, compileJava, compileGroovy
 
         //******* this is enhancement to existing flow ***********//
-        GlideStartSync glideSyncTask = project.tasks.create(GLIDE_SYNC_TASK, GlideStartSync)
+        GlideStartSync glideSyncTask = project.tasks.create(GLIDE_START_SYNC_TASK, GlideStartSync)
         GlideSyncOnce glideSyncOnce = project.tasks.create(GLIDE_SYNC_ONCE_TASK, GlideSyncOnce)
 
         glideSyncTask.dependsOn explode

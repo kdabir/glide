@@ -1,5 +1,6 @@
 package glide.gradle
 
+import com.google.appengine.AppEnginePlugin
 import directree.DirTree
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Ignore
@@ -46,7 +47,7 @@ class GlideAppRunIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('appengineRun', '--info' ,"--stacktrace")
+                .withArguments(AppEnginePlugin.APPENGINE_RUN, '--info' ,"--stacktrace")
                 .build()
 
         println runResult.output
@@ -59,7 +60,7 @@ class GlideAppRunIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments('appengineStop', '--info' ,"--stacktrace")
+                .withArguments(AppEnginePlugin.APPENGINE_STOP, '--info' ,"--stacktrace")
                 .build()
     }
 
