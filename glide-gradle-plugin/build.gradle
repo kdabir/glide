@@ -84,6 +84,7 @@ project.afterEvaluate {
 
         def versions = project.properties.findAll { k, v -> k.endsWith("Version") && v instanceof String }
         processResources.inputs.properties(versions) // so that resources are processed on version change
+        processResources.inputs.property('useLatestGlideFilters', project.hasProperty('useLatestGlideFilters'))
 
         def selfVersion = project.version.toString()
         versions.put("glideGradlePluginVersion", selfVersion)
@@ -92,7 +93,7 @@ project.afterEvaluate {
         if (project.hasProperty('useLatestGlideFilters')) {
             def filtersProjectVersion = project.configurations.glideFilters.dependencies.first().version.toString()
             versions.put("glideFiltersVersion", filtersProjectVersion)
-            logger.quiet("*** Using latest glide-filters, which might not be published ***")
+            logger.quiet("*** Using latest glide-filters, which might not be published : $filtersProjectVersion ***")
         }
 
         filter(ReplaceTokens, tokens: versions)
