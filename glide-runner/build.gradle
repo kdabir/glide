@@ -146,4 +146,4 @@ def getPathFromProperty(prop_name, default_value){
 }
 
 
-afterReleaseBuild.dependsOn bintrayUpload//, sdkReleaseVersion
+afterReleaseBuild.dependsOn bintrayUpload, sdkMajorRelease
