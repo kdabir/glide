@@ -34,7 +34,9 @@ dependencies {
     }
 
     // only for resolving latest verion in development. hence a new configuration.
-    glideFilters project(":glide-filters")
+    if (project.hasProperty('useLatestGlideFilters')) {
+        glideFilters project(":glide-filters")
+    }
 
     testCompile "junit:junit:${junitVersion}"
     testCompile "org.spockframework:spock-core:${spockVersion}", {
@@ -88,12 +90,9 @@ project.afterEvaluate {
 
         // pass from command line when required to bundle latest filters with glide gradle plugin
         if (project.hasProperty('useLatestGlideFilters')) {
-            // if (selfVersion.endsWith("SNAPSHOT")) {
-            //      logger.quiet "using SNAPSHOT version"
-            // }
-
             def filtersProjectVersion = project.configurations.glideFilters.dependencies.first().version.toString()
             versions.put("glideFiltersVersion", filtersProjectVersion)
+            logger.quiet("*** Using latest glide-filters, which might not be published ***")
         }
 
         filter(ReplaceTokens, tokens: versions)
