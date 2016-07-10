@@ -119,7 +119,7 @@ sdkman {
     consumerToken = project.properties.get "sdkmanConsumerToken"
     candidate = "glide"
     version = project.version
-    url = "https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/glide-runner/${project.version}/glide-${project.version}.zip"
+    url = "https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/glide-runner/${project.version}/${project.name}-${project.version}.zip"
     hashtag = "#GlideAppEngine"
 }
 
