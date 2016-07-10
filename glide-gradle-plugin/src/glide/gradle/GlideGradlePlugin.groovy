@@ -58,6 +58,7 @@ class GlideGradlePlugin implements Plugin<Project> {
     //
     public static final String GLIDE_START_SYNC_TASK = "glideStartSync"
     public static final String GLIDE_SYNC_ONCE_TASK = "glideSyncOnce"
+    public static final String GLIDE_TASK_GROUP = 'glide'
 
     // called by Gradle when the glide plugin is applied on project
     void apply(Project project) {
@@ -91,25 +92,31 @@ class GlideGradlePlugin implements Plugin<Project> {
         // Create Glide tasks
 
         GlidePrepare glidePrepare = project.tasks.create(GLIDE_PREPARE_TASK, GlidePrepare)
+        glidePrepare.group = GLIDE_TASK_GROUP
         glidePrepare.webInfDir = webInfDir
 
         GlideInfo glideInfo = project.tasks.create(GLIDE_INFO_TASK, GlideInfo)
+        glideInfo.group = GLIDE_TASK_GROUP
 
         GlideGenerateConf glideGenerateConfig = project.tasks.create(GLIDE_GENERATE_CONFIG_TASK, GlideGenerateConf)
+        glideGenerateConfig.group = GLIDE_TASK_GROUP
         glideGenerateConfig.dependsOn glidePrepare
 
         Task glideCopyLibs = project.tasks.create(GLIDE_COPY_LIBS_TASK, Copy)
+        glideCopyLibs.group = GLIDE_TASK_GROUP
         glideCopyLibs.dependsOn glidePrepare
         glideCopyLibs.into { libRoot }
         glideCopyLibs.from { project.configurations.runtime }
 
         ForgivingSync glideAppSync = project.tasks.create(GLIDE_APP_SYNC_TASK, ForgivingSync)
+        glideAppSync.group = GLIDE_TASK_GROUP
         glideAppSync.dependsOn glidePrepare
 
         // This task is repeat of appengineRun with very focused settings
         // do that users setting don't matter
         // we also dont want this instance of run task to depend on explode-war
         RunTask glideRunDevDaemon = project.tasks.create(GLIDE_RUN_DEV_DAEMON_TASK, RunTask)
+        glideRunDevDaemon.group = GLIDE_TASK_GROUP
         glideRunDevDaemon.httpAddress = "localhost" // TODO
         glideRunDevDaemon.httpPort = 8080
         glideRunDevDaemon.disableUpdateCheck = true
@@ -127,15 +134,20 @@ class GlideGradlePlugin implements Plugin<Project> {
         glideRunDevDaemon.dependsOn downloadSdk, glideGenerateConfig, glideAppSync, compileJava, compileGroovy, glideCopyLibs
 
         Task watch = project.tasks.create(WATCH_TASK)
+        watch.group = GLIDE_TASK_GROUP
         watch.dependsOn glideGenerateConfig, glideAppSync, compileJava, compileGroovy
 
         //******* this is enhancement to existing flow ***********//
-        GlideStartSync glideSyncTask = project.tasks.create(GLIDE_START_SYNC_TASK, GlideStartSync)
-        GlideSyncOnce glideSyncOnce = project.tasks.create(GLIDE_SYNC_ONCE_TASK, GlideSyncOnce)
+        GlideStartSync glideStartSync = project.tasks.create(GLIDE_START_SYNC_TASK, GlideStartSync)
+        glideStartSync.group = GLIDE_TASK_GROUP
 
-        glideSyncTask.dependsOn explode
+        GlideSyncOnce glideSyncOnce = project.tasks.create(GLIDE_SYNC_ONCE_TASK, GlideSyncOnce)
+        glideSyncOnce.group = GLIDE_TASK_GROUP
+
+        // Wire-up with existing appengine tasks
+        glideStartSync.dependsOn explode
         glideSyncOnce.dependsOn explode
-        runTask.dependsOn glideSyncTask
+        runTask.dependsOn glideStartSync
         update.dependsOn glideSyncOnce
 
         // disable Gaelyk's sync because we have our own sync
