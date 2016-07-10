@@ -23,7 +23,7 @@ subprojects {
 
 task releaseFilters(dependsOn: ':glide-filters:release')
 task releasePlugin(dependsOn: ':glide-gradle-plugin:release')
-task releaseRunner(dependsOn: ':runner:release')
+task releaseRunner(dependsOn: ':glide-runner:release')
 
 // some helpers
 task publishedVersions << {
