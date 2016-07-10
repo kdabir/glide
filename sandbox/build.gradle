@@ -26,10 +26,10 @@ plugins {
 
     // -------------------------------- TASK GRAPH VISUALIZATION ---------------------------------//
     // call the tasks that you want, and call taskTree task in end, your tasks will be skipped    //
-    id "com.dorongold.task-tree" version "1.2.2"                                                  //
+//    id "com.dorongold.task-tree" version "1.2.2"                                                  //
     //                                                                                            //
     // call the tasks that you want, and pass -PshowInspection end, your tasks will be executed   //
-    id "com.jakeout.gradle-inspector" version "0.3.0"                                             //
+//    id "com.jakeout.gradle-inspector" version "0.3.0"                                             //
     // -------------------------------------------------------------------------------------------//
 }
 
@@ -46,5 +46,5 @@ glide {
     versions {
         appengineVersion = "1.9.38" // override appengine version
     }
-    daemon = false
+//    daemon = false
 }
