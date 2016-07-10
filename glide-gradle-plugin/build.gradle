@@ -111,6 +111,7 @@ afterEvaluate {
     }
 }
 
+description = "Glide Gradle plugin makes it incredebily easy to develop and deploy webapps for Google App Engine"
 
 task integrationTest(type: Test) {
     dependsOn ":glide-filters:publishToMavenLocal"
@@ -164,7 +165,6 @@ pluginBundle {
     website = 'https://glide-gae.appspot.com/'
     vcsUrl = 'https://github.com/kdabir/glide.git'
 
-    description = 'Greetings from here!'
     tags = ['appengine', 'gaelyk', 'glide', 'cloud', 'microservices', 'serverless', 'no-ops', 'java', 'groovy', 'autoscale']
 
     plugins {
@@ -180,6 +180,4 @@ task jarWithLibs(type: Copy, dependsOn: 'jar') {
     into "build/libs/deps"
 }
 
-//afterReleaseBuild.dependsOn clean
-//bintrayUpload.mustRunAfter clean
 afterReleaseBuild.dependsOn bintrayUpload, publishPlugins
