@@ -151,9 +151,9 @@ release {
 }
 
 pluginBundle {
-    website = 'https://glide-gae.appspot.com/'
+    website = 'https://glide-gae.appspot.com'
     vcsUrl = 'https://github.com/kdabir/glide.git'
-
+    description = project.description
     tags = ['appengine', 'gaelyk', 'glide', 'cloud', 'microservices', 'serverless', 'no-ops', 'java', 'groovy', 'autoscale']
 
     plugins {
