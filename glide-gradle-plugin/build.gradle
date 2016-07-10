@@ -33,6 +33,7 @@ dependencies {
         exclude group: 'org.codehaus.groovy'
     }
 
+    // only for resolving latest verion in development. hence a new configuration.
     glideFilters project(":glide-filters")
 
     testCompile "junit:junit:${junitVersion}"
@@ -75,38 +76,26 @@ jar {
 
 import org.apache.tools.ant.filters.*
 
-afterEvaluate {
-    configure(tasks['processResources']) {
+
+project.afterEvaluate {
+    tasks.withType(ProcessResources) { processResources ->
+
         def versions = project.properties.findAll { k, v -> k.endsWith("Version") && v instanceof String }
+        processResources.inputs.properties(versions) // so that resources are processed on version change
 
         def selfVersion = project.version.toString()
         versions.put("glideGradlePluginVersion", selfVersion)
 
-        if (project.hasProperty("glideFiltersVersion")) {
-            versions.put("glideFiltersVersion", project.glideFiltersVersion)
+        // pass from command line when required to bundle latest filters with glide gradle plugin
+        if (project.hasProperty('useLatestGlideFilters')) {
+            // if (selfVersion.endsWith("SNAPSHOT")) {
+            //      logger.quiet "using SNAPSHOT version"
+            // }
 
-        } else {
-            if (selfVersion.endsWith("SNAPSHOT")) {
-                logger.quiet "using SNAPSHOT version"
-                def filtersProjectVersion = project.configurations.glideFilters.dependencies.first().version.toString()
-                versions.put("glideFiltersVersion", filtersProjectVersion)
-
-            } else {
-                try {
-                    def metadata = new XmlSlurper().parse("https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/glide-filters/maven-metadata.xml")
-                    def latest = metadata.versioning.latest.text()
-
-                    logger.quiet "Following versions are available : ${metadata.versioning.versions.version*.text()}"
-                    logger.quiet "Choosing latest : ${latest}"
-
-                    versions.put("glideFiltersVersion", latest)
-                } catch (e) {
-                    throw new RuntimeException("unable to fetch maven metadata, set Project property 'glideFiltersVersion' explicitly from command line")
-                }
-            }
+            def filtersProjectVersion = project.configurations.glideFilters.dependencies.first().version.toString()
+            versions.put("glideFiltersVersion", filtersProjectVersion)
         }
 
-//        inputs.properties versions // so that resources are processed on version change
         filter(ReplaceTokens, tokens: versions)
     }
 }
