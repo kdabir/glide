@@ -14,13 +14,16 @@ ul {
 
 #header-l{
   padding-top:200px;
-  background: url("/img/glide_bg.jpg") no-repeat center center fixed;
+  background: url("/img/bg1.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 
+.navbar-default  {
+  background-color: #1a242f;
+}
 
 #samples h3 {
   border-bottom: 1px solid lightgrey;
