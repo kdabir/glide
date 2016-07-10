@@ -66,8 +66,8 @@ class GlideAppRunIntgTests extends Specification {
 
     def "starts the development server"() {
         expect:
-        runResult.task(":glideSync").outcome == SUCCESS
-        runResult.task(":appengineRun").outcome == SUCCESS
+        runResult.task(":" + GlideGradlePlugin.GLIDE_START_SYNC_TASK).outcome == SUCCESS
+        runResult.task(":" + AppEnginePlugin.APPENGINE_RUN).outcome == SUCCESS
         runResult.output.contains('Dev App Server is now running')
     }
 

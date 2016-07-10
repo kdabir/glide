@@ -1,6 +1,7 @@
 package glide.gradle
 
 import glide.gradle.tasks.GlideStartSync
+import glide.gradle.tasks.GlideSyncOnce
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
@@ -36,7 +37,8 @@ class GlidePluginTests {
         Project project = ProjectBuilder.builder().build()
         project.pluginManager.apply GlideGradlePlugin
 
-        assert project.tasks['glideSync'] instanceof GlideStartSync
+        assert project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK] instanceof GlideStartSync
+        assert project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK] instanceof GlideSyncOnce
     }
 
 
