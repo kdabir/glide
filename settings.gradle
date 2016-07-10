@@ -1,6 +1,6 @@
 include 'glide-filters'
 include 'glide-gradle-plugin'
-include 'runner'
+include 'glide-runner'
 include 'samples'
 include 'site'
 include 'sandbox'
