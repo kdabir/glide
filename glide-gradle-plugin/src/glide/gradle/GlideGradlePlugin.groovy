@@ -112,7 +112,6 @@ class GlideGradlePlugin implements Plugin<Project> {
         RunTask glideRunDevDaemon = project.tasks.create(GLIDE_RUN_DEV_DAEMON_TASK, RunTask)
         glideRunDevDaemon.httpAddress = "localhost" // TODO
         glideRunDevDaemon.httpPort = 8080
-        glideRunDevDaemon.daemon = true
         glideRunDevDaemon.disableUpdateCheck = true
         glideRunDevDaemon.disableDatagram = false
         glideRunDevDaemon.jvmFlags = ["-Dappengine.fullscan.seconds=3"]
@@ -189,9 +188,9 @@ class GlideGradlePlugin implements Plugin<Project> {
             }
 
             ConfigPipeline configPipeline = new ConfigPipelineBuilder()
-                .withFeaturesExtension(configuredGlideExtension.features)
+                .withFeaturesExtension(features)
                 .withUserConfig(glideConfigFile)
-                .withWebAppSourceRoot(project.convention.getPlugin(WarPluginConvention).webAppDir)
+                .withWebAppSourceRoot(sourceWebAppDir)
                 .withWebAppTargetRoot(warRoot)
                 .build()
 
@@ -201,6 +200,8 @@ class GlideGradlePlugin implements Plugin<Project> {
                 task.outputFiles = project.files(configPipeline.outputs*.outputFile)
                 task.env = env
             }
+
+            glideRunDevDaemon.daemon = configuredGlideExtension.daemon
 
             project.tasks.withType(GlideStartSync) { GlideStartSync task ->
                 task.synchronizer = synchronizer

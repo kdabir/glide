@@ -24,6 +24,10 @@ class GlideExtension {
      */
     String env
 
+    // Experimental feature
+    boolean daemon = true
+
+
     GlideExtension(Project project, Properties defaultVersions) {
         this.project = project
         versions = new Versions(defaultVersions)
