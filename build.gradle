@@ -23,3 +23,34 @@ subprojects {
 
 task releaseFilters(dependsOn: ':glide-filters:release')
 task releasePlugin(dependsOn: ':glide-gradle-plugin:release')
+task releaseRunner(dependsOn: ':runner:release')
+
+// some helpers
+task publishedVersions << {
+    ['glide-filters', 'glide-gradle-plugin'].each { printVersions(it) }
+    printGitTags()
+}
+
+def printVersions(String component) {
+    def metadata = new XmlSlurper().parse("https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/${component}/maven-metadata.xml")
+
+    def allVersions = metadata.versioning.versions.version*.text()
+    def latestVersion = metadata.versioning.latest.text()
+    logger.quiet """
+        # $component
+        Available versions : ${allVersions}
+        Latest version : $latestVersion \
+        """.stripIndent()
+}
+
+import groovy.json.JsonSlurper
+def printGitTags(){
+    def tags = new JsonSlurper()
+        .parse(new URL("https://api.github.com/repos/kdabir/glide/git/refs/tags"))*.ref.collect { it.split("/").last() }
+    logger.quiet """
+        # tags \
+        """.stripIndent()
+
+    logger.quiet tags.join("\n")
+}
+

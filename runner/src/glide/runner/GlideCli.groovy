@@ -1,7 +1,7 @@
 package glide.runner
 
 /**
- * Interactions with User through given `writer`
+ * Interacts with User through given `writer`
  */
 class GlideCli {
 
@@ -11,7 +11,7 @@ class GlideCli {
     GlideCli(Writer writer) {
         this.writer = writer
         this.cli = new CliBuilder(
-                usage: 'glide [options] <create|run|test|deploy|clean>',
+                usage: 'glide [options] <create|run|test|deploy|clean|help|version>',
                 header: '\nOptions:',
                 writer: writer
         ).with {
@@ -32,7 +32,7 @@ class GlideCli {
         writer.println """
         |Examples:
         | Run app located in current directory      : glide
-        | Run tests located in 'test' subdirectory  : glide test
+        | Run tests                                 : glide test
         | Deploys app to Google App Engine          : glide deploy
         | Run app located in subdirectory           : glide -a samples/blog run
         | Deploy app located in subdirectory        : glide -a samples/blog deploy

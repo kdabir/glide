@@ -16,11 +16,11 @@ class GradleTaskCommand implements Command {
 
     @Override
     void execute() {
-        def gradle = new GradleProjectRunner(this.projectDir)
+        def gradleProjectRunner = new GradleProjectRunner(this.projectDir)
         try {
-            gradle.run(command) // hopefully this is a blocking call
+            gradleProjectRunner.run(command) // hopefully this is a blocking call
         } finally {
-            gradle.cleanup()
+            gradleProjectRunner.cleanup()
         }
     }
 }

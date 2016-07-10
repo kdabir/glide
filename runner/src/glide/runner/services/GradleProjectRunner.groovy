@@ -17,7 +17,7 @@ class GradleProjectRunner {
 
     def run(String ...taskNames) {
         OutputStream sink = new OutputStream() { @Override public void write(int b) throws IOException { } };
-        PrintStream out = System.out
+        PrintStream originalOut = System.out
         System.out = new PrintStream(sink)
 
         try {
@@ -26,12 +26,13 @@ class GradleProjectRunner {
                     .setJvmArguments("-Xmx512m")
                     .withArguments("--no-search-upward",'-q')
                     .setStandardInput(System.in)
-                    .setStandardOutput(out)
+                    .setStandardOutput(originalOut)
                     .run();
         } catch (e) {
             System.err.println(e.toString())
+            e.printStackTrace()
         } finally {
-            System.out = out
+            System.out = originalOut
         }
     }
 

@@ -27,8 +27,8 @@ class Main {
         if (options.v) command = "version"
 
         switch (command) {
-            case ['help']: new HelpCommand(this.cli).execute(); break
-            case ['version']: new VersionCommand(this.cli).execute(); break
+            case ['help']:              new HelpCommand(this.cli).execute(); break
+            case ['version']:           new VersionCommand(this.cli).execute(); break
             case ['new', 'create']:     new CreateAppCommand(ant, options).execute(); break
             case ['run', 'start']:      new GradleTaskCommand(projectDir(options), ant, "appengineRun").execute(); break
             case ['clean']:             new GradleTaskCommand(projectDir(options), ant, "clean").execute(); break
@@ -39,7 +39,7 @@ class Main {
     }
 
     // read the optional values (flags)
-    private projectDir(OptionAccessor options) {
+    private static projectDir(OptionAccessor options) {
         new File(options.a ?: System.getProperty("user.dir"))
     }
 

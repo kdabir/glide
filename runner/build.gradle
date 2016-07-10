@@ -1,28 +1,29 @@
-apply plugin: 'application'
-apply plugin: 'maven'
+plugins {
+    id 'application'
+    id 'maven-publish'
+    id 'com.jfrog.bintray' version '1.7'
+    id 'net.researchgate.release' version '2.4.0'
+    id "io.sdkman.vendors" version "1.1.0"
+}
 
 repositories {
-    maven { url 'http://repo.gradle.org/gradle/libs-releases-local' }
+    jcenter()
     maven { url "http://dl.bintray.com/kdabir/maven" }
 }
 
 sourceSets {
     main.groovy.srcDirs = ['src']
     test.groovy.srcDirs = ['test']
-
     main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['testResources']
-
-    main.java.srcDirs = test.java.srcDirs = []
+    test.resources.srcDirs =  main.java.srcDirs = test.java.srcDirs = []
 }
-
 
 dependencies {
     compile "org.codehaus.groovy:groovy-all:$groovyVersion",
-            'org.apache.ant:ant:1.8.4',     // required for AntBuilder
-            'commons-cli:commons-cli:1.2',   // required for CliBuilder
-            "org.gradle:gradle-tooling-api:${gradle.gradleVersion}",
-            'io.github.kdabir.directree:directree:0.2'
+            'org.apache.ant:ant:1.8.4',                             // required for AntBuilder
+            'commons-cli:commons-cli:1.2',                          // required for CliBuilder
+            "org.gradle:gradle-tooling-api:${gradleVersion}",
+            "io.github.kdabir.directree:directree:${directreeVersion}"
 
     runtime 'org.slf4j:slf4j-nop:1.7.2'
 
@@ -30,61 +31,37 @@ dependencies {
 }
 
 mainClassName = "glide.runner.Main"
+description = "Command line interface for running glide applications"
 
 /**
  * run provides a shortcut to run the app  without needing to install glide
  *
- * gradle run -Papp=../samples/blog -Pout=../samples/out
+ * gradle run -Pcli="...."
  *
  * run the default sample app if no app is provided
  */
 run {
-    def argsList = []
-
-    argsList << ["-a", getPathFromProperty("app", "${project.rootProject.projectDir.path}/samples/greet")]
-
-    if (project.hasProperty("out")){ argsList << ["-o", project.getProperty("out")] }
-    if (project.hasProperty("gae")){ argsList << ["-g", project.getProperty("gae")] }
-    if (project.hasProperty("port")){ argsList << ["-p", project.getProperty("port")] }
-    if (project.hasProperty("task")){ argsList << [ project.getProperty("task")] }
-    if (project.hasProperty("help")){ argsList << "-h" }
-    if (project.hasProperty("quiet")){ argsList << "-q" }
-    if (project.hasProperty("showVersion")){ argsList << "-v" }
-
-    println "Running using: ${argsList.flatten()}"
-    args argsList.flatten()
+    args(org.apache.tools.ant.types.Commandline.translateCommandline(project.findProperty("cli") ?: "--app ../sandbox"))
 }
-
-
-applicationDistribution.from("${project.rootProject.projectDir.path}/base-templates") {
-    into "base-templates"
-}
-
-applicationDistribution.from("${project.rootProject.projectDir.path}/samples") {
-    into "samples"
-}
-
-
-installApp.dependsOn(":runner:build")
 
 installApp {
-
-    def install_location = getPathFromProperty("dir", project.rootProject.projectDir.path + "/glide-snapshot")
+    def install_location = getPathFromProperty("dir", rootProject.projectDir.path + "/glide-snapshot")
     into install_location
 
     doLast {
-        println """Installation Complete
+        println """Local Installation Complete
 
-        ===================================================================
-        Important: Add the following path to your PATH environment variable
-        '$install_location/bin'
+        ==================================================================
+        Important: To use the installed glide, do one of the following
+        - Add the following path to your PATH environment variable
+            '$install_location/bin'
+
+        - create alias to or run glide using the full path of executable
+            '$install_location/bin/glide'
         ===================================================================
         """
     }
 }
-
-//distZip.dependsOn ":runner:build"
-distZip.dependsOn ":samples:copySamples"
 
 distZip {
     baseName = "glide"
@@ -92,26 +69,58 @@ distZip {
 
 startScripts {
     applicationName = "glide"       // this will be the name of script that is generated
+}
 
-    doLast {
-        def unixScriptFile    = file getUnixScript()
-        unixScriptFile.text    = unixScriptFile.text.replace('APP_HOME="`pwd -P`"', 'APP_HOME="`pwd -P`"\nexport GLIDE_HOME=$APP_HOME')
-        if (!unixScriptFile.text.contains("export GLIDE_HOME")) {
-            System.err.println "WARNING: GLIDE_HOME is not set by $unixScriptFile.  This may lead to improper execution of glide runtime"
-        }
-        def windowsScriptFile = file getWindowsScript()
-        windowsScriptFile.text = windowsScriptFile.text.replace('set APP_HOME=%DIRNAME%..', 'set APP_HOME=%DIRNAME%..\r\nset GLIDE_HOME=%APP_HOME%')
-        if (!windowsScriptFile.text.contains("set GLIDE_HOME")) {
-            System.err.println "WARNING: GLIDE_HOME is not set by $windowsScriptFile. This may lead to improper execution of glide runtime"
+processResources {
+    def map = [
+        builtAt: new Date().dateTimeString,
+        runnerVersion: project.version
+    ]
+
+    inputs.properties map
+    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: map
+}
+
+publishing {
+    publications {
+        glideRunner(MavenPublication) {
+            from components.java
+            artifact distZip
         }
     }
 }
 
-processResources {
-    filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
-            builtAt: new Date().dateTimeString,
-            version: project.version
-    ]
+release {
+    tagTemplate = '$name-$version'
+}
+
+
+bintray {
+    user = project.properties.get "bintrayUser"
+    key = project.properties.get "bintrayKey"
+    publications = ['glideRunner']
+
+    def projectName = project.name
+    def projectDescription = project.description
+
+    pkg {
+        repo = 'glide'
+        name = projectName      // somehow project.* doesn't work in this closure
+        desc = projectDescription
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/kdabir/glide.git'
+    }
+    dryRun = true // whether to run this as dry-run, without deploying
+}
+
+sdkman {
+    api = "https://vendors.sdkman.io/"
+    consumerKey = project.properties.get "sdkmanConsumerKey"
+    consumerToken = project.properties.get "sdkmanConsumerToken"
+    candidate = "glide"
+    version = project.version
+    url = "https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/runner/${project.version}/runner-${project.version}.zip"
+    hashtag = "#GlideAppEngine"
 }
 
 /**
@@ -135,3 +144,4 @@ def getPathFromProperty(prop_name, default_value){
     }
     return file(default_value)
 }
+

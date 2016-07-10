@@ -23,11 +23,19 @@ class CreateAppCommand implements Command {
                 }
                 """.stripIndent()
             }
+            file("build.gradle"){
+                """
+                plugins {
+                  id "com.appspot.glide-gae" version "0.9.3"
+                }
+                """.stripIndent()
+            }
         }
     }
 
     @Override
     void execute() {
         tree.create()
+        println "App created successfully"
     }
 }
