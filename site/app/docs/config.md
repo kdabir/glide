@@ -2,8 +2,8 @@
 
 Glide deliberately abstracts most of the GAE java web app configurations by setting them to intelligent defaults and
 providing a way to override them when necessary. You don't need to edit/create multiple xml files in your app's
-directory. The only file that are used are `glide.groovy`, `glide.gradle` (optional, if at all you want to
-customize the build) and `_routes.groovy` (required by Gaelyk)
+directory. The only file that are used are `glide.groovy` (optional), `build.gradle`  (only to apply plugin) and 
+`_routes.groovy` (if we want pretty URLs)
 
 ## Understanding `glide.groovy`
 
@@ -92,7 +92,6 @@ sometimes a glide config is specific to an environment, it can we wrapped in `en
         }
     }
 
-Running glide with `glide -e prod` will provide `prodValue` for `someKey`.
 
 
 ## Understanding `_routes.groovy`
@@ -100,10 +99,10 @@ Running glide with `glide -e prod` will provide `prodValue` for `someKey`.
 This files is read by gaelyk to configure application routes. This is not glide specific. Check
 [Gaelyk's routing](http://gaelyk.appspot.com/tutorial/url-routing) documentation to understand how routes work.
 
-## Understanding `glide.gradle`
+## Understanding `build.gradle`
 
-This file acts as extension to standard glide build. This is regular [gradle](http://www.gradle.org/) build file and you
-can add `dependencies` or additional tasks just like any other gradle build file.
+This is regular [gradle](http://www.gradle.org/) build file and we can add `dependencies` or additional tasks just 
+like any other gradle build file.
 
 An example of adding dependency in `glide.gradle`:
 
@@ -111,4 +110,4 @@ An example of adding dependency in `glide.gradle`:
         compile "com.github.rjeschke:txtmark:0.10"
     }
 
-This example adds markdown processing library to glide.
+This example adds markdown processing library to glide. And this is actually how this site renders the markdown content.

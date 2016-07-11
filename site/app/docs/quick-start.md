@@ -1,4 +1,4 @@
-# Getting Started
+# Getting Started with CLI
 
 So you have [installed](/docs/installing) glide and are all set for your first glide in the cloud.
 
@@ -34,7 +34,7 @@ A Typical glide app looks like:
     |   |-- _routes.groovy
     |   `-- ....
     |-- glide.groovy
-    |-- glide.gradle
+    |-- build.gradle
 
 
 You can create `.groovy` / `.gtpl` file in `app` dir as well as keep regular `.html` / `.css` and `.js` stuff there.
@@ -67,11 +67,3 @@ You can create `.groovy` / `.gtpl` file in `app` dir as well as keep regular `.h
 
     ** congrats, your app is live on the Google App Engine **
 
-
-## Exporting App to a standard Java web app:
-
-You can export a glide app to a standard Java EE web app along with gradle build file.
-
-     glide -o ../myapp-export export
-
-> Make sure you specify the output path thats not inside your glide project

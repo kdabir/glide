@@ -79,7 +79,7 @@
             <li class="${key==params.page?'active':'inactive'}"><a itemprop="${value.itemprop}" href="${value.href}">${value.label}</a></li>
             <%}%>
             <li>
-            <a href="https://github.com/kdabir/glide/releases"><span class="label label-success">New version releasing soon</span></a>
+            <a href="/docs/installing"><span class="label label-success">New version released</span></a>
 
             </li>
           </ul>

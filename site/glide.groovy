@@ -28,7 +28,6 @@ web {
             url_patterns = ['/*']
             dispatchers = [ 'REQUEST', 'ERROR']
         }
-
     }
 
 }

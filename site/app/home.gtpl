@@ -24,6 +24,10 @@
         sweetness of <a href="http://gaelyk.appspot.com">Gaelyk</a>'s syntactic sugar.
       </p>
 
+      <p class="about-glide">
+        At it's core, Glide is a Gradle plugin that reduces all the boilerplate required with typical Java web applications
+      </p>
+
     </div>
   </section>
 
@@ -53,6 +57,21 @@
       <input type="text" class="cmd-text" value="glide -a myapp deploy" onClick="select(this);"/>
     </div>
   </section>
+
+  <section id="prev" class="row">
+    <div class="col-sm-12 col-lg-12">
+
+      <h3>Looking for previous version</h3>
+
+      <p class="about-glide">
+        Glide has substantially changed with latest releases, the docs for older release can be found at
+         <a href="http://previous.glide-gae.appspot.com">Previous Docs</a>.
+      </p>
+
+
+    </div>
+  </section>
+
 </div>
 
 </body>
