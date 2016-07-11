@@ -30,6 +30,12 @@ class CreateAppCommand implements Command {
                 }
                 """.stripIndent()
             }
+             file(".gitignore") {
+                 """
+                    build/
+                    .gradle
+                 """.stripIndent()
+             }
         }
     }
 
