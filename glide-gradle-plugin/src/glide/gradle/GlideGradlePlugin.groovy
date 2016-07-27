@@ -169,7 +169,7 @@ class GlideGradlePlugin implements Plugin<Project> {
 
             final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
 
-            ensureNonEarArchive(explodeTask)
+            ensureNonEarArchive(explodeTask, project)
             configureDependencies(project, features, versions)
 
             final File sourceWebAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
@@ -235,7 +235,7 @@ class GlideGradlePlugin implements Plugin<Project> {
     }
 
     // must call after project eval done
-    private void ensureNonEarArchive(ExplodeAppTask explodeTask) {
+    private void ensureNonEarArchive(ExplodeAppTask explodeTask, Project project) {
 
         if (explodeTask.archive.name.endsWith(".ear")) {
             project.logger.error("EAR Not Supported")
