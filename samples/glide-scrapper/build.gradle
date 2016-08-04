@@ -1,0 +1,8 @@
+plugins {
+  id "com.appspot.glide-gae" version "0.9.3"
+}
+
+dependencies {
+	compile "org.jsoup:jsoup:1.9.2"	
+}
+
