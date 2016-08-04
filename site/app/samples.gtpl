@@ -68,13 +68,13 @@
 
   <div class="row">
     <div class="col-sm-3 col-lg-3">
-      <h3>Web Scapper</h3>
+      <h3>Web Scraper</h3>
 
       <p class="app-desc">Scrape the web for fun and profit</p>
 
       <div>
-        <a href="https://github.com/kdabir/glide/tree/master/samples/glide-scrapper">Source</a> |
-        <a href="http://scrapper.glide-samples.appspot.com">Running</a>
+        <a href="https://github.com/kdabir/glide/tree/master/samples/glide-scraper">Source</a> |
+        <a href="http://scraper.glide-samples.appspot.com">Running</a>
       </div>
     </div>
   </div>

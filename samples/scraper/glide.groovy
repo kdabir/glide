@@ -1,4 +1,4 @@
 app {
     name="glide-samples"
-    version="scrapper"
+    version="scraper"
 }
