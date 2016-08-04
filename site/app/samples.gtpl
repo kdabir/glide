@@ -73,7 +73,7 @@
       <p class="app-desc">Scrape the web for fun and profit</p>
 
       <div>
-        <a href="https://github.com/kdabir/glide/tree/master/samples/glide-scraper">Source</a> |
+        <a href="https://github.com/kdabir/glide/tree/master/samples/scraper">Source</a> |
         <a href="http://scraper.glide-samples.appspot.com">Running</a>
       </div>
     </div>
