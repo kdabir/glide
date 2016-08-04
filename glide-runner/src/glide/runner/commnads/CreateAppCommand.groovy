@@ -6,7 +6,7 @@ class CreateAppCommand implements Command {
     DirTree tree
 
     CreateAppCommand(AntBuilder antBuilder, OptionAccessor options) {
-         tree = DirTree.build(options.a ?: System.getProperty("user.dir")){ root->
+         tree = DirTree.build(options.a ?: System.getProperty("user.dir")){ String root->
             dir ("app") {
                 file ('_routes.groovy') {
                     'get "/", forward: "/index.groovy"'
@@ -16,7 +16,7 @@ class CreateAppCommand implements Command {
                 }
             }
             file("glide.groovy"){
-                """
+                """\
                 app {
                     name="${new File(root).name}"
                     version="1"
@@ -24,14 +24,14 @@ class CreateAppCommand implements Command {
                 """.stripIndent()
             }
             file("build.gradle"){
-                """
+                """\
                 plugins {
                   id "com.appspot.glide-gae" version "0.9.3"
                 }
                 """.stripIndent()
             }
              file(".gitignore") {
-                 """
+                 """\
                     build/
                     .gradle
                  """.stripIndent()
