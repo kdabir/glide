@@ -6,7 +6,10 @@
 </head>
 
 <body>
+
 <div class="container">
+  <div class="row">
+
 
     <div class="col-sm-12 col-lg-12">
 
@@ -14,7 +17,7 @@
       <p>
         Glide ships with sample apps that can be run out of the box. You can give them a try here and also look at
         their source code. In addition to samples, a good way to learn glide is to check it's own website's <a
-          href="https://github.com/kdabir/glide/tree/master/site">source code</a> which uses glide itself.
+          href="https://github.com/kdabir/glide/tree/master/site">source code</a> which is powered by glide itself.
       </p>
 
     </div>
@@ -39,6 +42,7 @@
         <a href="http://blog.glide-samples.appspot.com">Running</a>
       </div>
     </div>
+
     <div class="col-sm-3 col-lg-3">
       <h3>Expenses</h3>
 
@@ -49,17 +53,31 @@
         <a href="http://expenses.glide-samples.appspot.com">Running</a>
       </div>
     </div>
+
     <div class="col-sm-3 col-lg-3">
       <h3>News</h3>
 
-      <p class="app-desc">Fetche latest news from google news</p>
+      <p class="app-desc">Fetches latest news from google news</p>
 
       <div>
         <a href="https://github.com/kdabir/glide/tree/master/samples/news">Source</a> |
         <a href="http://news.glide-samples.appspot.com">Running</a>
       </div>
     </div>
+  </div>
 
+  <div class="row">
+    <div class="col-sm-3 col-lg-3">
+      <h3>Web Scapper</h3>
+
+      <p class="app-desc">Scrape the web for fun and profit</p>
+
+      <div>
+        <a href="https://github.com/kdabir/glide/tree/master/samples/glide-scrapper">Source</a> |
+        <a href="http://scrapper.glide-samples.appspot.com">Running</a>
+      </div>
+    </div>
+  </div>
 </div>
 </body>
 
