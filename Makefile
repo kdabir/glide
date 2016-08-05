@@ -20,3 +20,18 @@ sc:
 
 sr:
 	./gradlew --configure-on-demand sandbox:gRunD
+
+
+################################################################
+# Setup for integration tests.
+# - Only needs to be run first time.
+# - Creates symlink for download heavy files/directories
+# - Tested only on Mac OSX
+################################################################
+intSetup:
+	mkdir -p ~/.gradle-testkit/caches/modules-2
+	ln -s ~/.gradle/appengine-sdk/ ~/.gradle-testkit/
+	ln -s ~/.gradle/caches/modules-2/files-2.1/ ~/.gradle-testkit/caches/modules-2/
+
+intCleanup:
+	rm -rf ~/.gradle-testkit
