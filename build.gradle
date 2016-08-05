@@ -31,6 +31,11 @@ task publishedVersions << {
     printGitTags()
 }
 
+
+task wrapper(type: Wrapper){
+    gradleVersion = gradleVersion
+}
+
 def printVersions(String component) {
     def metadata = new XmlSlurper().parse("https://dl.bintray.com/kdabir/glide/io/github/kdabir/glide/${component}/maven-metadata.xml")
 
