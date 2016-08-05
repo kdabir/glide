@@ -22,6 +22,18 @@ sr:
 	./gradlew --configure-on-demand sandbox:gRunD
 
 
+run:
+	./gradlew --configure-on-demand glide-gradle-plugin:jWL
+	./gradlew --stop
+	./gradlew --configure-on-demand sandbox:appRun
+
+check:
+	curl localhost:8080
+
+sanity: run check
+	echo "done"
+
+
 ################################################################
 # Setup for integration tests.
 # - Only needs to be run first time.
