@@ -41,4 +41,30 @@ class GlideExtensionTest extends Specification {
         then:
         extension.features.enableGaelyk == false
     }
+
+    def "should expose defaults if ext is not configured"() {
+        given:
+        def extension = new GlideExtension(Mock(Project), testVersions)
+
+        expect:
+        extension.sync.frequency == SyncExtension.DEFAULT_FREQUENCY
+        extension.sync.preservedPatterns == SyncExtension.DEFAULT_PRESERVED_PATTERNS
+    }
+
+
+    def "should update sync props from closure"() {
+        given:
+        def extension = new GlideExtension(Mock(Project), testVersions)
+
+        when:
+        extension.sync {
+            frequency = 10
+            preservedPatterns = DEFAULT_PRESERVED_PATTERNS + ", _public"
+        }
+
+        then:
+        extension.sync.frequency == 10
+        extension.sync.preservedPatterns.contains("_public")
+    }
+
 }

@@ -1,6 +1,7 @@
 package glide.gradle
 
 import com.google.appengine.AppEnginePlugin
+import com.google.appengine.AppEnginePluginExtension
 import com.google.appengine.task.ExplodeAppTask
 import com.google.appengine.task.RunTask
 import directree.Synchronizer
@@ -65,7 +66,7 @@ class GlideGradlePlugin implements Plugin<Project> {
 
         ensureMinimumGradleVersion()
         applyRequiredPlugins(project)
-        configureRepos(project)
+        configureRepositories(project)
         configureJavaCompatibility(project)
         configureSourceDirectories(project)
 
@@ -153,6 +154,11 @@ class GlideGradlePlugin implements Plugin<Project> {
         // disable Gaelyk's sync because we have our own sync
         project.tasks.withType(GaelykSynchronizeResourcesTask) { enabled = false }
 
+        AppEnginePluginExtension appEnginePluginConvention = project.extensions.getByType(AppEnginePluginExtension)
+        appEnginePluginConvention.with {
+//            downloadSdk = true
+        }
+
         //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
             // We need after evaluate to let user configure the glide {} block in build script and
@@ -161,11 +167,11 @@ class GlideGradlePlugin implements Plugin<Project> {
             final GlideExtension configuredGlideExtension = project.extensions.getByType(GlideExtension)
             final Versions versions = configuredGlideExtension.versions
             final FeaturesExtension features = configuredGlideExtension.features
-            final String env = configuredGlideExtension.env
+            final SyncExtension syncExt = configuredGlideExtension.sync
 
-            // TODO allow following two from extension
-            final int frequency = 3 // seconds
-            final String preserved = "WEB-INF/lib/*.jar WEB-INF/classes/** WEB-INF/*.xml WEB-INF/*.properties META-INF/MANIFEST.MF WEB-INF/appengine-generated/**"
+            final String env = configuredGlideExtension.env
+            final int frequency = syncExt.frequency
+            final String preserved = syncExt.preservedPatterns
 
             final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
 
@@ -259,7 +265,7 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
     }
 
-    private configureRepos(Project project) {
+    private configureRepositories(Project project) {
         project.repositories {
             jcenter()
             maven { url GLIDE_MAVEN_REPO }

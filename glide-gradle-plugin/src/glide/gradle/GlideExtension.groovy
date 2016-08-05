@@ -16,6 +16,8 @@ class GlideExtension {
      */
     FeaturesExtension features = new FeaturesExtension()
 
+    SyncExtension sync = new SyncExtension()
+
     /**
      * the environment param to pass to glide config
      *
@@ -39,6 +41,10 @@ class GlideExtension {
 
     void features(Closure closure) {
         ConfigureUtil.configure(closure, features)
+    }
+
+    void sync(Closure closure) {
+        ConfigureUtil.configure(closure, sync)
     }
 
 }
