@@ -1,4 +1,4 @@
-package views.post
+package post
 
 html.html {
     body {

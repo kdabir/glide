@@ -1,5 +1,3 @@
-package views
-
 import model.Post
 
 html.html {
