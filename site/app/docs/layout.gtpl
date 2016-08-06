@@ -11,7 +11,7 @@
    <div class="row">
      <div class="col-sm-2 col-lg-2">
        <ul class="nav nav-pills nav-stacked">
-         <% ['installing', 'getting-started','quick-start','config','about'].each { docname ->
+         <% ['installing', 'getting-started','quick-start','config', 'how-to', 'about'].each { docname ->
          def caption = docname.replaceAll(/[^a-zA-Z0-9]/, ' ').trim()
          def title = caption[0].toUpperCase() + caption[1..-1].toLowerCase()
          %>
