@@ -4,42 +4,45 @@ import glide.gradle.tasks.GlideStartSync
 import glide.gradle.tasks.GlideSyncOnce
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
+import spock.lang.Specification
 
-import static org.junit.Assert.assertNotNull
+class GlidePluginTests extends Specification {
 
-class GlidePluginTests {
+    Project project = ProjectBuilder.builder().build()
 
-    @Test
-    void "Source and Target Compatibility should be set to 1.7 as java 1.8 is not supported on GAE-J"() {
-        Project project = ProjectBuilder.builder().build()
+    def setup() {
         project.pluginManager.apply GlideGradlePlugin
-
-        assert project.sourceCompatibility.toString() == "1.7"
-        assert project.targetCompatibility.toString() == "1.7"
     }
 
-    @Test
-    void "Gaelyk and App engine plugin applied"() {
-        Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply GlideGradlePlugin
+    def "Source and Target Compatibility should be set to 1.7 as java 1.8 is not supported on appengine"() {
 
-        assertNotNull project.plugins.getPlugin('appengine')
-        assertNotNull project.plugins.getPlugin('gaelyk')
-        assertNotNull project.plugins.getPlugin('java')
-        assertNotNull project.plugins.getPlugin('groovy')
-        assertNotNull project.plugins.getPlugin('war')
+        expect:
+        project.sourceCompatibility.toString() == "1.7"
+        project.targetCompatibility.toString() == "1.7"
+    }
+
+    def "Gaelyk and App engine plugin applied"() {
+
+        expect:
+        project.plugins.getPlugin('appengine')
+        project.plugins.getPlugin('gaelyk')
+        project.plugins.getPlugin('java')
+        project.plugins.getPlugin('groovy')
+        project.plugins.getPlugin('war')
     }
 
 
-    @Test
-    void "Glide sync task is added"() {
-        Project project = ProjectBuilder.builder().build()
-        project.pluginManager.apply GlideGradlePlugin
+    def "Glide sync task is added"() {
 
-        assert project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK] instanceof GlideStartSync
-        assert project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK] instanceof GlideSyncOnce
+        expect:
+        project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK] instanceof GlideStartSync
+        project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK] instanceof GlideSyncOnce
     }
 
+    def "Glide Extension is added"() {
+
+        expect:
+        project.glide instanceof GlideExtension
+    }
 
 }
