@@ -102,15 +102,15 @@ class GlideGradlePlugin implements Plugin<Project> {
 
         AppEnginePluginExtension appEnginePluginExtension = project.extensions.getByType(AppEnginePluginExtension)
 
-        project.plugins.withType(AppEnginePlugin) {
-            println "Configuring App Engine"
-            appEnginePluginExtension.with {
-                disableUpdateCheck = true
-                disableDatagram = false
-                jvmFlags += ["-Dappengine.fullscan.seconds=3"]
-                //      daemon = true
-            }
-        }
+//        project.plugins.withType(AppEnginePlugin) {
+//            println "Configuring App Engine"
+//            appEnginePluginExtension.with {
+//                disableUpdateCheck = true
+//                disableDatagram = false
+//                jvmFlags += ["-Dappengine.fullscan.seconds=3"]
+//                //      daemon = true
+//            }
+//        }
 
         //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
