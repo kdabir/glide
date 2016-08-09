@@ -4,6 +4,7 @@ plugins {
     id 'net.researchgate.release' version '2.4.0'
     id 'com.gradle.plugin-publish' version '0.9.4'
     id 'com.jfrog.bintray' version '1.7'
+    id 'idea'
 }
 
 configurations {
@@ -45,6 +46,9 @@ dependencies {
 
 }
 
+
+def INTG_TEST_ROOT = 'test-intg'
+
 sourceSets {
     main.groovy.srcDirs = ['src']
     test.groovy.srcDirs = ['test']
@@ -58,7 +62,8 @@ sourceSets {
         groovy {
             compileClasspath += main.output + test.output
             runtimeClasspath += main.output + test.output
-            srcDirs = ['test-intg']
+
+            srcDirs = [INTG_TEST_ROOT]
         }
     }
 }
@@ -66,6 +71,14 @@ sourceSets {
 gradlePlugin { // to make int test classes available to tests
     testSourceSets sourceSets.testIntegration
 }
+
+idea {
+    module {
+        testSourceDirs += file(INTG_TEST_ROOT)
+        scopes.TEST.plus += [configurations.testIntegrationRuntime]
+    }
+}
+
 
 jar {
     manifest {
