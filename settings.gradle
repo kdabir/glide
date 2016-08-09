@@ -1,6 +1,12 @@
+rootProject.name = "glide"
+
 include 'glide-filters'
 include 'glide-gradle-plugin'
 include 'glide-runner'
-include 'samples'
+include 'samples:blog'
+include 'samples:expenses'
+include 'samples:greet'
+include 'samples:news'
+include 'samples:scraper'
 include 'site'
 include 'sandbox'
