@@ -28,7 +28,7 @@ class GlideAppRunIntgTests extends Specification {
 
     }
 
-    @Timeout(value = 10, unit = TimeUnit.SECONDS)
+    @Timeout(value = 30, unit = TimeUnit.SECONDS)
     def setupSpec() {  // before-class
 
         DirTree.create(testProjectDir.absolutePath) {
@@ -53,6 +53,7 @@ class GlideAppRunIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
+                .forwardOutput()
                 .withArguments(AppEnginePlugin.APPENGINE_RUN, '--info' ,"--stacktrace")
                 .build()
 
