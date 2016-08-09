@@ -100,17 +100,13 @@ class GlideGradlePlugin implements Plugin<Project> {
 //        glideCopyLibs.dependsOn glidePrepare
 //        glideAppSync.dependsOn glidePrepare
 
-        AppEnginePluginExtension appEnginePluginExtension = project.extensions.getByType(AppEnginePluginExtension)
-
-//        project.plugins.withType(AppEnginePlugin) {
-//            println "Configuring App Engine"
-//            appEnginePluginExtension.with {
-//                disableUpdateCheck = true
-//                disableDatagram = false
-//                jvmFlags += ["-Dappengine.fullscan.seconds=3"]
-//                //      daemon = true
-//            }
-//        }
+        project.plugins.withType(AppEnginePlugin) {
+            project.logger.info "Configuring App Engine Defaults"
+            project.extensions.getByType(AppEnginePluginExtension).with {
+                disableUpdateCheck = true
+                // oauth
+            }
+        }
 
         //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
@@ -177,8 +173,12 @@ class GlideGradlePlugin implements Plugin<Project> {
             glideSyncOnce.synchronizer = synchronizer
 
             // FORCE OVERRIDE APPENGINE EXTENSION PROPERTIES
-            appEnginePluginExtension.with {
-                warDir = warRoot // this may not be required as we are turning off explode anyways
+            project.plugins.withType(AppEnginePlugin) {
+                project.extensions.getByType(AppEnginePluginExtension).with {
+                    warDir = warRoot // this may not be required as we are turning off explode anyways
+                    jvmFlags += ["-Dappengine.fullscan.seconds=3"]
+                    //      daemon = true
+                }
             }
 
             // for app engine, our source and generated config together forms the source
