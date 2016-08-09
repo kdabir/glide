@@ -1,13 +1,13 @@
 package glide.gradle
 
 import directree.DirTree
+import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
-import spock.lang.Ignore
 import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
-class DefaultVersionsIntgTest extends Specification {
+class DefaultVersionsExtensionIntgTest extends Specification {
 
     def "should load versions from properties file"() {
         when:

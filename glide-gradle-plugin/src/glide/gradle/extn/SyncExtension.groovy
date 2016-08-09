@@ -1,4 +1,4 @@
-package glide.gradle
+package glide.gradle.extn
 
 /**
  * configure sync related config here

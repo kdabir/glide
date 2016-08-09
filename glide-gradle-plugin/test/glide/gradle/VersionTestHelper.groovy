@@ -1,7 +1,9 @@
 package glide.gradle
 
+import glide.gradle.extn.VersionsExtension
+
 class VersionTestHelper {
     static def getTestVersions() {
-        Versions.fieldNames().collectEntries { k -> [k, "random${k}Value"] } as Properties
+        VersionsExtension.fieldNames().collectEntries { k -> [k, "random${k}Value"] } as Properties
     }
 }

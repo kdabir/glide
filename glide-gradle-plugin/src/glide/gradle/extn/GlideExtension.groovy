@@ -1,4 +1,4 @@
-package glide.gradle
+package glide.gradle.extn
 
 import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
@@ -9,7 +9,7 @@ class GlideExtension {
     /**
      * versions of various dependencies can be overriden here
      */
-    Versions versions
+    VersionsExtension versions
 
     /**
      * enable or disable features provided by glide
@@ -32,7 +32,7 @@ class GlideExtension {
 
     GlideExtension(Project project, Properties defaultVersions) {
         this.project = project
-        versions = new Versions(defaultVersions)
+        versions = new VersionsExtension(defaultVersions)
     }
 
     void versions(Closure closure){

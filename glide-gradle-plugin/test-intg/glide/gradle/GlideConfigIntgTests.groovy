@@ -1,13 +1,9 @@
 package glide.gradle
 
 import directree.DirTree
-import groovy.util.slurpersupport.GPathResult
+import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
-import spock.lang.IgnoreRest
-import spock.lang.Shared
 import spock.lang.Specification
-
-import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 // Help with Spock:
 // - http://spockframework.github.io/spock/docs/1.0/spock_primer.html
@@ -68,11 +64,11 @@ class GlideConfigIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK, '--info', '-s')
+                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME, '--info', '-s')
                 .forwardOutput()
                 .build()
 
-        def xml = new XmlSlurper().parse(new File(testProjectDir, "build/exploded-app/WEB-INF/appengine-web.xml"))
+        def xml = new XmlSlurper().parse(new File(testProjectDir, "build/warRoot/WEB-INF/appengine-web.xml"))
 
         then:
         xml.application == "sample-dev"

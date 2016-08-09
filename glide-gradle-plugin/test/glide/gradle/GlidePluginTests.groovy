@@ -1,5 +1,6 @@
 package glide.gradle
 
+import glide.gradle.extn.GlideExtension
 import glide.gradle.tasks.GlideStartSync
 import glide.gradle.tasks.GlideSyncOnce
 import org.gradle.api.Project
@@ -35,8 +36,8 @@ class GlidePluginTests extends Specification {
     def "Glide sync task is added"() {
 
         expect:
-        project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK] instanceof GlideStartSync
-        project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK] instanceof GlideSyncOnce
+        project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK_NAME] instanceof GlideStartSync
+        project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME] instanceof GlideSyncOnce
     }
 
     def "Glide Extension is added"() {

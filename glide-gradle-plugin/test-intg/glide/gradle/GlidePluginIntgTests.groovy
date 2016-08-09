@@ -1,9 +1,8 @@
 package glide.gradle
 
 import directree.DirTree
+import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
-import spock.lang.IgnoreRest
-import spock.lang.Shared
 import spock.lang.Specification
 
 
@@ -30,6 +29,7 @@ class GlidePluginIntgTests extends Specification {
                 file "index.groovy", "println 'home'"
                 file "index.html", "<h1>hello world</h1>"
             }
+            file 'glide.groovy', " app { }"
             file "build.gradle", """\
                    plugins {
                     id 'com.appspot.glide-gae'
@@ -55,21 +55,21 @@ class GlidePluginIntgTests extends Specification {
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_INFO_TASK, '--info')
+                .withArguments(GlideGradlePlugin.GLIDE_INFO_TASK_NAME, '--info')
                 .build()
 
         then:
         result.output.contains(properties.get("selfVersion"))
-        result.task(":${GlideGradlePlugin.GLIDE_INFO_TASK}").outcome == SUCCESS
+        result.task(":${GlideGradlePlugin.GLIDE_INFO_TASK_NAME}").outcome == SUCCESS
     }
 
-    def "syncs glide app"() {
+    def "syncOnce syncs glide app files and config"() {
         when:
         def result = GradleRunner.create()
                 .withProjectDir(testProjectDir)
                 .withTestKitDir(IntgTestHelpers.testKitGradleHome)
                 .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK, '--info', "--stacktrace")
+                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME, '--info', "--stacktrace")
 //                .withDebug(true)
                 .build()
 
@@ -79,13 +79,33 @@ class GlidePluginIntgTests extends Specification {
 
         then:
         buildDir.isDirectory()
-        result.task(":${GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK}").outcome == SUCCESS
+        result.task(":${GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME}").outcome == SUCCESS
 
-        new File(buildDir, "exploded-app/index.html").isFile()
-        new File(buildDir, "exploded-app/index.groovy").isFile()
-        new File(buildDir, "exploded-app/WEB-INF/lib").isDirectory()
-        new File(buildDir, "exploded-app/WEB-INF/web.xml").isFile()
-        new File(buildDir, "exploded-app/WEB-INF/appengine-web.xml").isFile()
+        new File(buildDir, "warRoot/index.html").isFile()
+        new File(buildDir, "warRoot/index.groovy").isFile()
+        new File(buildDir, "warRoot/WEB-INF/web.xml").isFile()
+        new File(buildDir, "warRoot/WEB-INF/appengine-web.xml").isFile()
+    }
+
+
+    def "sync libs"() {
+        when:
+        def result = GradleRunner.create()
+                .withProjectDir(testProjectDir)
+                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
+                .withPluginClasspath()
+                .withArguments(GlideGradlePlugin.GLIDE_PREPARE_TASK_NAME, '--info', "--stacktrace")
+//                .withDebug(true)
+                .build()
+
+        def buildDir = new File(testProjectDir, "build")
+
+        println result.output
+
+        then:
+        buildDir.isDirectory()
+
+        new File(buildDir, "warRoot/WEB-INF/lib").isDirectory()
     }
 
 

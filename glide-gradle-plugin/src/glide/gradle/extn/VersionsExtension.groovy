@@ -1,13 +1,13 @@
-package glide.gradle
+package glide.gradle.extn
 
-class Versions {
+class VersionsExtension {
     String groovyVersion,
            appengineVersion,
            gaelykVersion,
            sitemeshVersion,
            glideFiltersVersion
 
-    Versions(final Properties defaults) {
+    VersionsExtension(final Properties defaults) {
         fieldNames().each {
             if (!defaults[it])
                 throw new IllegalArgumentException("$it missing")
@@ -16,6 +16,6 @@ class Versions {
     }
 
     static final List<String> fieldNames() {
-        Versions.getDeclaredFields().grep { !it.synthetic }*.name
+        VersionsExtension.getDeclaredFields().grep { !it.synthetic }*.name
     }
 }

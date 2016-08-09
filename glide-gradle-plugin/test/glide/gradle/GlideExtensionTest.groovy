@@ -1,5 +1,7 @@
 package glide.gradle
 
+import glide.gradle.extn.GlideExtension
+import glide.gradle.extn.SyncExtension
 import org.gradle.api.Project
 import spock.lang.Specification
 

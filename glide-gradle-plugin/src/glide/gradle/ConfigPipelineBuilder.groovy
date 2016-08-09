@@ -4,6 +4,7 @@ import glide.config.ConfigOutput
 import glide.config.ConfigPipeline
 import glide.config.GlideConfig
 import glide.config.generators.*
+import glide.gradle.extn.FeaturesExtension
 import groovy.transform.CompileStatic
 
 @CompileStatic

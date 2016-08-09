@@ -1,4 +1,4 @@
-package glide.gradle
+package glide.gradle.extn
 
 class FeaturesExtension {
     boolean enableGroovy = true

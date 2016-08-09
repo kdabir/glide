@@ -1,5 +1,6 @@
 package glide.gradle
 
+import glide.gradle.extn.FeaturesExtension
 import spock.lang.Specification
 
 import static directree.DirTree.create

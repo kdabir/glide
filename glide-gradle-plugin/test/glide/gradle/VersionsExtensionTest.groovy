@@ -1,20 +1,21 @@
 package glide.gradle
 
+import glide.gradle.extn.VersionsExtension
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class VersionsTest extends Specification {
+class VersionsExtensionTest extends Specification {
 
     @Shared
     def allVersionsRandom = VersionTestHelper.testVersions
 
     def "should set all versions from defaults on construction"() {
         setup:
-        def versions = new Versions(allVersionsRandom)
+        def versions = new VersionsExtension(allVersionsRandom)
 
         expect:
-        Versions.fieldNames().every { field ->
+        VersionsExtension.fieldNames().every { field ->
             versions[field] == "random${field}Value"
         }
     }
@@ -22,7 +23,7 @@ class VersionsTest extends Specification {
     @Unroll
     def "should be able to update #versionToBeUpdated"() {
         given:
-        def versions = new Versions(allVersionsRandom)
+        def versions = new VersionsExtension(allVersionsRandom)
 
         when:
         versions[versionToBeUpdated] = "updatedVersion"
@@ -41,7 +42,7 @@ class VersionsTest extends Specification {
         lesserEntries.remove(keyToBeRemoved);
 
         when:
-        new Versions(lesserEntries)
+        new VersionsExtension(lesserEntries)
 
         then:
         thrown IllegalArgumentException
