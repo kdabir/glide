@@ -24,7 +24,7 @@ class GlideAppRunIntgTests extends Specification {
     @Shared
     def runResult
 
-    @Timeout(value = 30, unit = TimeUnit.SECONDS)
+    @Timeout(value = 60, unit = TimeUnit.SECONDS)
     def setupSpec() {  // before-class
         glideAppUnderTest.appendToBuildFile """\
             appengine {

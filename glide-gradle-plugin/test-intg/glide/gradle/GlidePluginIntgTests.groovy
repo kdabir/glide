@@ -1,8 +1,10 @@
 package glide.gradle
 
 import directree.DirTree
+import glide.testing.GlideTestApp
 import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
+import spock.lang.Shared
 import spock.lang.Specification
 
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
@@ -14,32 +16,19 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class GlidePluginIntgTests extends Specification {
 
-    public static final File testProjectDir = new File("build", "test-project")
+    @Shared
+    GlideTestApp glideAppUnderTest = new GlideTestApp('int-test-config').withDefaultAppFiles().create()
 
-    def setup() {
+    def setupSpec() {
+        glideAppUnderTest.appendToBuildFile """\
+               appengine {
+                    daemon = true
+               }
+            """.stripIndent()
+
     }
 
-    def cleanup() {
-    }        // teardown
 
-    def setupSpec() {    // before-class
-        DirTree.create(testProjectDir.absolutePath) {
-            dir "app", {
-                file "index.groovy", "println 'home'"
-                file "index.html", "<h1>hello world</h1>"
-            }
-            file 'glide.groovy', " app { }"
-            file "build.gradle", """\
-                   plugins {
-                    id 'com.appspot.glide-gae'
-                   }
-                   repositories { mavenLocal() }
-                   appengine {
-                        daemon = true
-                   }
-                """.stripIndent()
-        }
-    }
 
     def cleanupSpec() {     // after-class
 
@@ -50,12 +39,7 @@ class GlidePluginIntgTests extends Specification {
         properties.load(this.class.getClassLoader().getResourceAsStream("versions.properties"))
 
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_INFO_TASK_NAME, '--info')
-                .build()
+        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_INFO_TASK_NAME)
 
         then:
         result.output.contains(properties.get("selfVersion"))
@@ -64,47 +48,24 @@ class GlidePluginIntgTests extends Specification {
 
     def "syncOnce syncs glide app files and config"() {
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME, '--info', "--stacktrace")
-//                .withDebug(true)
-                .build()
-
-        def buildDir = new File(testProjectDir, "build")
-
-        println result.output
+        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME)
 
         then:
-        buildDir.isDirectory()
         result.task(":${GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME}").outcome == SUCCESS
 
-        new File(buildDir, "warRoot/index.html").isFile()
-        new File(buildDir, "warRoot/index.groovy").isFile()
-        new File(buildDir, "warRoot/WEB-INF/web.xml").isFile()
-        new File(buildDir, "warRoot/WEB-INF/appengine-web.xml").isFile()
+        glideAppUnderTest.file("build/warRoot/index.html").isFile()
+        glideAppUnderTest.file("build/warRoot/index.groovy").isFile()
+        glideAppUnderTest.file("build/warRoot/WEB-INF/web.xml").isFile()
+        glideAppUnderTest.file("build/warRoot/WEB-INF/appengine-web.xml").isFile()
     }
 
 
     def "sync libs"() {
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_PREPARE_TASK_NAME, '--info', "--stacktrace")
-//                .withDebug(true)
-                .build()
-
-        def buildDir = new File(testProjectDir, "build")
-
-        println result.output
+        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_PREPARE_TASK_NAME)
 
         then:
-        buildDir.isDirectory()
-
-        new File(buildDir, "warRoot/WEB-INF/lib").isDirectory()
+        glideAppUnderTest.file("build/warRoot/WEB-INF/lib").isDirectory()
     }
 
 
