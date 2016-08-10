@@ -1,8 +1,7 @@
 package glide.gradle
 
-import directree.DirTree
-import glide.testing.IntgTestHelpers
-import org.gradle.testkit.runner.GradleRunner
+import glide.testing.GlideTestApp
+import spock.lang.Shared
 import spock.lang.Specification
 
 // Help with Spock:
@@ -12,19 +11,17 @@ import spock.lang.Specification
 
 class GlideConfigIntgTests extends Specification {
 
-    public static final File testProjectDir = new File("build", "test-project-config")
+    @Shared
+    GlideTestApp glideAppUnderTest = new GlideTestApp('int-test-config').withDefaultAppFiles().create()
 
-    def setupSpec() {    // before-class
+    def setupSpec() {
+        glideAppUnderTest.appendToBuildFile """\
+                   glide {
+                        env = "dev"
+                   }
+                """.stripIndent()
 
-        DirTree.create(testProjectDir.absolutePath) {
-            dir "app", {
-                file "index.html", "<h1>hello world</h1>"
-            }
-            file "glide.groovy", """\
-            app {
-                name = "sample"
-                version = "1"
-            }
+        glideAppUnderTest.appendToGlideConfig """\
             environments {
                 dev {
                     app {
@@ -33,23 +30,6 @@ class GlideConfigIntgTests extends Specification {
                 }
             }
             """.stripIndent()
-
-            file "build.gradle", """\
-                   plugins {
-                    id 'com.appspot.glide-gae'
-                   }
-
-                   repositories { mavenLocal() }
-
-                   glide {
-                        env = "dev"
-                   }
-
-                   appengine {
-                        daemon = true
-                   }
-                """.stripIndent()
-        }
 
     }
 
@@ -60,21 +40,14 @@ class GlideConfigIntgTests extends Specification {
 
     def "should honor env in glide block"() {
         when:
-        def result = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .withArguments(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME, '--info', '-s')
-                .forwardOutput()
-                .build()
+        glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME)
 
-        def xml = new XmlSlurper().parse(new File(testProjectDir, "build/warRoot/WEB-INF/appengine-web.xml"))
+        def xml = new XmlSlurper().parse(glideAppUnderTest.file("build/warRoot/WEB-INF/appengine-web.xml"))
 
         then:
         xml.application == "sample-dev"
         xml.version == "1"
     }
-
 
 }
 

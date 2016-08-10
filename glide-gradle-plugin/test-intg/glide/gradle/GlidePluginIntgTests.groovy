@@ -5,7 +5,6 @@ import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Specification
 
-
 import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 // Help with Spock:
