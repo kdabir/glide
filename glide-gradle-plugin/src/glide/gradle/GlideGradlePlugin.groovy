@@ -9,6 +9,7 @@ import directree.Synchronizer
 import glide.config.ConfigPipeline
 import glide.gradle.extn.*
 import glide.gradle.tasks.*
+import org.gradle.api.DomainObjectCollection
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -100,13 +101,7 @@ class GlideGradlePlugin implements Plugin<Project> {
 //        glideCopyLibs.dependsOn glidePrepare
 //        glideAppSync.dependsOn glidePrepare
 
-        project.plugins.withType(AppEnginePlugin) {
-            project.logger.info "Configuring App Engine Defaults"
-            project.extensions.getByType(AppEnginePluginExtension).with {
-                disableUpdateCheck = true
-                // oauth
-            }
-        }
+        setAppEngineDefaults(project)
 
         //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
@@ -197,6 +192,16 @@ class GlideGradlePlugin implements Plugin<Project> {
         //** Following code executes when task graph is ready **//
         project.gradle.taskGraph.whenReady { graph ->
             project.logger.info("task graph ready..")
+        }
+    }
+
+    private void setAppEngineDefaults(Project project) {
+        project.plugins.withType(AppEnginePlugin) {
+            project.logger.info "Configuring App Engine Defaults..."
+            project.extensions.getByType(AppEnginePluginExtension).with {
+                disableUpdateCheck = true
+                // oauth
+            }
         }
     }
 

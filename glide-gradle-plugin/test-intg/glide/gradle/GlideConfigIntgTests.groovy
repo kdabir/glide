@@ -16,10 +16,10 @@ class GlideConfigIntgTests extends Specification {
 
     def setupSpec() {
         glideAppUnderTest.appendToBuildFile """\
-                   glide {
-                        env = "dev"
-                   }
-                """.stripIndent()
+           glide {
+                env = "dev"
+           }
+            """.stripIndent()
 
         glideAppUnderTest.appendToGlideConfig """\
             environments {

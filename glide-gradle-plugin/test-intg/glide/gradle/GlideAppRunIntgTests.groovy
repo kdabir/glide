@@ -2,6 +2,7 @@ package glide.gradle
 
 import com.google.appengine.AppEnginePlugin
 import directree.DirTree
+import glide.testing.GlideTestApp
 import glide.testing.IntgTestHelpers
 import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Ignore
@@ -15,62 +16,29 @@ import static org.gradle.testkit.runner.TaskOutcome.SUCCESS
 
 class GlideAppRunIntgTests extends Specification {
 
-    public static final File testProjectDir = new File("build", "test-run-project")
+    @Shared
+    GlideTestApp glideAppUnderTest = new GlideTestApp('int-test-run-server')
+        .withDefaultAppFiles()
+        .create()
 
-    @Shared def runResult
-
-    def setup() {
-
-    }
-
-    def cleanup() { // teardown
-
-
-    }
+    @Shared
+    def runResult
 
     @Timeout(value = 30, unit = TimeUnit.SECONDS)
     def setupSpec() {  // before-class
-
-        DirTree.create(testProjectDir.absolutePath) {
-            dir "app", {
-                file "index.groovy", "println 'home'"
-                file "home.html", "<h1>hello world</h1>"
-                file "_routes.groovy", "get '/', forward:'index.groovy'"
+        glideAppUnderTest.appendToBuildFile """\
+            appengine {
+                daemon = true
             }
-            file 'glide.groovy', " app { }"
-            file "build.gradle", """\
-                   plugins {
-                    id 'com.appspot.glide-gae'
-                   }
-                   repositories { mavenLocal() }
-                   appengine {
-                        daemon = true
-                   }
-                """.stripIndent()
-        }
+            """.stripIndent()
 
-        runResult = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .forwardOutput()
-                .withArguments(AppEnginePlugin.APPENGINE_RUN, '--info' ,"--stacktrace")
-                .build()
-
-        println runResult.output
-
+        runResult = glideAppUnderTest.runBlockingTask(AppEnginePlugin.APPENGINE_RUN)
 
     }
 
     def cleanupSpec() {  // after-class
-        def stopResult = GradleRunner.create()
-                .withProjectDir(testProjectDir)
-                .withTestKitDir(IntgTestHelpers.testKitGradleHome)
-                .withPluginClasspath()
-                .withArguments(AppEnginePlugin.APPENGINE_STOP, '--info' ,"--stacktrace")
-                .build()
+        def stopResult = glideAppUnderTest.runBlockingTask(AppEnginePlugin.APPENGINE_STOP)
     }
-
 
     def "starts the development server"() {
         expect:
@@ -87,17 +55,16 @@ class GlideAppRunIntgTests extends Specification {
         runResult.output.contains "uri=/"
     }
 
-
     def "serves groovy scripts"() {
         expect:
-        new URL("http://localhost:8080/index.groovy").text.contains 'home'
+        new URL("http://localhost:8080/index.groovy").text.contains 'hello from index groovlet'
     }
 
-    def "routes work"() {
+    def "index.html is served despite matching route because it will be served from static server"() {
         def resp = new URL("http://localhost:8080/").text
 
         expect:
-        resp.contains 'home'
+        resp.contains 'hello world'
     }
 
 }
