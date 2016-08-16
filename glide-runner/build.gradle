@@ -44,7 +44,7 @@ run {
     args(org.apache.tools.ant.types.Commandline.translateCommandline(project.findProperty("cli") ?: "--app ../sandbox"))
 }
 
-installApp {
+installDist {
     def install_location = getPathFromProperty("dir", rootProject.projectDir.path + "/glide-snapshot")
     into install_location
 

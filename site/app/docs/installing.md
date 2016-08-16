@@ -79,7 +79,7 @@ If you want to do it all manually, it's still simple.
 
     1. clone the git repo : `$ git clone git@github.com:kdabir/glide.git`
 
-    2. `cd` into the directory and install Glide using: `$ cd glide` and `$ ./gradlew installApp`
+    2. `cd` into the directory and install Glide using: `$ cd glide` and `$ ./gradlew installDist`
 
     3. follow the on screen instructions to export `PATH` 
 
@@ -98,7 +98,7 @@ If you want to do it all manually, it's still simple.
 
         > If you don't have git installed, [download](https://github.com/kdabir/glide/archive/master.zip) glide's zip and unzip it.
 
-    2. `cd` into cloned directory `C:\> cd glide` and install Glide using `C:\glide\> gradlew.bat installApp`
+    2. `cd` into cloned directory `C:\> cd glide` and install Glide using `C:\glide\> gradlew.bat installDist`
 
     3. set the `PATH` environment variable according to on-screen instructins 
 
