@@ -4,7 +4,7 @@ install:
   - TERM=dumb ./gradlew -q assemble
 
 script:
-  - TERM=dumb ./gradlew pTML test integrationTest --stacktrace --daemon
+  - TERM=dumb ./gradlew pTML test integrationTest --stacktrace --daemon -Dscan
 
 jdk:
   - oraclejdk7
