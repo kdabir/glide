@@ -4,7 +4,7 @@ clean:
 test:
 	./gradlew clean
 	./gradlew --stop
-	./gradlew test intTest
+	./gradlew test intTest -Dorg.gradle.parallel.intra=true --parallel
 
 p:
 	./gradlew --configure-on-demand glide-gradle-plugin:jWL && ./gradlew --stop
