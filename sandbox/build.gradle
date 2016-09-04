@@ -49,7 +49,7 @@ idea {
 
 glide {
     versions {
-        appengineVersion = "1.9.38" // override appengine version
+//        appengineVersion = "1.9.38" // override appengine version
     }
 //    daemon = false
 }
