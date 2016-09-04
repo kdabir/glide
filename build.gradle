@@ -1,3 +1,14 @@
+/* ------ Gradle.com build-scan --------- */
+plugins {
+    id 'com.gradle.build-scan' version '1.0'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+/* --------------  */
+
 subprojects {
     apply plugin: 'groovy'
 
@@ -58,14 +69,3 @@ def printGitTags(){
 
     logger.quiet tags.join("\n")
 }
-
-/* ------ Gradle.com build-scan --------- */
-plugins {
-    id 'com.gradle.build-scan' version '1.0'
-}
-
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
-}
-/* --------------  */
