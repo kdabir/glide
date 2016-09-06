@@ -24,7 +24,7 @@ class GlideGradlePlugin implements Plugin<Project> {
     // Glide specific
     public static final String GLIDE_EXTENSION_NAME = 'glide'
 
-    public static final GradleVersion MIN_GRADLE_VERSION = GradleVersion.version('2.13')
+    public static final GradleVersion MIN_GRADLE_VERSION = GradleVersion.version('3.0')
 
     public static final String GLIDE_CONFIG_FILE = 'glide.groovy'
 
