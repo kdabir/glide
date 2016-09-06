@@ -9,7 +9,6 @@ import directree.Synchronizer
 import glide.config.ConfigPipeline
 import glide.gradle.extn.*
 import glide.gradle.tasks.*
-import org.gradle.api.DomainObjectCollection
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -23,19 +22,10 @@ import org.gradle.util.GradleVersion
 class GlideGradlePlugin implements Plugin<Project> {
 
     // Glide specific
-    public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
     public static final String GLIDE_EXTENSION_NAME = 'glide'
 
-    // VersionsExtension
-    public static final String SUPPORTED_JAVA_VERSION = '1.7'
     public static final GradleVersion MIN_GRADLE_VERSION = GradleVersion.version('2.13')
 
-    // Source Directories and files
-    public static final String WEB_APP_DIR = 'app'
-    public static final String SRC_DIR = 'src'
-    public static final String TEST_DIR = 'test'
-    public static final String FUNCTIONAL_TESTS_DIR = 'functionalTests'
-    public static final String PUBLIC_DIR = 'public'
     public static final String GLIDE_CONFIG_FILE = 'glide.groovy'
 
     // ConfigOutput
@@ -62,12 +52,11 @@ class GlideGradlePlugin implements Plugin<Project> {
     // called by Gradle when the glide plugin is applied on project
     void apply(Project project) {
 
-        ensureMinimumGradleVersion()
-        applyRequiredPlugins(project)
-        configureJavaCompatibility(project)
-        configureDefaultRepositories(project)
-        configureDefaultSourceDirectories(project)
+        if (GradleVersion.current() < MIN_GRADLE_VERSION) {
+            throw new GradleException("${MIN_GRADLE_VERSION} or above is required")
+        }
 
+        new ProjectDefaultsConfigurator(project).configure()
 
         // File must be in project root as glide.gradle
         final File glideConfigFile = project.file(GLIDE_CONFIG_FILE)
@@ -87,7 +76,6 @@ class GlideGradlePlugin implements Plugin<Project> {
         GlideSyncOnce glideSyncOnce = createGlideTask(project, GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
         Task glidePrepare = createGlideTask(project, GLIDE_PREPARE_TASK_NAME, Task)
 
-        final ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
         def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
         def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
         def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
@@ -100,8 +88,6 @@ class GlideGradlePlugin implements Plugin<Project> {
 //        glideGenerateConfig.dependsOn glidePrepare
 //        glideCopyLibs.dependsOn glidePrepare
 //        glideAppSync.dependsOn glidePrepare
-
-        setAppEngineDefaults(project)
 
         //** Following code executes when project evaluation is finished **//
         project.afterEvaluate {
@@ -127,7 +113,8 @@ class GlideGradlePlugin implements Plugin<Project> {
             // project applies war plugin, hence this property should be present on Project
             final File sourceWebAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
 
-            ensureNonEarArchive(project, explodeTask)
+            new ProjectAfterEvaluateConfigurator(project, configuredGlideExtension).configure()
+
             configureClassesOutput(project, classesRoot)
             configureDependencies(project, featuresExt, versionsExt)
 
@@ -157,7 +144,7 @@ class GlideGradlePlugin implements Plugin<Project> {
 
             glideSetupDir.webInfDir = webInfDir
             glideCopyLibs.into libRoot
-            glideCopyLibs.from  project.configurations.runtime
+            glideCopyLibs.from project.configurations.runtime
             glideAppSync.from = sourceWebAppDir
             glideAppSync.into = warRoot
             glideGenerateConf.configPipeline = configPipeline
@@ -195,15 +182,6 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
     }
 
-    private void setAppEngineDefaults(Project project) {
-        project.plugins.withType(AppEnginePlugin) {
-            project.logger.info "Configuring App Engine Defaults..."
-            project.extensions.getByType(AppEnginePluginExtension).with {
-                disableUpdateCheck = true
-                // oauth
-            }
-        }
-    }
 
     private void configureClassesOutput(Project project, File classesRoot) {
         project.sourceSets.main.output.classesDir = project.sourceSets.main.output.resourcesDir = classesRoot
@@ -219,33 +197,50 @@ class GlideGradlePlugin implements Plugin<Project> {
         taskClasses.each { taskClass -> project.tasks.withType(taskClass) { enabled = false } }
     }
 
-    // must call after project eval done
-    private void ensureNonEarArchive(Project project, ExplodeAppTask explodeTask) {
-        if (explodeTask.archive.name.endsWith(".ear")) {
-            project.logger.error("EAR Not Supported")
-            throw new GradleException("EAR Not Supported")
-        }
+
+
+    public static File fileIn(File parent, String filename) { new File(parent, filename) }
+}
+
+
+class ProjectDefaultsConfigurator {
+
+    // constants
+    public static final String WEB_APP_DIR = 'app'
+    public static final String SRC_DIR = 'src'
+    public static final String TEST_DIR = 'test'
+    public static final String FUNCTIONAL_TESTS_DIR = 'functionalTests'
+    public static final String PUBLIC_DIR = 'public'
+    public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
+    public static final String SUPPORTED_JAVA_VERSION = '1.7'
+    // instance
+    final Project project
+
+    ProjectDefaultsConfigurator(Project project) {
+        this.project = project
     }
 
-    private void configureJavaCompatibility(Project project) { // assumes java plugin is already applied
+    public void configure() {
+        applyRequiredPlugins()
+        configureJavaCompatibility()
+        configureRepositories()
+        configureSourceDirectories()
+        configureAppEngineExtension()
+    }
+
+    private void configureJavaCompatibility() { // assumes java plugin is already applied
         project.sourceCompatibility = SUPPORTED_JAVA_VERSION
         project.targetCompatibility = SUPPORTED_JAVA_VERSION
     }
 
-    private void applyRequiredPlugins(Project project) {
+    // TODO apply gaelyk only if feature is enabled
+    // - Not so important though, as it does not pollute runtime, it only adds minimal build tasks)
+    private void applyRequiredPlugins() {
         project.apply(plugin: 'war')
-        // TODO make it apply only when gaelyk feature is enabled,
-        // Not so important though, as it does not pollute runtime, it only adds minimal build tasks)
         project.apply(plugin: 'org.gaelyk')
     }
 
-    private void ensureMinimumGradleVersion() {
-        if (GradleVersion.current() < MIN_GRADLE_VERSION) {
-            throw new GradleException("${MIN_GRADLE_VERSION} or above is required")
-        }
-    }
-
-    private configureDefaultRepositories(Project project) {
+    private void configureRepositories() {
         project.repositories {
             jcenter()
             maven { url GLIDE_MAVEN_REPO }
@@ -253,7 +248,8 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
     }
 
-    private void configureDefaultSourceDirectories(Project project) {
+    // TODO - how to make things like `sourceSet` statically resolvable?
+    private void configureSourceDirectories() {
         project.sourceSets {
             main.groovy.srcDirs = [SRC_DIR]
             test.groovy.srcDirs = [TEST_DIR]
@@ -267,7 +263,50 @@ class GlideGradlePlugin implements Plugin<Project> {
         project.webAppDirName = WEB_APP_DIR
     }
 
-    private void configureDependencies(Project project, FeaturesExtension features, VersionsExtension versions) {
+    private void configureAppEngineExtension() {
+        project.plugins.withType(AppEnginePlugin) {
+            project.logger.info "Configuring App Engine Defaults..."
+            project.extensions.getByType(AppEnginePluginExtension).with {
+                disableUpdateCheck = true
+                // oauth
+            }
+        }
+    }
+
+}
+
+/**
+ * Tunes the project config after the project has been evaluated, i.e. the glide's extension and possibly other
+ * extensions have been configured by user's build script and evaluated by gradle.
+ *
+ */
+class ProjectAfterEvaluateConfigurator {
+    final Project project
+    final GlideExtension glideExtension
+
+    ProjectAfterEvaluateConfigurator(Project project, GlideExtension configuredGlideExtension) {
+        this.project = project
+        this.glideExtension = configuredGlideExtension
+    }
+
+    public void configure() {
+        ensureNonEarArchive()
+        configureDependencies()
+    }
+
+    // must call after project eval done
+    private void ensureNonEarArchive() {
+        ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
+        if (explodeTask.archive.name.endsWith(".ear")) {
+            project.logger.error("EAR Not Supported")
+            throw new GradleException("EAR Not Supported")
+        }
+    }
+
+    private void configureDependencies() {
+        FeaturesExtension features = glideExtension.features
+        VersionsExtension versions = glideExtension.versions
+
         project.dependencies {
             // Configure SDK
             appengineSdk "com.google.appengine:appengine-java-sdk:${versions.appengineVersion}"
@@ -294,6 +333,6 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
     }
 
-    public static File fileIn(File parent, String filename) { new File(parent, filename) }
 }
+
 
