@@ -39,19 +39,19 @@ class GlidePluginIntgTests extends Specification {
         properties.load(this.class.getClassLoader().getResourceAsStream("versions.properties"))
 
         when:
-        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_INFO_TASK_NAME)
+        def result = glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_INFO_TASK_NAME)
 
         then:
         result.output.contains(properties.get("selfVersion"))
-        result.task(":${GlideGradlePlugin.GLIDE_INFO_TASK_NAME}").outcome == SUCCESS
+        result.task(":${GlideTaskCreator.GLIDE_INFO_TASK_NAME}").outcome == SUCCESS
     }
 
     def "syncOnce syncs glide app files and config"() {
         when:
-        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME)
+        def result = glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_SYNC_ONCE_TASK_NAME)
 
         then:
-        result.task(":${GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME}").outcome == SUCCESS
+        result.task(":${GlideTaskCreator.GLIDE_SYNC_ONCE_TASK_NAME}").outcome == SUCCESS
 
         glideAppUnderTest.file("build/warRoot/index.html").isFile()
         glideAppUnderTest.file("build/warRoot/index.groovy").isFile()
@@ -62,7 +62,7 @@ class GlidePluginIntgTests extends Specification {
 
     def "sync libs"() {
         when:
-        def result = glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_PREPARE_TASK_NAME)
+        def result = glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_PREPARE_TASK_NAME)
 
         then:
         glideAppUnderTest.file("build/warRoot/WEB-INF/lib").isDirectory()

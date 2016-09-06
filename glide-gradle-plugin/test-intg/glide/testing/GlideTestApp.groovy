@@ -86,5 +86,10 @@ class GlideTestApp {
             .build()
     }
 
+    def runTaskInAThread(String taskName) {
+        Thread.start {
+            runBlockingTask(taskName)
+        }
+    }
 
 }

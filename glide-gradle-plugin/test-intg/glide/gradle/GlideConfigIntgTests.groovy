@@ -40,7 +40,7 @@ class GlideConfigIntgTests extends Specification {
 
     def "should honor env in glide block"() {
         when:
-        glideAppUnderTest.runBlockingTask(GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME)
+        glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_SYNC_ONCE_TASK_NAME)
 
         def xml = new XmlSlurper().parse(glideAppUnderTest.file("build/warRoot/WEB-INF/appengine-web.xml"))
 
