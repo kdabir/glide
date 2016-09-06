@@ -1,5 +1,6 @@
 package glide.gradle
 
+import glide.gradle.project.decorators.GlideTaskCreator
 import glide.testing.GlideTestApp
 import spock.lang.Shared
 import spock.lang.Specification

@@ -1,9 +1,7 @@
 package glide.gradle
 
-import directree.DirTree
+import glide.gradle.project.decorators.GlideTaskCreator
 import glide.testing.GlideTestApp
-import glide.testing.IntgTestHelpers
-import org.gradle.testkit.runner.GradleRunner
 import spock.lang.Shared
 import spock.lang.Specification
 

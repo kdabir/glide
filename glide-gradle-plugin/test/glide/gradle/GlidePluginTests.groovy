@@ -1,6 +1,7 @@
 package glide.gradle
 
 import glide.gradle.extn.GlideExtension
+import glide.gradle.project.decorators.GlideTaskCreator
 import glide.gradle.tasks.GlideStartSync
 import glide.gradle.tasks.GlideSyncOnce
 import org.gradle.api.Project

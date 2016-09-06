@@ -9,6 +9,9 @@ import com.google.appengine.task.appcfg.UpdateTask
 import directree.Synchronizer
 import glide.config.ConfigPipeline
 import glide.gradle.extn.*
+import glide.gradle.project.decorators.GlideTaskCreator
+import glide.gradle.project.decorators.ProjectAfterEvaluateConfigurator
+import glide.gradle.project.decorators.ProjectDefaultsConfigurator
 import glide.gradle.tasks.*
 import org.gradle.api.GradleException
 import org.gradle.api.Plugin
@@ -16,7 +19,6 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.plugins.WarPluginConvention
 import org.gradle.api.plugins.gaelyk.tasks.GaelykSynchronizeResourcesTask
-import org.gradle.api.tasks.Copy
 import org.gradle.api.tasks.bundling.War
 import org.gradle.util.GradleVersion
 
@@ -185,222 +187,10 @@ class GlideGradlePlugin implements Plugin<Project> {
 }
 
 
-abstract class ProjectDecorator {
-    // instance
-    final Project project
-
-    ProjectDecorator(Project project) {
-        this.project = project
-    }
-
-    abstract void configure()
-}
-
-class ProjectDefaultsConfigurator extends ProjectDecorator {
-
-    // constants
-    public static final String WEB_APP_DIR = 'app'
-    public static final String SRC_DIR = 'src'
-    public static final String TEST_DIR = 'test'
-    public static final String FUNCTIONAL_TESTS_DIR = 'functionalTests'
-    public static final String PUBLIC_DIR = 'public'
-    public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
-    public static final String SUPPORTED_JAVA_VERSION = '1.7'
-
-    ProjectDefaultsConfigurator(Project project) {
-        super(project)
-    }
-
-    public void configure() {
-        applyRequiredPlugins()
-        configureJavaCompatibility()
-        configureRepositories()
-        configureSourceDirectories()
-        configureAppEngineExtension()
-    }
-
-    private void configureJavaCompatibility() { // assumes java plugin is already applied
-        project.sourceCompatibility = SUPPORTED_JAVA_VERSION
-        project.targetCompatibility = SUPPORTED_JAVA_VERSION
-    }
-
-    // TODO apply gaelyk only if feature is enabled
-    // - Not so important though, as it does not pollute runtime, it only adds minimal build tasks)
-    private void applyRequiredPlugins() {
-        project.apply(plugin: 'war')
-        project.apply(plugin: 'org.gaelyk')
-    }
-
-    private void configureRepositories() {
-        project.repositories {
-            jcenter()
-            maven { url GLIDE_MAVEN_REPO }
-            mavenCentral()
-        }
-    }
-
-    // TODO - how to make things like `sourceSet` statically resolvable?
-    private void configureSourceDirectories() {
-        project.sourceSets {
-            main.groovy.srcDirs = [SRC_DIR]
-            test.groovy.srcDirs = [TEST_DIR]
-
-            main.java.srcDirs = [SRC_DIR]
-            test.java.srcDirs = [TEST_DIR]
-
-            functionalTests.groovy.srcDir FUNCTIONAL_TESTS_DIR
-        }
-
-        project.webAppDirName = WEB_APP_DIR
-    }
-
-    private void configureAppEngineExtension() {
-        project.plugins.withType(AppEnginePlugin) {
-            project.logger.info "Configuring App Engine Defaults..."
-            project.extensions.getByType(AppEnginePluginExtension).with {
-                disableUpdateCheck = true
-                // oauth
-            }
-        }
-    }
-
-}
-
-/**
- * Tunes the project config after the project has been evaluated, i.e. the glide's extension and possibly other
- * extensions have been configured by user's build script and evaluated by gradle.
- *
- */
-class ProjectAfterEvaluateConfigurator extends ProjectDecorator {
-    final GlideExtension glideExtension
-
-    ProjectAfterEvaluateConfigurator(Project project, GlideExtension configuredGlideExtension) {
-        super(project)
-        this.glideExtension = configuredGlideExtension
-    }
-
-    public void configure() {
-        ensureNonEarArchive()
-        configureDependencies()
-    }
-
-    // must call after project eval done
-    private void ensureNonEarArchive() {
-        ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
-        if (explodeTask.archive.name.endsWith(".ear")) {
-            project.logger.error("EAR Not Supported")
-            throw new GradleException("EAR Not Supported")
-        }
-    }
-
-    private void configureDependencies() {
-        FeaturesExtension features = glideExtension.features
-        VersionsExtension versions = glideExtension.versions
-
-        project.dependencies {
-            // Configure SDK
-            appengineSdk "com.google.appengine:appengine-java-sdk:${versions.appengineVersion}"
-
-            // App Engine Specific Dependencies
-            compile "com.google.appengine:appengine-api-1.0-sdk:${versions.appengineVersion}"
-            compile "com.google.appengine:appengine-api-labs:${versions.appengineVersion}"
-
-            // Groovy lib dependency
-            if (features.enableGroovy)
-                compile "org.codehaus.groovy:groovy-all:${versions.groovyVersion}"
-
-            // Gaelyk lib dependency
-            if (features.enableGaelyk || features.enableGaelykTemplates)
-                compile "org.gaelyk:gaelyk:${versions.gaelykVersion}"
-
-            // Glide Runtime lib dependency
-            if (features.enableGlideProtectedResources || features.enableGlideRequestLogging)
-                compile "io.github.kdabir.glide:glide-filters:${versions.glideFiltersVersion}"
-
-            // Sitemesh lib dependency
-            if (features.enableSitemesh)
-                compile "org.sitemesh:sitemesh:${versions.sitemeshVersion}"
-        }
-    }
-
-}
-
-/**
- * Only creates and wire task dependencies. Project does not need to be evaluated before this is run.
- */
-class GlideTaskCreator extends ProjectDecorator {
-    // Task Names
-    public static final String GLIDE_INFO_TASK_NAME = "glideInfo"
-    public static final String GLIDE_PREPARE_TASK_NAME = "glidePrepare"
-    public static final String GLIDE_COPY_LIBS_TASK_NAME = "glideCopyLibs"
-    public static final String GLIDE_APP_SYNC_TASK_NAME = "glideAppSync"
-    public static final String GLIDE_GENERATE_CONFIG_TASK_NAME = "glideGenerateConfig"
-    public static final String WATCH_TASK_NAME = 'watch'
-    public static final String GRADLE_CLASSES_TASK_NAME = 'classes'
-
-    public static final String GLIDE_START_SYNC_TASK_NAME = "glideStartSync"
-    public static final String GLIDE_SYNC_ONCE_TASK_NAME = "glideSyncOnce"
-    public static final String GLIDE_TASK_GROUP_NAME = 'glide'
-    public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
 
 
-    // glideRun
-    // glideDeploy
 
 
-    GlideTaskCreator(Project project) {
-        super(project)
-    }
 
-    @Override
-    void configure() {
-        createAndConfigureGlideTasks()
-    }
 
-    def createAndConfigureGlideTasks() {
-        // Create Task objects
-        GlideSetup glideSetupDir = createGlideTask(GLIDE_SETUP_TASK_NAME, GlideSetup)
-        GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo)
-        Copy glideCopyLibs = createGlideTask(GLIDE_COPY_LIBS_TASK_NAME, Copy)
-        GlideGenerateConf glideGenerateConf = createGlideTask(GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf)
-        ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync)
-        GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
-        GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
-        Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
-        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
-        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
-
-        def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
-        def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
-        def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
-
-        glidePrepare.dependsOn glideGenerateConf, glideAppSync, classesTask, glideCopyLibs
-        runTask.dependsOn glidePrepare
-        update.dependsOn glidePrepare
-        glideStartSync.dependsOn glidePrepare
-        glideSyncOnce.dependsOn glideSetupDir
-    }
-
-    public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass) {
-        Task createdTask = this.project.tasks.create(taskName, taskClass)
-        createdTask.group = GLIDE_TASK_GROUP_NAME
-        return createdTask
-    }
-
-}
-
-/**
- * Configure task with values from evaluated project and extensions
- */
-class GlidePostEvaluateTaskConfigurator extends ProjectDecorator {
-
-    GlidePostEvaluateTaskConfigurator(Project project) {
-        super(project)
-    }
-
-    @Override
-    void configure() {
-
-    }
-}
 

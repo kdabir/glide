@@ -1,9 +1,9 @@
 package glide.gradle
 
 import com.google.appengine.AppEnginePlugin
+import glide.gradle.project.decorators.GlideTaskCreator
 import glide.testing.GlideTestApp
 import spock.lang.Ignore
-import spock.lang.IgnoreRest
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Timeout
