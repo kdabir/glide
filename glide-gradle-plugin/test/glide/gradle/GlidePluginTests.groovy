@@ -36,8 +36,8 @@ class GlidePluginTests extends Specification {
     def "Glide sync task is added"() {
 
         expect:
-        project.tasks[GlideGradlePlugin.GLIDE_START_SYNC_TASK_NAME] instanceof GlideStartSync
-        project.tasks[GlideGradlePlugin.GLIDE_SYNC_ONCE_TASK_NAME] instanceof GlideSyncOnce
+        project.tasks[GlideTaskCreator.GLIDE_START_SYNC_TASK_NAME] instanceof GlideStartSync
+        project.tasks[GlideTaskCreator.GLIDE_SYNC_ONCE_TASK_NAME] instanceof GlideSyncOnce
     }
 
     def "Glide Extension is added"() {

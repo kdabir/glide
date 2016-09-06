@@ -34,21 +34,6 @@ class GlideGradlePlugin implements Plugin<Project> {
     public static final String LIB_DIR = "lib"
     public static final String CLASSES_DIR = "classes"
 
-    // Task Names
-    public static final String GLIDE_INFO_TASK_NAME = "glideInfo"
-    public static final String GLIDE_PREPARE_TASK_NAME = "glidePrepare"
-    public static final String GLIDE_COPY_LIBS_TASK_NAME = "glideCopyLibs"
-    public static final String GLIDE_APP_SYNC_TASK_NAME = "glideAppSync"
-    public static final String GLIDE_GENERATE_CONFIG_TASK_NAME = "glideGenerateConfig"
-    public static final String WATCH_TASK_NAME = 'watch'
-    public static final String GRADLE_CLASSES_TASK_NAME = 'classes'
-
-    //
-    public static final String GLIDE_START_SYNC_TASK_NAME = "glideStartSync"
-    public static final String GLIDE_SYNC_ONCE_TASK_NAME = "glideSyncOnce"
-    public static final String GLIDE_TASK_GROUP_NAME = 'glide'
-    public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
-
     // called by Gradle when the glide plugin is applied on project
     void apply(Project project) {
 
@@ -66,25 +51,8 @@ class GlideGradlePlugin implements Plugin<Project> {
         // Use the extension's instance only in `project.afterEvaluate` closure.
         project.extensions.create(GLIDE_EXTENSION_NAME, GlideExtension, project, DefaultVersions.get())
 
-        // Create Task objects
-        GlideSetup glideSetupDir = createGlideTask(project, GLIDE_SETUP_TASK_NAME, GlideSetup)
-        GlideInfo glideInfo = createGlideTask(project, GLIDE_INFO_TASK_NAME, GlideInfo)
-        Copy glideCopyLibs = createGlideTask(project, GLIDE_COPY_LIBS_TASK_NAME, Copy)
-        GlideGenerateConf glideGenerateConf = createGlideTask(project, GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf)
-        ForgivingSync glideAppSync = createGlideTask(project, GLIDE_APP_SYNC_TASK_NAME, ForgivingSync)
-        GlideStartSync glideStartSync = createGlideTask(project, GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
-        GlideSyncOnce glideSyncOnce = createGlideTask(project, GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
-        Task glidePrepare = createGlideTask(project, GLIDE_PREPARE_TASK_NAME, Task)
+        new GlideTaskCreator(project).configure()
 
-        def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
-        def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
-        def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
-
-        glidePrepare.dependsOn glideGenerateConf, glideAppSync, classesTask, glideCopyLibs
-        runTask.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs, glideStartSync
-        update.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs
-
-        glideSyncOnce.dependsOn glideSetupDir
 //        glideGenerateConfig.dependsOn glidePrepare
 //        glideCopyLibs.dependsOn glidePrepare
 //        glideAppSync.dependsOn glidePrepare
@@ -116,7 +84,6 @@ class GlideGradlePlugin implements Plugin<Project> {
             new ProjectAfterEvaluateConfigurator(project, configuredGlideExtension).configure()
 
             configureClassesOutput(project, classesRoot)
-            configureDependencies(project, featuresExt, versionsExt)
 
             ConfigPipeline configPipeline = new ConfigPipelineBuilder()
                 .withFeaturesExtension(featuresExt)
@@ -142,17 +109,31 @@ class GlideGradlePlugin implements Plugin<Project> {
                 }
             }
 
-            glideSetupDir.webInfDir = webInfDir
-            glideCopyLibs.into libRoot
-            glideCopyLibs.from project.configurations.runtime
-            glideAppSync.from = sourceWebAppDir
-            glideAppSync.into = warRoot
-            glideGenerateConf.configPipeline = configPipeline
-            glideGenerateConf.glideConfigFile = configPipeline.userConfig
-            glideGenerateConf.outputFiles = project.files(configPipeline.outputs*.outputFile)
-            glideGenerateConf.env = env
-            glideStartSync.synchronizer = synchronizer
-            glideSyncOnce.synchronizer = synchronizer
+
+            project.tasks.withType(GlideSetup) { GlideSetup task ->
+                task.webInfDir = webInfDir
+            }
+            project.tasks.getByName(GlideTaskCreator.GLIDE_COPY_LIBS_TASK_NAME).with {
+                into libRoot
+                from project.configurations.runtime
+            }
+
+            project.tasks.withType(ForgivingSync) { ForgivingSync glideAppSync ->
+                glideAppSync.from = sourceWebAppDir
+                glideAppSync.into = warRoot
+            }
+
+            project.tasks.withType(GlideGenerateConf) { GlideGenerateConf glideGenerateConf ->
+                glideGenerateConf.configPipeline = configPipeline
+                glideGenerateConf.glideConfigFile = configPipeline.userConfig
+                glideGenerateConf.outputFiles = project.files(configPipeline.outputs*.outputFile)
+                glideGenerateConf.env = env
+            }
+
+            project.tasks.withType(GlideSyncBase) { GlideSyncBase glideSyncBase ->
+                glideSyncBase.synchronizer = synchronizer
+            }
+
 
             // FORCE OVERRIDE APPENGINE EXTENSION PROPERTIES
             project.plugins.withType(AppEnginePlugin) {
@@ -187,23 +168,27 @@ class GlideGradlePlugin implements Plugin<Project> {
         project.sourceSets.main.output.classesDir = project.sourceSets.main.output.resourcesDir = classesRoot
     }
 
-    private static <T extends Task> T createGlideTask(Project project, String taskName, Class<T> taskClass) {
-        Task createdTask = project.tasks.create(taskName, taskClass)
-        createdTask.group = GLIDE_TASK_GROUP_NAME
-        return createdTask
-    }
-
     private static <T extends Task> void disableTaskTypes(Project project, Class<T>... taskClasses) {
         taskClasses.each { taskClass -> project.tasks.withType(taskClass) { enabled = false } }
     }
-
 
 
     public static File fileIn(File parent, String filename) { new File(parent, filename) }
 }
 
 
-class ProjectDefaultsConfigurator {
+abstract class ProjectDecorator {
+    // instance
+    final Project project
+
+    ProjectDecorator(Project project) {
+        this.project = project
+    }
+
+    abstract void configure()
+}
+
+class ProjectDefaultsConfigurator extends ProjectDecorator {
 
     // constants
     public static final String WEB_APP_DIR = 'app'
@@ -213,11 +198,9 @@ class ProjectDefaultsConfigurator {
     public static final String PUBLIC_DIR = 'public'
     public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
     public static final String SUPPORTED_JAVA_VERSION = '1.7'
-    // instance
-    final Project project
 
     ProjectDefaultsConfigurator(Project project) {
-        this.project = project
+        super(project)
     }
 
     public void configure() {
@@ -280,12 +263,11 @@ class ProjectDefaultsConfigurator {
  * extensions have been configured by user's build script and evaluated by gradle.
  *
  */
-class ProjectAfterEvaluateConfigurator {
-    final Project project
+class ProjectAfterEvaluateConfigurator extends ProjectDecorator {
     final GlideExtension glideExtension
 
     ProjectAfterEvaluateConfigurator(Project project, GlideExtension configuredGlideExtension) {
-        this.project = project
+        super(project)
         this.glideExtension = configuredGlideExtension
     }
 
@@ -335,4 +317,75 @@ class ProjectAfterEvaluateConfigurator {
 
 }
 
+/**
+ * Only creates and wire task dependencies. Project does not need to be evaluated before this is run.
+ */
+class GlideTaskCreator extends ProjectDecorator {
+    // Task Names
+    public static final String GLIDE_INFO_TASK_NAME = "glideInfo"
+    public static final String GLIDE_PREPARE_TASK_NAME = "glidePrepare"
+    public static final String GLIDE_COPY_LIBS_TASK_NAME = "glideCopyLibs"
+    public static final String GLIDE_APP_SYNC_TASK_NAME = "glideAppSync"
+    public static final String GLIDE_GENERATE_CONFIG_TASK_NAME = "glideGenerateConfig"
+    public static final String WATCH_TASK_NAME = 'watch'
+    public static final String GRADLE_CLASSES_TASK_NAME = 'classes'
+
+    public static final String GLIDE_START_SYNC_TASK_NAME = "glideStartSync"
+    public static final String GLIDE_SYNC_ONCE_TASK_NAME = "glideSyncOnce"
+    public static final String GLIDE_TASK_GROUP_NAME = 'glide'
+    public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
+
+
+    GlideTaskCreator(Project project) {
+        super(project)
+    }
+
+    @Override
+    void configure() {
+        createAndConfigureGlideTasks()
+    }
+
+    def createAndConfigureGlideTasks() {
+        // Create Task objects
+        GlideSetup glideSetupDir = createGlideTask(GLIDE_SETUP_TASK_NAME, GlideSetup)
+        GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo)
+        Copy glideCopyLibs = createGlideTask(GLIDE_COPY_LIBS_TASK_NAME, Copy)
+        GlideGenerateConf glideGenerateConf = createGlideTask(GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf)
+        ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync)
+        GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
+        GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
+        Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
+
+        def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
+        def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
+        def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
+
+        glidePrepare.dependsOn glideGenerateConf, glideAppSync, classesTask, glideCopyLibs
+        runTask.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs, glideStartSync
+        update.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs
+        glideSyncOnce.dependsOn glideSetupDir
+    }
+
+    public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass) {
+        Task createdTask = this.project.tasks.create(taskName, taskClass)
+        createdTask.group = GLIDE_TASK_GROUP_NAME
+        return createdTask
+    }
+
+}
+
+/**
+ * Configure task with values from evaluated project and extensions
+ */
+class GlidePostEvaluateTaskConfigurator extends ProjectDecorator {
+
+    GlidePostEvaluateTaskConfigurator(Project project) {
+        super(project)
+    }
+
+    @Override
+    void configure() {
+
+    }
+}
 

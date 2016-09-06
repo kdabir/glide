@@ -1,11 +1,8 @@
 package glide.gradle.tasks
 
-import directree.Synchronizer
-import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 
-class GlideSyncOnce extends DefaultTask {
-    Synchronizer synchronizer
+class GlideSyncOnce extends GlideSyncBase {
 
     @TaskAction
     protected void syncOnce() {
