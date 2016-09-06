@@ -1,5 +1,7 @@
 clean:
 	./gradlew clean
+	./gradlew --stop
+
 
 test:
 	./gradlew clean
