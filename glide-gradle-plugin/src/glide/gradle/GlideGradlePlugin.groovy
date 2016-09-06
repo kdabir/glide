@@ -3,6 +3,7 @@ package glide.gradle
 import com.google.appengine.AppEnginePlugin
 import com.google.appengine.AppEnginePluginExtension
 import com.google.appengine.task.ExplodeAppTask
+import com.google.appengine.task.RunTask
 import com.google.appengine.task.WebAppDirTask
 import com.google.appengine.task.appcfg.UpdateTask
 import directree.Synchronizer
@@ -138,9 +139,11 @@ class GlideGradlePlugin implements Plugin<Project> {
             // FORCE OVERRIDE APPENGINE EXTENSION PROPERTIES
             project.plugins.withType(AppEnginePlugin) {
                 project.extensions.getByType(AppEnginePluginExtension).with {
-                    warDir = warRoot // this may not be required as we are turning off explode anyways
-                    jvmFlags += ["-Dappengine.fullscan.seconds=3"]
-                    //      daemon = true
+                    //  warDir = warRoot // this may not be required as we are overriding explodedAppDirectory below
+                    // daemon = true
+
+                    // TODO add following only if we want to reload classes
+                    jvmFlags += ["-Dappengine.fullscan.seconds=${frequency}"]
                 }
             }
 
@@ -152,6 +155,11 @@ class GlideGradlePlugin implements Plugin<Project> {
             project.tasks.withType(UpdateTask) { UpdateTask updateTask ->
                 updateTask.explodedAppDirectory = warRoot
             }
+
+            project.tasks.withType(RunTask) { RunTask task ->
+                task.explodedAppDirectory = warRoot
+            }
+
             // disable Gaelyk's sync because we have our own sync, War/Exploded because its redundant
             disableTaskTypes(project, GaelykSynchronizeResourcesTask, War, ExplodeAppTask)
 
@@ -336,6 +344,10 @@ class GlideTaskCreator extends ProjectDecorator {
     public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
 
 
+    // glideRun
+    // glideDeploy
+
+
     GlideTaskCreator(Project project) {
         super(project)
     }
@@ -355,14 +367,17 @@ class GlideTaskCreator extends ProjectDecorator {
         GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
         GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
         Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
+        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
+        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
 
         def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
         def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
         def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
 
         glidePrepare.dependsOn glideGenerateConf, glideAppSync, classesTask, glideCopyLibs
-        runTask.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs, glideStartSync
-        update.dependsOn glideAppSync, glideGenerateConf, classesTask, glideCopyLibs
+        runTask.dependsOn glidePrepare
+        update.dependsOn glidePrepare
+        glideStartSync.dependsOn glidePrepare
         glideSyncOnce.dependsOn glideSetupDir
     }
 
