@@ -40,124 +40,85 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
     public static final String CLASSES_DIR = "classes"
 
     final GlideExtension configuredGlideExtension
+    final VersionsExtension versionsExt
+    final FeaturesExtension featuresExt
+    final SyncExtension syncExt
+    final String syncPreservedPatterns
+    final int syncFrequency
+    final String env
+
+    final File warRoot, webInfDir, classesRoot, libRoot
+    final File glideConfigFile
+    final File sourceWebAppDir
+    final ConfigPipeline configPipeline
+    final Synchronizer synchronizer
+
 
     AfterEvaluateProjectConfigurator(Project project, GlideExtension configuredGlideExtension) {
         super(project)
-        this.configuredGlideExtension = configuredGlideExtension
-    }
 
-    public void configure() {
-        ensureNonEarArchive()
-        configureDependencies()
+        this.configuredGlideExtension = configuredGlideExtension
+        this.versionsExt = configuredGlideExtension.versions
+        this.featuresExt = configuredGlideExtension.features
+        this.syncExt = configuredGlideExtension.sync
+        this.env = configuredGlideExtension.env
 
         // Output dir for the continuous mode + classes Dir for src
         // Note: Currently warRoot is not configurable through build script
-        final File warRoot = fileIn(project.buildDir, DEFAULT_OUTPUT_WEB_APP_DIR),
-                   webInfDir = fileIn(warRoot, WEB_INF_DIR),
-                   classesRoot = fileIn(webInfDir, CLASSES_DIR),
-                   libRoot = fileIn(webInfDir, LIB_DIR)
+        this.warRoot = fileIn(project.buildDir, DEFAULT_OUTPUT_WEB_APP_DIR)
+        this.webInfDir = fileIn(warRoot, WEB_INF_DIR)
+        this.classesRoot = fileIn(webInfDir, CLASSES_DIR)
+        this.libRoot = fileIn(webInfDir, LIB_DIR)
 
-
-        final VersionsExtension versionsExt = configuredGlideExtension.versions
-        final FeaturesExtension featuresExt = configuredGlideExtension.features
-        final SyncExtension syncExt = configuredGlideExtension.sync
-
-        final String env = configuredGlideExtension.env
-        final int frequency = syncExt.frequency
-        final String preserved = syncExt.preservedPatterns
+        this.syncFrequency = this.syncExt.frequency
+        this.syncPreservedPatterns = this.syncExt.preservedPatterns
 
         // project applies war plugin, hence this property should be present on Project
-        final File sourceWebAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
+        this.sourceWebAppDir = project.convention.getPlugin(WarPluginConvention).webAppDir
         // File must be in project root as glide.gradle
-        final File glideConfigFile = project.file(GLIDE_CONFIG_FILE)
+        this.glideConfigFile = project.file(GLIDE_CONFIG_FILE)
 
-
-
-        configureClassesOutput(classesRoot)
-
-        ConfigPipeline configPipeline = new ConfigPipelineBuilder()
+        this.configPipeline = new ConfigPipelineBuilder()
             .withFeaturesExtension(featuresExt)
             .withUserConfig(glideConfigFile)
             .withWebAppSourceRoot(sourceWebAppDir)
             .withWebAppTargetRoot(warRoot)
             .build()
 
-        Synchronizer synchronizer = Synchronizer.build {
+        this.synchronizer = Synchronizer.build {
             withAnt(project.ant)
             sourceDir sourceWebAppDir.absolutePath
             targetDir warRoot.absolutePath, includeEmptyDirs: true
-            preserve includes: preserved, preserveEmptyDirs: true
-            syncFrequencyInSeconds frequency
+            preserve includes: syncPreservedPatterns, preserveEmptyDirs: true
+            syncFrequencyInSeconds syncFrequency
             withTimer(new Timer("Synchronizer Daemon Thread", true))
 
             beforeSync {
                 // project.logger.quiet("performing before sync checks..."  + glideConfig.lastModified())
                 if (glideConfigFile.lastModified() >= lastSynced) {
                     project.logger.quiet("generating config files...")
-                    configPipeline.execute(env)
+                    this.configPipeline.execute(env)
                 }
             }
         }
+    }
 
-        project.tasks.withType(GlideSetup) { GlideSetup task ->
-            task.webInfDir = webInfDir
-        }
-
-        project.tasks.getByName(GlideTaskCreator.GLIDE_COPY_LIBS_TASK_NAME).with {
-            into libRoot
-            from project.configurations.runtime
-        }
-
-        project.tasks.withType(ForgivingSync) { ForgivingSync glideAppSync ->
-            glideAppSync.from = sourceWebAppDir
-            glideAppSync.into = warRoot
-        }
-
-        project.tasks.withType(GlideGenerateConf) { GlideGenerateConf glideGenerateConf ->
-            glideGenerateConf.configPipeline = configPipeline
-            glideGenerateConf.glideConfigFile = configPipeline.userConfig
-            glideGenerateConf.outputFiles = project.files(configPipeline.outputs*.outputFile)
-            glideGenerateConf.env = env
-        }
-
-        project.tasks.withType(GlideSyncBase) { GlideSyncBase glideSyncBase ->
-            glideSyncBase.synchronizer = synchronizer
-        }
-
-        // FORCE OVERRIDE APPENGINE EXTENSION PROPERTIES
-        project.plugins.withType(AppEnginePlugin) {
-            project.extensions.getByType(AppEnginePluginExtension).with {
-                //  warDir = warRoot // this may not be required as we are overriding explodedAppDirectory below
-                // daemon = true
-
-                // TODO add following only if we want to reload classes
-                jvmFlags += ["-Dappengine.fullscan.seconds=${frequency}"]
-            }
-        }
-
-        // from app engine plugins perspective, our sources and generated config together forms the source
-        // hence set that to look for generated config in warRoot
-        project.tasks.withType(WebAppDirTask) { WebAppDirTask appengineWebAppDirTask ->
-            appengineWebAppDirTask.webAppSourceDirectory = warRoot
-        }
-
-        project.tasks.withType(UpdateTask) { UpdateTask updateTask ->
-            updateTask.explodedAppDirectory = warRoot
-        }
-
-        project.tasks.withType(RunTask) { RunTask task ->
-            task.explodedAppDirectory = warRoot
-        }
+    public void configure() {
+        ensureNonEarArchive()
+        configureDependencies()
+        configureClassesOutput()
+        overrideAppEngineExtension()
+        configureGlideTasks()
+        configureAppEngineTasks()
 
         // disable Gaelyk's sync because we have our own sync, War/Exploded because its redundant
         disableTaskTypes(GaelykSynchronizeResourcesTask, War, ExplodeAppTask)
-
     }
 
     // must call after project eval done
     private void ensureNonEarArchive() {
         ExplodeAppTask explodeTask = project.tasks.getByName(AppEnginePlugin.APPENGINE_EXPLODE_WAR)
-        if (explodeTask.archive.name.endsWith(".ear")) {
+        if (explodeTask?.archive?.name?.endsWith(".ear")) {
             project.logger.error("EAR Not Supported")
             throw new GradleException("EAR Not Supported")
         }
@@ -193,11 +154,71 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         }
     }
 
-    public static File fileIn(File parent, String filename) { new File(parent, filename) }
-
-    private void configureClassesOutput(File classesRoot) {
+    private void configureClassesOutput() {
         project.sourceSets.main.output.classesDir = project.sourceSets.main.output.resourcesDir = classesRoot
     }
+
+    // FORCE OVERRIDE APPENGINE EXTENSION PROPERTIES
+    private void overrideAppEngineExtension() {
+        project.plugins.withType(AppEnginePlugin) {
+            project.extensions.getByType(AppEnginePluginExtension).with {
+                // this may not be required as we are overriding explodedAppDirectory below
+                warDir = this.warRoot
+
+                // daemon = true
+
+                // TODO add following only if we want to reload classes
+                jvmFlags += ["-Dappengine.fullscan.seconds=${syncFrequency}"]
+            }
+        }
+    }
+
+    private void configureGlideTasks() {
+        project.tasks.withType(GlideSetup) { GlideSetup task ->
+            task.webInfDir = webInfDir
+        }
+
+        project.tasks.getByName(GlideTaskCreator.GLIDE_COPY_LIBS_TASK_NAME).with {
+            into libRoot
+            from project.configurations.runtime
+        }
+
+        project.tasks.withType(ForgivingSync) { ForgivingSync glideAppSync ->
+            glideAppSync.from = sourceWebAppDir
+            glideAppSync.into = warRoot
+        }
+
+        project.tasks.withType(GlideGenerateConf) { GlideGenerateConf glideGenerateConf ->
+            glideGenerateConf.configPipeline = this.configPipeline
+            glideGenerateConf.glideConfigFile = this.configPipeline.userConfig
+            glideGenerateConf.outputFiles = project.files(this.configPipeline.outputs*.outputFile)
+            glideGenerateConf.env = env
+        }
+
+        project.tasks.withType(GlideSyncBase) { GlideSyncBase glideSyncBase ->
+            glideSyncBase.synchronizer = this.synchronizer
+        }
+    }
+
+    private void configureAppEngineTasks() {
+        // from app engine plugins perspective, our sources and generated config together forms the source
+        // hence set that to look for generated config in warRoot
+        project.tasks.withType(WebAppDirTask) { WebAppDirTask appengineWebAppDirTask ->
+            appengineWebAppDirTask.webAppSourceDirectory = warRoot
+        }
+
+        project.tasks.withType(UpdateTask) { UpdateTask updateTask ->
+            updateTask.explodedAppDirectory = warRoot
+        }
+
+        project.tasks.withType(RunTask) { RunTask task ->
+            task.explodedAppDirectory = warRoot
+        }
+    }
+
+
+    public static File fileIn(File parent, String filename) { new File(parent, filename) }
+
 
     private void disableTaskTypes(Class<Task>... taskClasses) {
         taskClasses.each { taskClass -> project.tasks.withType(taskClass) { enabled = false } }
