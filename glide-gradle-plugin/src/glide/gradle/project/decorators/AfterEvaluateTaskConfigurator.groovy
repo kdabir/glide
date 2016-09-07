@@ -5,9 +5,9 @@ import org.gradle.api.Project
 /**
  * Configure task with values from evaluated project and extensions
  */
-class GlidePostEvaluateTaskConfigurator extends ProjectDecorator {
+class AfterEvaluateTaskConfigurator extends ProjectDecorator {
 
-    GlidePostEvaluateTaskConfigurator(Project project) {
+    AfterEvaluateTaskConfigurator(Project project) {
         super(project)
     }
 

@@ -64,6 +64,11 @@ class GlideTaskCreator extends ProjectDecorator {
         update.dependsOn glidePrepare
         glideStartSync.dependsOn glidePrepare
         glideSyncOnce.dependsOn glideSetupDir
+
+//        glideGenerateConfig.dependsOn glidePrepare
+//        glideCopyLibs.dependsOn glidePrepare
+//        glideAppSync.dependsOn glidePrepare
+
     }
 
     public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass) {

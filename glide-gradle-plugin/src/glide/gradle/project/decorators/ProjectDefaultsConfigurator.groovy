@@ -28,6 +28,8 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
         configureRepositories()
         configureSourceDirectories()
         configureAppEngineExtension()
+
+        new GlideTaskCreator(project).configure()
     }
 
     private void configureJavaCompatibility() { // assumes java plugin is already applied
