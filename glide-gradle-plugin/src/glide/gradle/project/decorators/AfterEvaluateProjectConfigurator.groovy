@@ -175,7 +175,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
 
     private void configureGlideTasks() {
         project.tasks.withType(GlideSetup) { GlideSetup task ->
-            task.webInfDir = webInfDir
+            task.webInfDir = this.webInfDir
         }
 
         project.tasks.getByName(GlideTaskCreator.GLIDE_COPY_LIBS_TASK_NAME).with {
@@ -184,15 +184,15 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         }
 
         project.tasks.withType(ForgivingSync) { ForgivingSync glideAppSync ->
-            glideAppSync.from = sourceWebAppDir
-            glideAppSync.into = warRoot
+            glideAppSync.from = this.sourceWebAppDir
+            glideAppSync.into = this.warRoot
         }
 
         project.tasks.withType(GlideGenerateConf) { GlideGenerateConf glideGenerateConf ->
             glideGenerateConf.configPipeline = this.configPipeline
             glideGenerateConf.glideConfigFile = this.configPipeline.userConfig
             glideGenerateConf.outputFiles = project.files(this.configPipeline.outputs*.outputFile)
-            glideGenerateConf.env = env
+            glideGenerateConf.env = this.env
         }
 
         project.tasks.withType(GlideSyncBase) { GlideSyncBase glideSyncBase ->
@@ -204,15 +204,15 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         // from app engine plugins perspective, our sources and generated config together forms the source
         // hence set that to look for generated config in warRoot
         project.tasks.withType(WebAppDirTask) { WebAppDirTask appengineWebAppDirTask ->
-            appengineWebAppDirTask.webAppSourceDirectory = warRoot
+            appengineWebAppDirTask.webAppSourceDirectory = this.warRoot
         }
 
         project.tasks.withType(UpdateTask) { UpdateTask updateTask ->
-            updateTask.explodedAppDirectory = warRoot
+            updateTask.explodedAppDirectory = this.warRoot
         }
 
         project.tasks.withType(RunTask) { RunTask task ->
-            task.explodedAppDirectory = warRoot
+            task.explodedAppDirectory = this.warRoot
         }
     }
 
@@ -221,7 +221,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
 
 
     private void disableTaskTypes(Class<Task>... taskClasses) {
-        taskClasses.each { taskClass -> project.tasks.withType(taskClass) { enabled = false } }
+        taskClasses.each { taskClass -> project.tasks.withType(taskClass) { Task t -> t.enabled = false } }
     }
 
 
