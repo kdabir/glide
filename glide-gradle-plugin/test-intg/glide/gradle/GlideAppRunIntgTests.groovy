@@ -35,7 +35,9 @@ class GlideAppRunIntgTests extends Specification {
 
 
     def "integration test"() {
-        def conditions = new PollingConditions(timeout: 30, initialDelay: 10, delay: 1)
+        def timeout =  System.getenv("CI")? 90 : 30
+        def initialDelay = System.getenv("CI")? 5 : 15
+        def conditions = new PollingConditions(timeout: timeout, initialDelay: initialDelay, delay: 1)
 
         expect:
         conditions.eventually {
