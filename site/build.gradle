@@ -10,7 +10,7 @@ apply plugin: 'com.appspot.glide-gae'
 
 glide {
     versions {
-        appengineVersion = "1.9.38" // override appengine version
+        appengineVersion = "1.9.49" // override appengine version
     }
 }
 
