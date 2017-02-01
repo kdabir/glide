@@ -27,19 +27,19 @@ of builds. If you are adding a feature, please add corresponding tests as well. 
 
 ### Prerequisites
 
-To hack glide, a Mac/Linux is preferred OS. However, Windows is supported too (after all Glide is 100% JVM based `¯\_(ツ)_/¯` ). 
-If you don't want to setup development environment locally, you can use various cloud based editors like 
-[Cloud9](https://c9.io), [Nitrous](http://nitrous.io), and [Koding](https://www.koding.com)
+To hack glide, a Mac/Linux is preferred OS. However, Windows is supported too (after all Glide is 100% JVM
+ based `¯\_(ツ)_/¯` ).  If you don't want to setup development environment locally, you can use various cloud based 
+ editors like [Cloud9](https://c9.io), [Koding](https://www.koding.com) etc.
 
 You need to have `git` and `java` (at least 1.7) available on your machine. It's advisable to have `groovy` and `gradle` 
 (both optional) installed via [sdkman](http://sdkman.io).
 
-Instead of typing long commands on commnad-line, We have created some shortcuts in Makefile, using which is completely optional.
-if you want to use it, make sure make is installed.
+Instead of typing long commands on command-line, We have created some shortcuts in Makefile, using which is completely 
+optional. If you want to use it, make sure `make` is installed. Also `Makefile` is documented just enough to understand 
+the tasks available
 
-For consistent file formatting, the `.editorconfig` is also checked in. Please use editors that support it (like IntelliJ IDEA, Atom, SublimeText)  
-
-We recommend using IntelliJ IDEA Community or Ultimate edition.
+For consistent file formatting, the `.editorconfig` is also checked in. Please use editors that support it (like 
+IntelliJ IDEA, Atom, SublimeText). We highly recommend using IntelliJ IDEA Community or Ultimate edition.
 
 ### Building 
 
@@ -66,9 +66,14 @@ Check if you have keys for Bintray, SDKMAN and Gradle plugin portal.
 
 To Check, run
   
-    cat ~/.gradle/gradle.properties
+    gradle hasKeys
   
-following keys must be present `bintrayUser`, `bintrayKey`, `gradle.publish.key`, `gradle.publish.secret`,  `sdkmanConsumerKey`, `sdkmanConsumerToken`
+To set keys, edit the file at:
+  
+     ~/.gradle/gradle.properties
+  
+Following keys must be present `bintrayUser`, `bintrayKey`, `gradle.publish.key`, `gradle.publish.secret`,  
+`sdkmanConsumerKey`, `sdkmanConsumerToken`
 
 Gradle tasks `releaseFilters`, `releasePlugin`, `releaseRunner` can be run from on top level project to publish respective artifact  
 

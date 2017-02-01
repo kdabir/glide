@@ -43,7 +43,7 @@ task publishedVersions << {
 }
 
 
-task wrapper(type: Wrapper){
+task wrapper(type: Wrapper) {
     gradleVersion = gradleVersion
 }
 
@@ -60,7 +60,8 @@ def printVersions(String component) {
 }
 
 import groovy.json.JsonSlurper
-def printGitTags(){
+
+def printGitTags() {
     def tags = new JsonSlurper()
         .parse(new URL("https://api.github.com/repos/kdabir/glide/git/refs/tags"))*.ref.collect { it.split("/").last() }
     logger.quiet """
@@ -68,4 +69,12 @@ def printGitTags(){
         """.stripIndent()
 
     logger.quiet tags.join("\n")
+}
+
+task hasKeys {
+    def keys = ['bintrayUser', 'bintrayKey', 'gradle.publish.key', 'gradle.publish.secret', 'sdkmanConsumerKey', 'sdkmanConsumerToken']
+
+    doLast {
+        println("all keys required to publish:  " + keys.every { project.hasProperty(it) })
+    }
 }
