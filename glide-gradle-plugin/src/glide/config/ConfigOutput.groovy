@@ -7,9 +7,9 @@ import groovy.transform.CompileStatic
 class ConfigOutput {
     final File outputFile
     final ConfigGenerator generator
-    final Closure<Boolean> writeIf = {true}
+    final Closure<Boolean> writeIf
 
-    ConfigOutput(File outputFile, ConfigGenerator generator, Closure<Boolean> writeIf) {
+    ConfigOutput(File outputFile, ConfigGenerator generator, Closure<Boolean> writeIf = {true}) {
         this.outputFile = outputFile
         this.generator = generator
         this.writeIf = writeIf
