@@ -110,6 +110,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         overrideAppEngineExtension()
         configureGlideTasks()
         configureAppEngineTasks()
+        configureIdea()
 
         // disable Gaelyk's sync because we have our own sync, War/Exploded because its redundant
         disableTaskTypes(GaelykSynchronizeResourcesTask, War, ExplodeAppTask)
@@ -126,31 +127,31 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
 
     private void configureDependencies() {
         FeaturesExtension features = configuredGlideExtension.features
-        VersionsExtension versions = configuredGlideExtension.versions
+        VersionsExtension configuredVersions = configuredGlideExtension.versions
 
         project.dependencies {
             // Configure SDK
-            appengineSdk "com.google.appengine:appengine-java-sdk:${versions.appengineVersion}"
+            appengineSdk "com.google.appengine:appengine-java-sdk:${configuredVersions.appengineVersion}"
 
             // App Engine Specific Dependencies
-            compile "com.google.appengine:appengine-api-1.0-sdk:${versions.appengineVersion}"
-            compile "com.google.appengine:appengine-api-labs:${versions.appengineVersion}"
+            compile "com.google.appengine:appengine-api-1.0-sdk:${configuredVersions.appengineVersion}"
+            compile "com.google.appengine:appengine-api-labs:${configuredVersions.appengineVersion}"
 
-            // Groovy lib dependency
-            if (features.enableGroovy)
-                compile "org.codehaus.groovy:groovy-all:${versions.groovyVersion}"
+            // Groovy and Gaelyk deps
+            compile "org.codehaus.groovy:groovy-all:${configuredVersions.groovyVersion}"
+            compile "org.gaelyk:gaelyk:${configuredVersions.gaelykVersion}"
 
-            // Gaelyk lib dependency
-            if (features.enableGaelyk || features.enableGaelykTemplates)
-                compile "org.gaelyk:gaelyk:${versions.gaelykVersion}"
+            // removed the following checks to add groovy and gaelyk
+            // if (features.enableGroovy)
+            // if (features.enableGaelyk || features.enableGaelykTemplates)
 
             // Glide Runtime lib dependency
             if (features.enableGlideProtectedResources || features.enableGlideRequestLogging)
-                compile "io.github.kdabir.glide:glide-filters:${versions.glideFiltersVersion}"
+                compile "io.github.kdabir.glide:glide-filters:${configuredVersions.glideFiltersVersion}"
 
             // Sitemesh lib dependency
             if (features.enableSitemesh)
-                compile "org.sitemesh:sitemesh:${versions.sitemeshVersion}"
+                compile "org.sitemesh:sitemesh:${configuredVersions.sitemeshVersion}"
         }
     }
 
@@ -168,7 +169,8 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
                 // daemon = true
 
                 // TODO add following only if we want to reload classes
-                jvmFlags += ["-Dappengine.fullscan.seconds=${syncFrequency}"]
+                jvmFlags += ["-Dappengine.fullscan.seconds=${syncFrequency}",
+                             "-Ddatastore.backing_store=../../.local.db.bin"]
             }
         }
     }
@@ -201,12 +203,14 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
     }
 
     private void configureAppEngineTasks() {
-        // from app engine plugins perspective, our sources and generated config together forms the source
+        // from AppEngine Plugin's perspective, our sources and generated config together forms the source root
         // hence set that to look for generated config in warRoot
         project.tasks.withType(WebAppDirTask) { WebAppDirTask appengineWebAppDirTask ->
             appengineWebAppDirTask.webAppSourceDirectory = this.warRoot
         }
 
+        // hacking the exploded-app
+        // explode in warRoot itself, so that sync, and class compilation can continue even after explode
         project.tasks.withType(UpdateTask) { UpdateTask updateTask ->
             updateTask.explodedAppDirectory = this.warRoot
         }
@@ -216,6 +220,16 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         }
     }
 
+    private void configureIdea() { // TODO control via extension
+        project.idea {
+            module {
+                downloadSources = true
+                downloadJavadoc = true
+                sourceDirs += this.sourceWebAppDir
+                outputDir = this.classesRoot
+            }
+        }
+    }
 
     public static File fileIn(File parent, String filename) { new File(parent, filename) }
 

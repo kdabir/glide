@@ -1,4 +1,4 @@
-/* ------ Gradle.com build-scan --------- */
+/* ------------------- Gradle.com build-scan ------------------- */
 plugins {
     id 'com.gradle.build-scan' version '1.0'
 }
@@ -7,7 +7,7 @@ buildScan {
     licenseAgreementUrl = 'https://gradle.com/terms-of-service'
     licenseAgree = 'yes'
 }
-/* --------------  */
+/* ------------------------------------------------------------  */
 
 subprojects {
     apply plugin: 'groovy'
@@ -73,7 +73,7 @@ def printGitTags() {
 }
 
 task hasKeys {
-    def keys = ['bintrayUser', 'bintrayKey', 'gradle.publish.key', 'gradle.publish.secret', 'sdkmanConsumerKey', 'sdkmanConsumerToken']
+    final keys = ['bintrayUser', 'bintrayKey', 'gradle.publish.key', 'gradle.publish.secret', 'sdkmanConsumerKey', 'sdkmanConsumerToken']
 
     doLast {
         println("all keys required to publish:  " + keys.every { project.hasProperty(it) })

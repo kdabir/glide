@@ -22,7 +22,7 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
         super(project)
     }
 
-    public void configure() {
+    void configure() {
         applyRequiredPlugins()
         configureJavaCompatibility()
         configureRepositories()
@@ -37,11 +37,10 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
         project.targetCompatibility = SUPPORTED_JAVA_VERSION
     }
 
-    // TODO apply gaelyk only if feature is enabled
-    // - Not so important though, as it does not pollute runtime, it only adds minimal build tasks)
     private void applyRequiredPlugins() {
         project.apply(plugin: 'war')
-        project.apply(plugin: 'org.gaelyk')
+        project.apply(plugin: 'org.gaelyk')   // gaelyk plugin applies groovy and appengine plugin by default
+        project.apply(plugin: 'idea')         // for our love for intellij-idea
     }
 
     private void configureRepositories() {
@@ -58,8 +57,9 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
             main.groovy.srcDirs = [SRC_DIR]
             test.groovy.srcDirs = [TEST_DIR]
 
-            main.java.srcDirs = [SRC_DIR]
-            test.java.srcDirs = [TEST_DIR]
+            // let everything be compiled by groovy compiler
+            // set java dirs to be empty
+            main.java.srcDirs = test.java.srcDirs = []
 
             functionalTests.groovy.srcDir FUNCTIONAL_TESTS_DIR
         }

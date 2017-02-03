@@ -52,4 +52,7 @@ glide {
 //        appengineVersion = "1.9.38" // override appengine version
     }
 //    daemon = false
+
+    features {
+    }
 }

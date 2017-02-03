@@ -37,11 +37,11 @@ class GlideExtensionTest extends Specification {
 
         when:
         extension.features {
-            enableGaelyk = false
+            enableGlideProtectedResources = false
         }
 
         then:
-        extension.features.enableGaelyk == false
+        extension.features.enableGlideProtectedResources == false
     }
 
     def "should expose defaults if ext is not configured"() {
