@@ -2,18 +2,18 @@ app {
     name = "glide-app"
     version = "1"
 
-    system_properties = [
+    systemProperties = [
             'file.encoding'                : "UTF-8",
             'groovy.source.encoding'       : "UTF-8",
             'java.util.logging.config.file': "WEB-INF/logging.properties"
     ]
 
-    env_variables = [:]
+    envVariables = [:]
 
 }
 
 web {
-    welcome_files = ['index.html']
+    welcomeFiles = ['index.html']
 }
 
 logging {

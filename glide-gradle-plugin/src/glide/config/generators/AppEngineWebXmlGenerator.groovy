@@ -15,37 +15,37 @@ class AppEngineWebXmlGenerator extends XmlBasedConfigGenerator {
             'precompilation-enabled' true
 
             'system-properties' {
-                app.system_properties.each { k, v ->
+                app.systemProperties.each { k, v ->
                     property(name: k, value: v)
                 }
             }
 
             'env-variables' {
-                app.env_variables.each { k, v ->
+                app.envVariables.each { k, v ->
                     "env-var"(name: k, value: v)
                 }
             }
 
-            if (app.public_root) {
-                'public-root' app.public_root
+            if (app.publicRoot) {
+                'public-root' app.publicRoot
             }
 
-            if (app.resource_files) {
+            if (app.resourceFiles) {
                 'resource-files' {
-                    app.resource_files.includes.each { pattern ->
+                    app.resourceFiles.includes.each { pattern ->
                         include(path: pattern)
                     }
-                    app.resource_files.excludes.each { pattern ->
+                    app.resourceFiles.excludes.each { pattern ->
                         exclude(path: pattern)
                     }
                 }
             }
-            if (app.static_files) {
+            if (app.staticFiles) {
                 'static-files' {
-                    app.static_files.includes.each { pattern ->
+                    app.staticFiles.includes.each { pattern ->
                         include(path: pattern)
                     }
-                    app.static_files.excludes.each { pattern ->
+                    app.staticFiles.excludes.each { pattern ->
                         exclude(path: pattern)
                     }
                 }

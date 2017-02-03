@@ -7,24 +7,24 @@ class Sitemesh3XmlGenerator extends XmlBasedConfigGenerator {
     @Override
     void enrichXml(ConfigObject config, MarkupBuilder sitemesh3Xml) {
         sitemesh3Xml.sitemesh {
-            config.layout.mappings.each { path_pattern, decorators ->
+            config.layout.mappings.each { pathPattern, decorators ->
                 if (decorators instanceof String)
-                    mapping(path: path_pattern, decorator: decorators)
+                    mapping(path: pathPattern, decorator: decorators)
                 else if (decorators instanceof List)
                     mapping {
-                        path path_pattern
+                        path pathPattern
                         decorators.each { file ->
                             decorator file
                         }
                     }
             }
-            config.layout.excludes.each { path_pattern ->
-                if (path_pattern instanceof String)
-                    mapping path: path_pattern, exclude: true
+            config.layout.excludes.each { pathPattern ->
+                if (pathPattern instanceof String)
+                    mapping(path: pathPattern, exclude: true)
 
-                if (path_pattern instanceof List)
-                    path_pattern.each { pattern ->
-                        mapping path: pattern, exclude: true
+                if (pathPattern instanceof List)
+                    pathPattern.each { pattern ->
+                        mapping(path: pattern, exclude: true)
                     }
             }
         }

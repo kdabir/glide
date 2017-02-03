@@ -25,8 +25,8 @@ class ChainedConfigLoaderIntgTest extends Specification {
 
         then:
         config.app.name == 'glide-app'
-        config.web.servlets.templateServlet.servlet_class == 'groovyx.gaelyk.GaelykTemplateServlet'
-        config.web.servlets.gaelykServlet.servlet_class == 'groovyx.gaelyk.GaelykServlet'
+        config.web.servlets.templateServlet.servletClass == 'groovyx.gaelyk.GaelykTemplateServlet'
+        config.web.servlets.gaelykServlet.servletClass == 'groovyx.gaelyk.GaelykServlet'
     }
 
     def "handles lists correctly" (){
@@ -37,7 +37,7 @@ class ChainedConfigLoaderIntgTest extends Specification {
                 .config
 
         then:
-        config.app.static_files.excludes == ['**.groovy', '**.gtpl']
+        config.app.staticFiles.excludes == ['**.groovy', '**.gtpl']
     }
 
     def "honours loading order in case of list correctly" (){
@@ -48,6 +48,6 @@ class ChainedConfigLoaderIntgTest extends Specification {
                 .config
 
         then:
-        config.app.static_files.excludes == ['**.gtpl', '**.groovy']
+        config.app.staticFiles.excludes == ['**.gtpl', '**.groovy']
     }
 }

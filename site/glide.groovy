@@ -2,7 +2,7 @@ app {
     name = "glide-gae"
     version = "beta"
 
-    resource_files {
+    resourceFiles {
         includes = ["**.gtpl", "**.html", "**.groovy", "**.md", "favicon.ico", "robots.txt", "sitemap.xml"]
     }
 }
@@ -22,10 +22,10 @@ web {
 
     filters {
         protectedResourcesFilter {
-            init_params = [strict: true]
+            initParams = [strict: true]
         }
         routesFilter {
-            url_patterns = ['/*']
+            urlPatterns = ['/*']
             dispatchers = [ 'REQUEST', 'ERROR']
         }
     }

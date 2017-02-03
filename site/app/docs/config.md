@@ -72,7 +72,7 @@ allowed and user should not able access any file directly then set make this cha
     web {
         filters {
             protectedResourcesFilter {
-                init_params = [strict: true]
+                initParams = [strict: true]
             }
         }
     }

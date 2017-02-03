@@ -1,15 +1,15 @@
 app {
-    static_files {
-        excludes = (app?.static_files?.excludes?:[]) << "**.gtpl"
+    staticFiles {
+        excludes = (app?.staticFiles?.excludes?:[]) << "**.gtpl"
     }
 }
 
 web {
     servlets {
         templateServlet {
-            servlet_class = "groovyx.gaelyk.GaelykTemplateServlet"
-            init_params = ['verbose' : false, 'generated.by' : false ]
-            url_patterns = ['*.gtpl']
+            servletClass = "groovyx.gaelyk.GaelykTemplateServlet"
+            initParams = ['verbose' : false, 'generated.by' : false ]
+            urlPatterns = ['*.gtpl']
         }
     }
 }

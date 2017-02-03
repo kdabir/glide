@@ -1,8 +1,8 @@
 web {
     filters {
         sitemeshFilter {
-            filter_class = "org.sitemesh.config.ConfigurableSiteMeshFilter"
-            url_patterns = ['/*']
+            filterClass = "org.sitemesh.config.ConfigurableSiteMeshFilter"
+            urlPatterns = ['/*']
             dispatchers = ['FORWARD', 'REQUEST']
         }
     }

@@ -10,28 +10,28 @@ class WebXmlGeneratorTest extends GroovyTestCase {
 
         servlets {
             gaelykServlet {
-                servlet_class = "groovyx.gaelyk.GaelykServlet"
-                init_params = ['verbose' : false ]
-                url_patterns = ['*.groovy']
-                load_on_startup = 1
+                servletClass = "groovyx.gaelyk.GaelykServlet"
+                initParams = ['verbose' : false ]
+                urlPatterns = ['*.groovy']
+                loadOnStartup = 1
             }
             templateServlet {
-                servlet_class = "groovyx.gaelyk.GaelykTemplateServlet"
-                init_params = ['verbose' : false, 'generated.by' : false ]
-                url_patterns = ['*.gtpl']
-                load_on_startup = 1
+                servletClass = "groovyx.gaelyk.GaelykTemplateServlet"
+                initParams = ['verbose' : false, 'generated.by' : false ]
+                urlPatterns = ['*.gtpl']
+                loadOnStartup = 1
             }
         }
 
         filters {
             routesFilter {
-                filter_class = "groovyx.gaelyk.routes.RoutesFilter"
-                url_patterns = ['/*']
+                filterClass = "groovyx.gaelyk.routes.RoutesFilter"
+                urlPatterns = ['/*']
                 dispatchers = [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR']
             }
         }
 
-        error_pages = [
+        errorPages = [
             500 : '/error.html',
             404 : '/404.html'
         ]
@@ -41,7 +41,7 @@ class WebXmlGeneratorTest extends GroovyTestCase {
             '*' :  ['/user/*']
         ]
 
-        welcome_files = ['index.html']
+        welcomeFiles = ['index.html']
 
     }
     """
@@ -65,7 +65,7 @@ class WebXmlGeneratorTest extends GroovyTestCase {
     void testErrorPagesForErrorCodesAndExceptionTypes() {
         def webXml = getXmlObjectForConfig("""
         web {
-            error_pages = [
+            errorPages = [
                 500 : '/error.html',
                 404 : '/404.html',
                 'java.lang.Throwable' : '/exception.html'

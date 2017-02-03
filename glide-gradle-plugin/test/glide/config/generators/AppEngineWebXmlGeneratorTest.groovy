@@ -32,7 +32,7 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
     void testPublicRoot(){
         def app = toXmlObject """
             app {
-                public_root = "public"
+                publicRoot = "public"
             }
         """
         assert app."public-root" == "public"
@@ -41,7 +41,7 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
     void testStaticFiles(){
         def app = toXmlObject """
             app {
-                static_files {
+                staticFiles {
                     includes = ["*.js", "*.css"]
                     excludes = ["*.groovy"]
                 }
@@ -54,7 +54,7 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
     void testResourceFiles(){
         def app = toXmlObject """
             app{
-                resource_files {
+                resourceFiles {
                     includes = ["**.groovy"]
                     excludes = ["*.js", "*.css"]
                 }
@@ -67,7 +67,7 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
     void testSystemProperties(){
         def app = toXmlObject """
             app {
-                system_properties = [
+                systemProperties = [
                     "a" : 123 ,
                     "b" : "xyz"
                 ]
@@ -82,7 +82,7 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
     void testEnvVars(){
         def app = toXmlObject """
             app {
-                env_variables = [
+                envVariables = [
                     "a" : 123 ,
                     "b" : "xyz"
                 ]

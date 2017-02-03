@@ -4,7 +4,7 @@ import groovy.xml.MarkupBuilder
 
 // TODO multiple filter urls-patterns can have set of dispatchers
 // TODO list value like `listeners` are not additive when two config objects are merged.
-/* url_patterns = [
+/* urlPatterns = [
     '/*': [ 'INCLUDE', 'FORWARD', 'REQUEST', 'ERROR'],
     '/*.abc' : ['INCLUDE']
  ]*/
@@ -21,17 +21,17 @@ class WebXmlGenerator extends XmlBasedConfigGenerator {
 
         webXml.'web-app'(xmlns: "http://java.sun.com/xml/ns/javaee", version: "2.5") {
 
-            config.web.listeners.each { listener_class ->
+            config.web.listeners.each { listenerClass ->
                 'listener' {
-                    'listener-class' "$listener_class"
+                    'listener-class' "$listenerClass"
                 }
             }
 
-            config.web.filters.each { filter_name, filter_def ->
+            config.web.filters.each { filterName, filterDef ->
                 'filter' {
-                    'filter-name' filter_name
-                    'filter-class' filter_def.filter_class
-                    filter_def.init_params.each { k, v ->
+                    'filter-name' filterName
+                    'filter-class' filterDef.filterClass
+                    filterDef.initParams.each { k, v ->
                         'init-param' {
                             'param-name' k
                             'param-value' v
@@ -40,43 +40,43 @@ class WebXmlGenerator extends XmlBasedConfigGenerator {
                 }
             }
 
-            config.web.servlets.each { servlet_name, servlet_def ->
+            config.web.servlets.each { servletName, servletDef ->
                 'servlet' {
-                    'servlet-name' servlet_name
-                    'servlet-class' servlet_def.servlet_class
-                    servlet_def.init_params.each { name, value ->
+                    'servlet-name' servletName
+                    'servlet-class' servletDef.servletClass
+                    servletDef.initParams.each { name, value ->
                         'init-param' {
                             'param-name' name
                             'param-value' value
                         }
                     }
-                    'load-on-startup' servlet_def.load_on_startup
+                    'load-on-startup' servletDef.loadOnStartup
                 }
             }
 
-            config.web.filters.each { filter_name, filter_def ->
-                filter_def.url_patterns.each { url_pattern ->
+            config.web.filters.each { filterName, filterDef ->
+                filterDef.urlPatterns.each { urlPattern ->
                     'filter-mapping' {
-                        'filter-name' filter_name
-                        'url-pattern' url_pattern
-                        filter_def.dispatchers.each { dispatcher_name ->
-                            'dispatcher' dispatcher_name
+                        'filter-name' filterName
+                        'url-pattern' urlPattern
+                        filterDef.dispatchers.each { dispatcherName ->
+                            'dispatcher' dispatcherName
                         }
                     }
                 }
             }
 
-            config.web.servlets.each { servlet_name, servlet_def ->
-                servlet_def.url_patterns.each { url_pattern ->
+            config.web.servlets.each { servletName, servletDef ->
+                servletDef.urlPatterns.each { urlPattern ->
                     'servlet-mapping' {
-                        'servlet-name' servlet_name
-                        'url-pattern' url_pattern
+                        'servlet-name' servletName
+                        'url-pattern' urlPattern
                     }
                 }
             }
 
             // to do: in servlet 3 support the generic error page which has no code or exception type
-            config.web.error_pages.each { key, page ->
+            config.web.errorPages.each { key, page ->
                 'error-page' {
                     if (key.toString().isInteger())
                         'error-code' key
@@ -100,9 +100,9 @@ class WebXmlGenerator extends XmlBasedConfigGenerator {
 
             }
 
-            if (config.web.welcome_files) {
+            if (config.web.welcomeFiles) {
                 'welcome-file-list' {
-                    config.web.welcome_files.each {file ->
+                    config.web.welcomeFiles.each {file ->
                         'welcome-file' file
                     }
                 }

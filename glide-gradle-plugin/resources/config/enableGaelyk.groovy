@@ -1,6 +1,6 @@
 app {
-    static_files {
-        excludes = (app?.static_files?.excludes?:[]) << "**.groovy"
+    staticFiles {
+        excludes = (app?.staticFiles?.excludes?:[]) << "**.groovy"
     }
 }
 
@@ -9,18 +9,18 @@ web {
 
     servlets {
         gaelykServlet {
-            servlet_class = "groovyx.gaelyk.GaelykServlet"
-            init_params = [verbose: false]
-            url_patterns = ['*.groovy']
+            servletClass = "groovyx.gaelyk.GaelykServlet"
+            initParams = [verbose: false]
+            urlPatterns = ['*.groovy']
         }
     }
 
     filters {
         routesFilter {
-            filter_class = "groovyx.gaelyk.routes.RoutesFilter"
-            url_patterns = ['/*']
+            filterClass = "groovyx.gaelyk.routes.RoutesFilter"
+            urlPatterns = ['/*']
             dispatchers = ['REQUEST', 'FORWARD', 'ERROR']
-            init_params = ["routes.location": "_routes.groovy"]
+            initParams = ["routes.location": "_routes.groovy"]
         }
     }
 }
