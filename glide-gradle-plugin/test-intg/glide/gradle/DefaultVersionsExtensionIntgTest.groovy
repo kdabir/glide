@@ -25,12 +25,15 @@ class DefaultVersionsExtensionIntgTest extends Specification {
         DirTree.create(testProjectDir.absolutePath) {
             file "build.gradle", """\
                    plugins {
-                    id 'com.appspot.glide-gae'
+                     id 'com.appspot.glide-gae'
                    }
                    repositories { mavenLocal() }
 
-                   task printDefaultVersions << {
-                        println glide.gradle.DefaultVersions.get()
+                   task printDefaultVersions {
+                     doLast{
+                       println glide.gradle.DefaultVersions.get()                   
+                     }
+                        
                    }
                 """.stripIndent()
         }

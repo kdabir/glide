@@ -37,11 +37,12 @@ task releasePlugin(dependsOn: ':glide-gradle-plugin:release')
 task releaseRunner(dependsOn: ':glide-runner:release')
 
 // some helpers
-task publishedVersions << {
-    ['glide-filters', 'glide-gradle-plugin'].each { printVersions(it) }
-    printGitTags()
+task publishedVersions {
+    doLast {
+        ['glide-filters', 'glide-gradle-plugin'].each { printVersions(it) }
+        printGitTags()
+    }
 }
-
 
 task wrapper(type: Wrapper) {
     gradleVersion = gradleVersion
