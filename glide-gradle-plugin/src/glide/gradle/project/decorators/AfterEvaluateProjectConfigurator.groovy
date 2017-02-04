@@ -230,7 +230,6 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         project.plugins.withType(IdeaPlugin) { IdeaPlugin plugin ->
             plugin.model.module {
                 downloadSources = true
-                downloadJavadoc = true
                 sourceDirs += this.sourceWebAppDir
                 outputDir = this.classesRoot
             }
