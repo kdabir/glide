@@ -92,7 +92,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
             targetDir warRoot.absolutePath, includeEmptyDirs: true
             preserve includes: syncPreservedPatterns, preserveEmptyDirs: true
             syncFrequencyInSeconds syncFrequency
-            withTimer(new Timer("Synchronizer Daemon Thread", true))
+            withTimer(new Timer("Synchronizer Daemon Thread", true)) // TODO - daemon vs non-daemon
 
             beforeSync {
                 // project.logger.quiet("performing before sync checks..."  + glideConfig.lastModified())
@@ -230,18 +230,18 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         project.plugins.withType(IdeaPlugin) { IdeaPlugin plugin ->
             plugin.model.module {
                 downloadSources = true
+
+                // treat sourceWebAppDir dir as source because it will contain groovy scripts
                 sourceDirs += this.sourceWebAppDir
                 outputDir = this.classesRoot
             }
         }
     }
 
-    public static File fileIn(File parent, String filename) { new File(parent, filename) }
-
-
     private void disableTaskTypes(Class<Task>... taskClasses) {
         taskClasses.each { taskClass -> project.tasks.withType(taskClass) { Task t -> t.enabled = false } }
     }
 
+    private static File fileIn(File parent, String filename) { new File(parent, filename) }
 
 }

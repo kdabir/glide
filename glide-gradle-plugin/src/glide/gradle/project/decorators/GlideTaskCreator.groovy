@@ -24,9 +24,6 @@ class GlideTaskCreator extends ProjectDecorator {
     public static final String GLIDE_TASK_GROUP_NAME = 'glide'
     public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
 
-    // glideRun
-    // glideDeploy
-
 
     GlideTaskCreator(Project project) {
         super(project)
@@ -50,33 +47,32 @@ class GlideTaskCreator extends ProjectDecorator {
             "Generates config files required for app engine web application in output dir")
 
         ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync,
-            "Sync app changes to output dir, useful in continuous mode")
-
+            "Sync app changes to output dir")
 
         GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync,
-            "Starts syncing changes from app dir to output dir, also generates config if required (only useful in run mode)")
+            "Starts syncing changes in background from app dir to output dir, also generates config if required")
 
         GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce,
-            "Syncs changes from app dir to output dir, also generates config if required")
+            "Syncs changes only once from app dir to output dir, also generates config if required (useful for debugging issues)")
 
-        Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
-//        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
-//        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
+        Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task,
+            "Prepares the app so that it can be run locally or deployed")
 
-        def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
-        def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)
-        def classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
+        // TODO - work on public facing task names to be more intuitive
 
-        glidePrepare.dependsOn glideGenerateConf, glideAppSync, classesTask, glideCopyLibs
-        runTask.dependsOn glidePrepare
-        update.dependsOn glidePrepare
-        glideStartSync.dependsOn glidePrepare
-        glideSyncOnce.dependsOn glideSetupDir
+        Task appengineRunTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN),
+            appengineUpdate = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE),
+            classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME)
 
-//        glideGenerateConfig.dependsOn glidePrepare
-//        glideCopyLibs.dependsOn glidePrepare
-//        glideAppSync.dependsOn glidePrepare
+        [glideCopyLibs, classesTask, glideGenerateConf, glideAppSync, glideSyncOnce, glideStartSync]*.dependsOn glideSetupDir
 
+        glidePrepare.dependsOn(glideCopyLibs, classesTask, glideGenerateConf, glideAppSync)
+
+        // both need the warRoot completely setup
+        [glideStartSync, appengineRunTask, appengineUpdate]*.dependsOn glidePrepare
+
+        // when both tasks are in graph, run must run after start-sync
+        appengineRunTask.mustRunAfter(glideStartSync)
     }
 
     public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, String description = null) {
