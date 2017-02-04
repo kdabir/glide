@@ -52,8 +52,8 @@ class GlideTaskCreator extends ProjectDecorator {
         GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
         GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
         Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
-        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
-        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
+//        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
+//        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
 
         def runTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN)
         def update = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE)

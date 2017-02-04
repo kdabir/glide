@@ -40,7 +40,6 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
     private void applyRequiredPlugins() {
         project.apply(plugin: 'war')
         project.apply(plugin: 'org.gaelyk')   // gaelyk plugin applies groovy and appengine plugin by default
-        project.apply(plugin: 'idea')         // for our love for intellij-idea
     }
 
     private void configureRepositories() {

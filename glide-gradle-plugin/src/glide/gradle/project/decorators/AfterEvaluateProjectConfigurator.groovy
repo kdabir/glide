@@ -23,6 +23,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.WarPluginConvention
 import org.gradle.api.plugins.gaelyk.tasks.GaelykSynchronizeResourcesTask
 import org.gradle.api.tasks.bundling.War
+import org.gradle.plugins.ide.idea.IdeaPlugin
 
 /**
  * Tunes the project config after the project has been evaluated, i.e. the glide's extension and possibly other
@@ -221,8 +222,8 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
     }
 
     private void configureIdea() { // TODO control via extension
-        project.idea {
-            module {
+        project.plugins.withType(IdeaPlugin) { IdeaPlugin plugin ->
+            plugin.model.module {
                 downloadSources = true
                 downloadJavadoc = true
                 sourceDirs += this.sourceWebAppDir
