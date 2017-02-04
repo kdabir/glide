@@ -34,6 +34,7 @@ class CreateAppCommand implements Command {
                  """\
                     build/
                     .gradle
+                    .db
                  """.stripIndent()
              }
         }
