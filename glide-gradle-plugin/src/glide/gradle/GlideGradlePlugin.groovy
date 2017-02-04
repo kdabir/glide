@@ -22,7 +22,7 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
 
         if (project.gradle.startParameter.continuous) {
-            project.logger.debug('we are in continuous mode')
+            project.logger.info('we are in continuous mode')
         }
 
 

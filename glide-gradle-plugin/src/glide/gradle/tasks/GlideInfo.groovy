@@ -8,6 +8,8 @@ import org.gradle.api.tasks.TaskAction
 @ParallelizableTask
 class GlideInfo extends DefaultTask {
 
+    String description = "Prints the version"
+
     @TaskAction
     def print() {
         def selfVersion = DefaultVersions.get().selfVersion

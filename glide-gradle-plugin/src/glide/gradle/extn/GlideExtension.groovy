@@ -27,11 +27,16 @@ class GlideExtension {
     String env
 
     // Experimental feature
-    boolean daemon = true
+    boolean daemon = false
 
+    /**
+     * the file representing the local db
+     */
+    File localDbFile
 
     GlideExtension(Project project, Properties defaultVersions) {
         this.project = project
+        localDbFile = project.file(".db/local_db.bin")
         versions = new VersionsExtension(defaultVersions)
     }
 

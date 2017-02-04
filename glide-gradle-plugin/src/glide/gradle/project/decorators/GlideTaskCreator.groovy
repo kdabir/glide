@@ -1,12 +1,7 @@
 package glide.gradle.project.decorators
 
 import com.google.appengine.AppEnginePlugin
-import glide.gradle.tasks.ForgivingSync
-import glide.gradle.tasks.GlideGenerateConf
-import glide.gradle.tasks.GlideInfo
-import glide.gradle.tasks.GlideSetup
-import glide.gradle.tasks.GlideStartSync
-import glide.gradle.tasks.GlideSyncOnce
+import glide.gradle.tasks.*
 import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.tasks.Copy
@@ -44,13 +39,26 @@ class GlideTaskCreator extends ProjectDecorator {
 
     def createAndConfigureGlideTasks() {
         // Create Task objects
-        GlideSetup glideSetupDir = createGlideTask(GLIDE_SETUP_TASK_NAME, GlideSetup)
         GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo)
-        Copy glideCopyLibs = createGlideTask(GLIDE_COPY_LIBS_TASK_NAME, Copy)
-        GlideGenerateConf glideGenerateConf = createGlideTask(GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf)
-        ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync)
-        GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync)
-        GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce)
+        GlideSetup glideSetupDir = createGlideTask(GLIDE_SETUP_TASK_NAME, GlideSetup,
+            "Creates output directory")
+
+        Copy glideCopyLibs = createGlideTask(GLIDE_COPY_LIBS_TASK_NAME, Copy,
+            "Copies the dependency jar files to output dir")
+
+        GlideGenerateConf glideGenerateConf = createGlideTask(GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf,
+            "Generates config files required for app engine web application in output dir")
+
+        ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync,
+            "Sync app changes to output dir, useful in continuous mode")
+
+
+        GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync,
+            "Starts syncing changes from app dir to output dir, also generates config if required (only useful in run mode)")
+
+        GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce,
+            "Syncs changes from app dir to output dir, also generates config if required")
+
         Task glidePrepare = createGlideTask(GLIDE_PREPARE_TASK_NAME, Task)
 //        Task glideRunWithSync = createGlideTask('glideRunWithSync', Task)
 //        Task glideRunWithoutSync = createGlideTask('glideRunWithoutSync', Task)
@@ -71,9 +79,11 @@ class GlideTaskCreator extends ProjectDecorator {
 
     }
 
-    public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass) {
+    public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, String description = null) {
         Task createdTask = this.project.tasks.create(taskName, taskClass)
         createdTask.group = GLIDE_TASK_GROUP_NAME
+        if (description)
+            createdTask.description = description
         return createdTask
     }
 

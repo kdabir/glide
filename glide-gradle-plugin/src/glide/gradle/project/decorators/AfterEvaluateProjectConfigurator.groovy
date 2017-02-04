@@ -167,11 +167,15 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
                 // this may not be required as we are overriding explodedAppDirectory below
                 warDir = this.warRoot
 
-                // daemon = true
+                // oauth2 is sorta mandatory now
+                appCfg.oauth2 = true
+
+                // instead of this, user can control via appengine extension itself
+                // daemon = this.configuredGlideExtension.daemon
 
                 // TODO add following only if we want to reload classes
-                jvmFlags += ["-Dappengine.fullscan.seconds=${syncFrequency}",
-                             "-Ddatastore.backing_store=../../.local.db.bin"]
+                jvmFlags += ["-Dappengine.fullscan.seconds=${this.syncFrequency}",
+                             "-Ddatastore.backing_store=${this.configuredGlideExtension.localDbFile.absolutePath}"]
             }
         }
     }
@@ -179,6 +183,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
     private void configureGlideTasks() {
         project.tasks.withType(GlideSetup) { GlideSetup task ->
             task.webInfDir = this.webInfDir
+            task.localDbFile = this.configuredGlideExtension.localDbFile
         }
 
         project.tasks.getByName(GlideTaskCreator.GLIDE_COPY_LIBS_TASK_NAME).with {

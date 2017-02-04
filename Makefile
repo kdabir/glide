@@ -11,6 +11,9 @@ test:
 p:
 	./gradlew --configure-on-demand glide-gradle-plugin:jWL && ./gradlew --stop
 
+l:
+	./gradlew --configure-on-demand glide-gradle-plugin:pTML
+
 si:
 	./gradlew --configure-on-demand sandbox:glideInfo
 
