@@ -53,14 +53,36 @@ Before running your first integration test, make sure you run `make intSetup` on
 
 Then run `./gradlew intTest`
 
-### Using locally built version
 
-sandbox project can be used to test locally built glide. 
+## Developing the plugin
 
-run `make p`
+- make changes to the `glide-gradle-plugin` subproject
+- make sure tests pass after the changes
+- use the sandbox project as a sample app as it is already setup to use the in dev (snapshot) version, without publishing
+to local maven repo
+- sandbox project can be used to test locally built glide. use `make p`
 
 
-### Publishing
+### Using the locally developed plugin
+
+- to use the snapshot version of plugin in another project publish the plugin to local maven repo using 
+`gradle publishToMavenLocal`
+
+- In your glide project, use the following snippet to apply glide plugin that is locally built
+
+
+    buildscript {
+        repositories { 
+            mavenLocal() 
+            jcenter()
+        }
+        dependencies { classpath "io.github.kdabir.glide:glide-gradle-plugin:+" }
+    }
+    
+    apply plugin: 'com.appspot.glide-gae'
+
+
+### Publishing (a release)
 
 Check if you have keys for Bintray, SDKMAN and Gradle plugin portal.
 
@@ -83,3 +105,5 @@ Gradle tasks `releaseFilters`, `releasePlugin`, `releaseRunner` can be run from 
 - Star the repo
 - Tweet about it (#GlideAppEngine #glide #gae)
 - in every other possible way.
+
+
