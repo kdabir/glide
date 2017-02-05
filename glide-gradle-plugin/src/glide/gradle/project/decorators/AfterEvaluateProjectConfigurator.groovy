@@ -91,20 +91,27 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
             sourceDir sourceWebAppDir.absolutePath
             targetDir warRoot.absolutePath, includeEmptyDirs: true
             preserve includes: syncPreservedPatterns, preserveEmptyDirs: true
-            syncFrequencyInSeconds syncFrequency
-            withTimer(new Timer("Synchronizer Daemon Thread", true)) // TODO - daemon vs non-daemon
+            syncFrequencyInSeconds this.syncFrequency
+
+            // using timer as daemon thread so that it doesn't prevent jvm from stopping
+            withTimer(new Timer("Synchronizer Daemon Thread", true))
+
 
             beforeSync {
-                // project.logger.quiet("performing before sync checks..."  + glideConfig.lastModified())
-                if (glideConfigFile.lastModified() >= lastSynced) {
-                    project.logger.quiet("generating config files...")
+                // project.logger.quiet("performing before sync checks..."  + glideConfigFile.lastModified())
+                if (glideConfigFile.lastModified() >= lastSynced) { // lastSynced is exposed by Synchronizer
+                    project.logger.quiet("Generating config files...")
                     this.configPipeline.execute(env)
                 }
             }
+
+            // afterSync {
+            //     project.logger.quiet('sync complete')
+            // }
         }
     }
 
-    public void configure() {
+    void configure() {
         ensureNonEarArchive()
         configureDependencies()
         configureClassesOutput()

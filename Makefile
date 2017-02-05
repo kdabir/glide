@@ -2,47 +2,49 @@ clean:
 	./gradlew clean
 	./gradlew --stop
 
-
 test:
 	./gradlew clean
 	./gradlew --stop
 	./gradlew test intTest -Dorg.gradle.parallel.intra=true --parallel
 
-p:
-	./gradlew --configure-on-demand glide-gradle-plugin:jWL && ./gradlew --stop
-
-l:
-	./gradlew --configure-on-demand glide-gradle-plugin:pTML
-
-si:
+info:
 	./gradlew --configure-on-demand sandbox:glideInfo
 
-ss:
-	./gradlew --configure-on-demand sandbox:glideSync
-
-sc:
-	./gradlew --configure-on-demand sandbox:glideGenerateConf
-
-sr:
-	./gradlew --configure-on-demand sandbox:gRunD
 
 ################################################################################
-# Task to make changes to plugin and run sandbox app
+# Task to make changes to plugin and run sandbox app without installing
 ################################################################################
-run:
-	./gradlew --configure-on-demand glide-gradle-plugin:jWL
+preparePlugin:
+	./gradlew --configure-on-demand glide-gradle-plugin:jWL && ./gradlew --stop
+
+runSandbox:
+	./gradlew --configure-on-demand -Dorg.gradle.parallel.intra=true sandbox:glideStartSync sandbox:appRun
+
+runSandboxInBackground:
+	./gradlew --configure-on-demand -Dorg.gradle.parallel.intra=true sandbox:glideStartSync sandbox:appRun &
+
+stopSandbox:
+	./gradlew --configure-on-demand -Dorg.gradle.parallel.intra=true sandbox:appStop
+
+run: preparePlugin runSandbox
+
+
+################################################################################
+# install plugin to maven local and CLI app to local path (glide-snapshot)
+################################################################################
+install:
+	./gradlew --configure-on-demand -Dorg.gradle.parallel.intra=true --parallel glide-gradle-plugin:publishToMavenLocal glide-runner:installDist
 	./gradlew --stop
-	./gradlew --configure-on-demand -Dorg.gradle.parallel.intra=true sandbox:appRun
 
 
 ################################################################################
-# Running With CLI
+# Running With CLI (via installed version and live version)
 ################################################################################
-runI:
+runCliInstalled:
 	glide-snapshot/bin/glide --app sandbox foo
 
 
-runL:
+runCliLive:
 	./gradlew --configure-on-demand glide-runner:run -Pcli="-a ../sandbox"
 
 
@@ -54,9 +56,6 @@ check:
 	curl localhost:8080/g
 	curl localhost:8080/j
 
-
-sanity: run check
-	echo "done"
 
 
 ################################################################################
