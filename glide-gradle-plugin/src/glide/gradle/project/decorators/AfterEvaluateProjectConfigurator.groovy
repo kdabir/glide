@@ -179,9 +179,6 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
                 // oauth2 is sorta mandatory now
                 appCfg.oauth2 = true
 
-                // instead of this, user can control via appengine extension itself
-                // daemon = this.configuredGlideExtension.daemon
-
                 // TODO add following only if we want to reload classes
                 jvmFlags += ["-Dappengine.fullscan.seconds=${this.syncFrequency}",
                              "-Ddatastore.backing_store=${this.configuredGlideExtension.localDbFile.absolutePath}"]

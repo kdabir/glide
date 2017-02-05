@@ -22,9 +22,8 @@ class GlideGradlePlugin implements Plugin<Project> {
         }
 
         if (project.gradle.startParameter.continuous) {
-            project.logger.info('we are in continuous mode')
+            project.logger.info('Started in continuous mode')
         }
-
 
         // Create extension on project. We need to wait till its configured in the build script.
         // Try not to use `conventionMappings` for loading values from configured extension object.
@@ -40,12 +39,11 @@ class GlideGradlePlugin implements Plugin<Project> {
             final GlideExtension configuredGlideExtension = project.extensions.getByType(GlideExtension)
 
             new AfterEvaluateProjectConfigurator(project, configuredGlideExtension).configure()
-
         }
 
         //** Following code executes when task graph is ready **//
         project.gradle.taskGraph.whenReady { graph ->
-            project.logger.info("task graph ready..")
+            project.logger.info("Task graph ready..")
         }
     }
 

@@ -60,7 +60,7 @@ class GlidePluginIntgTests extends Specification {
 
     def "sync libs"() {
         when:
-        def result = glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_PREPARE_TASK_NAME)
+        def result = glideAppUnderTest.runBlockingTask(GlideTaskCreator.GLIDE_BUILD_APP_TASK_NAME)
 
         then:
         glideAppUnderTest.file("build/warRoot/WEB-INF/lib").isDirectory()
@@ -68,7 +68,7 @@ class GlidePluginIntgTests extends Specification {
 
 
     def printTree(){
-        println "tree ${testProjectDir.absolutePath}".execute().text
+        println "tree ${glideAppUnderTest.absolutePath}".execute().text
     }
 
 }

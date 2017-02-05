@@ -14,6 +14,6 @@ class GlideSetup extends DefaultTask {
     @TaskAction
     protected void prepare() {
         webInfDir?.mkdirs()
-        localDbFile.parentFile.mkdirs()
+        localDbFile?.parentFile?.mkdirs()
     }
 }

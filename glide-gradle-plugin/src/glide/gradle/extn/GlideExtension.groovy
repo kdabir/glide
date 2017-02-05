@@ -26,9 +26,6 @@ class GlideExtension {
      */
     String env
 
-    // Experimental feature
-    boolean daemon = false
-
     /**
      * the file representing the local db
      */
