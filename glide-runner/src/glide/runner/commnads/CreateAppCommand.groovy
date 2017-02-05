@@ -33,8 +33,8 @@ class CreateAppCommand implements Command {
              file(".gitignore") {
                  """\
                     build/
-                    .gradle
-                    .db
+                    .gradle/
+                    .db/
                  """.stripIndent()
              }
         }

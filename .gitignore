@@ -18,3 +18,4 @@ classes/
 /tmp/
 .c9
 .buildProfile
+.db/
