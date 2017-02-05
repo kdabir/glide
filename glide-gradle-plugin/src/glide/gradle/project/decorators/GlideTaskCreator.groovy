@@ -10,11 +10,14 @@ import org.gradle.api.tasks.Copy
  * Only creates and wire task dependencies. Project does not need to be evaluated before this is run.
  */
 class GlideTaskCreator extends ProjectDecorator {
+
+    public static final String GLIDE_TASK_GROUP_NAME = 'glide'
+    public static final String GLIDE_INTERNAL_TASK_GROUP_NAME = 'glide setup'
+
     // Task Names
     public static final String GRADLE_CLASSES_TASK_NAME = 'classes'
     public static final String GRADLE_BUILD_TASK_NAME = 'build'
 
-    public static final String GLIDE_TASK_GROUP_NAME = 'glide'
     public static final String GLIDE_INFO_TASK_NAME = "glideInfo"
     public static final String GLIDE_SETUP_TASK_NAME = "glideSetup"
     public static final String GLIDE_COPY_LIBS_TASK_NAME = "glideCopyLibs"
@@ -38,36 +41,36 @@ class GlideTaskCreator extends ProjectDecorator {
 
     def createAndConfigureGlideTasks() {
         // Create Task objects
-        GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo)
-
         GlideSetup glideSetupDir = createGlideTask(GLIDE_SETUP_TASK_NAME, GlideSetup,
-            "Creates output directory")
+            false, "Creates output directory")
 
         Copy glideCopyLibs = createGlideTask(GLIDE_COPY_LIBS_TASK_NAME, Copy,
-            "Copies the dependency jar files to output dir")
+            false, "Copies the dependency jar files to output dir")
 
         GlideGenerateConf glideGenerateConf = createGlideTask(GLIDE_GENERATE_CONFIG_TASK_NAME, GlideGenerateConf,
-            "Generates config files required for app engine web application in output dir")
+            false, "Generates config files required for app engine web application in output dir")
 
         ForgivingSync glideAppSync = createGlideTask(GLIDE_APP_SYNC_TASK_NAME, ForgivingSync,
-            "Sync app changes to output dir")
+            false, "Sync app changes to output dir")
 
         GlideStartSync glideStartSync = createGlideTask(GLIDE_START_SYNC_TASK_NAME, GlideStartSync,
-            "Starts syncing changes in background from app dir to output dir, also generates config if required")
+            false, "Starts syncing changes in background from app dir to output dir, also generates config if required")
 
         GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce,
-            "Syncs changes only once from app dir to output dir, also generates config if required (useful for debugging config issues)")
+            false, "Syncs changes only once from app dir to output dir, also generates config if required (useful for debugging config issues)")
 
 
         // the public-facing tasks aliases
+        GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo, true)
+
         Task glideBuildApp = createGlideTask(GLIDE_BUILD_APP_TASK_NAME, Task,
-            "Prepares the app so that it can be run locally or deployed")
+            true, "Prepares the app so that it can be run locally or deployed")
 
         Task glideStartServer = createGlideTask(GLIDE_START_SERVER_TASK_NAME, Task,
-            "Starts the server")
+            true, "Starts the server")
 
         Task glideRun = createGlideTask(GLIDE_RUN_TASK_NAME, Task,
-            "Starts the server and syncs app code and config")
+            true, "Starts the server and syncs app code and config")
 
 
         // TODO - work on public facing task names to be more intuitive
@@ -93,9 +96,9 @@ class GlideTaskCreator extends ProjectDecorator {
         glideRun.dependsOn(glideStartSync, appengineRunTask)
     }
 
-    public <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, String description = null) {
+    private <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, boolean isPublic = false, String description = null) {
         Task createdTask = this.project.tasks.create(taskName, taskClass)
-        createdTask.group = GLIDE_TASK_GROUP_NAME
+        createdTask.group = isPublic ? GLIDE_TASK_GROUP_NAME : GLIDE_INTERNAL_TASK_GROUP_NAME
         if (description)
             createdTask.description = description
         return createdTask
