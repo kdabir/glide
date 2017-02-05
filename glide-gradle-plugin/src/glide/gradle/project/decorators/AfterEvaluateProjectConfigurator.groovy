@@ -23,6 +23,7 @@ import org.gradle.api.Task
 import org.gradle.api.plugins.WarPluginConvention
 import org.gradle.api.plugins.gaelyk.tasks.GaelykSynchronizeResourcesTask
 import org.gradle.api.tasks.bundling.War
+import org.gradle.api.tasks.wrapper.Wrapper
 import org.gradle.plugins.ide.idea.IdeaPlugin
 
 /**
@@ -119,6 +120,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
         configureGlideTasks()
         configureAppEngineTasks()
         configureIdea()
+        configureWrapper()
 
         // disable Gaelyk's sync because we have our own sync, War/Exploded because its redundant
         disableTaskTypes(GaelykSynchronizeResourcesTask, War, ExplodeAppTask)
@@ -242,6 +244,12 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
                 sourceDirs += this.sourceWebAppDir
                 outputDir = this.classesRoot
             }
+        }
+    }
+
+    private void configureWrapper(){
+        project.tasks.withType(Wrapper) { Wrapper wrapper ->
+            wrapper.gradleVersion = versionsExt.gradleVersion
         }
     }
 

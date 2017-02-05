@@ -5,7 +5,8 @@ class VersionsExtension {
            appengineVersion,
            gaelykVersion,
            sitemeshVersion,
-           glideFiltersVersion
+           glideFiltersVersion,
+           gradleVersion
 
     VersionsExtension(final Properties defaults) {
         fieldNames().each {

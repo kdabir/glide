@@ -62,7 +62,7 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
 
             functionalTests.groovy.srcDir FUNCTIONAL_TESTS_DIR
         }
-
+        // this property comes from war plugin. TODO - should use a better way to set it
         project.webAppDirName = WEB_APP_DIR
     }
 

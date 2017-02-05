@@ -18,11 +18,11 @@ class GlidePluginIntgTests extends Specification {
     GlideTestApp glideAppUnderTest = new GlideTestApp('int-test-config').withDefaultAppFiles().create()
 
     def setupSpec() {
-        glideAppUnderTest.appendToBuildFile """\
-               appengine {
-                    daemon = true
-               }
-            """.stripIndent()
+//        glideAppUnderTest.appendToBuildFile """\
+//               appengine {
+//                    daemon = true
+//               }
+//            """.stripIndent()
 
     }
 
