@@ -87,6 +87,9 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
             .withWebAppTargetRoot(warRoot)
             .build()
 
+        // using timer as daemon thread so that it doesn't prevent jvm from stopping
+        def timer = new Timer("Synchronizer Daemon - " + new Date().format("HH:mm:ss"), true)
+
         this.synchronizer = Synchronizer.build {
             withAnt(project.ant)
             sourceDir sourceWebAppDir.absolutePath
@@ -94,9 +97,7 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
             preserve includes: syncPreservedPatterns, preserveEmptyDirs: true
             syncFrequencyInSeconds this.syncFrequency
 
-            // using timer as daemon thread so that it doesn't prevent jvm from stopping
-            withTimer(new Timer("Synchronizer Daemon Thread", true))
-
+            withTimer(timer)
 
             beforeSync {
                 // project.logger.quiet("performing before sync checks..."  + glideConfigFile.lastModified())
@@ -109,6 +110,10 @@ class AfterEvaluateProjectConfigurator extends ProjectDecorator {
             // afterSync {
             //     project.logger.quiet('sync complete')
             // }
+        }
+
+        project.gradle.buildFinished {
+            timer.cancel()
         }
     }
 
