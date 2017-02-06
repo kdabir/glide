@@ -26,7 +26,7 @@ class CreateAppCommand implements Command {
             file("build.gradle"){
                 """\
                 plugins {
-                  id "com.appspot.glide-gae" version "0.9.3"
+                  id "com.appspot.glide-gae" version "0.9.4"
                 }
                 """.stripIndent()
             }

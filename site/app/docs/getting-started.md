@@ -25,7 +25,7 @@ At its heart, Glide is just a gradle plugin. It helps to understand some Gradle 
 3. Apply the glide plugin. Just copy paste the following snippet in build.gradle       
 
         plugins {
-          id "com.appspot.glide-gae" version "0.9.3"
+          id "com.appspot.glide-gae" version "0.9.4"
         }
 
 4. Create a directory `app`, this is where our controllers (groovelets) and other web resources will go
