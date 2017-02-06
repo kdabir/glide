@@ -1,9 +1,11 @@
 package glide.gradle.project.decorators
 
 import com.google.appengine.AppEnginePlugin
+import com.google.appengine.AppEnginePluginExtension
 import glide.gradle.tasks.*
 import org.gradle.api.Project
 import org.gradle.api.Task
+import org.gradle.api.execution.TaskExecutionGraph
 import org.gradle.api.tasks.Copy
 
 /**
@@ -28,6 +30,8 @@ class GlideTaskCreator extends ProjectDecorator {
     public static final String GLIDE_SYNC_ONCE_TASK_NAME = "glideSyncOnce"
     public static final String GLIDE_START_SERVER_TASK_NAME = 'glideStartServer'
     public static final String GLIDE_RUN_TASK_NAME = 'glideRun'
+    public static final String GLIDE_START_DAEMON_TASK_NAME = 'glideStartDaemon'
+    public static final String GLIDE_STOP_TASK_NAME = 'glideStop'
 
 
     GlideTaskCreator(Project project) {
@@ -59,7 +63,6 @@ class GlideTaskCreator extends ProjectDecorator {
         GlideSyncOnce glideSyncOnce = createGlideTask(GLIDE_SYNC_ONCE_TASK_NAME, GlideSyncOnce,
             false, "Syncs changes only once from app dir to output dir, also generates config if required (useful for debugging config issues)")
 
-
         // the public-facing tasks aliases
         GlideInfo glideInfo = createGlideTask(GLIDE_INFO_TASK_NAME, GlideInfo, true)
 
@@ -69,19 +72,23 @@ class GlideTaskCreator extends ProjectDecorator {
         Task glideStartServer = createGlideTask(GLIDE_START_SERVER_TASK_NAME, Task,
             true, "Starts the server")
 
+        Task startDaemon = createGlideTask(GLIDE_START_DAEMON_TASK_NAME, Task, true, "Starts the server in daemon mode")
+        Task stop = createGlideTask(GLIDE_STOP_TASK_NAME, Task, true, "Stops the server")
+
         Task glideRun = createGlideTask(GLIDE_RUN_TASK_NAME, Task,
             true, "Starts the server and syncs app code and config")
 
         Task glideDeploy = createGlideTask("glideDeploy", Task,
             true, "Deploys the app to Google App Engine")
 
-
         // TODO - work on public facing task names to be more intuitive
 
         Task appengineRunTask = project.tasks.findByName(AppEnginePlugin.APPENGINE_RUN),
-            appengineUpdate = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE),
-            classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME),
-            buildTask = project.tasks.findByName(GRADLE_BUILD_TASK_NAME)
+             appengineUpdate = project.tasks.findByName(AppEnginePlugin.APPENGINE_UPDATE),
+             appengineStop = project.tasks.findByName(AppEnginePlugin.APPENGINE_STOP),
+             classesTask = project.tasks.findByName(GRADLE_CLASSES_TASK_NAME),
+             buildTask = project.tasks.findByName(GRADLE_BUILD_TASK_NAME)
+
 
         [glideCopyLibs, classesTask, glideGenerateConf, glideAppSync, glideSyncOnce, glideStartSync]*.dependsOn glideSetupDir
 
@@ -96,8 +103,20 @@ class GlideTaskCreator extends ProjectDecorator {
         appengineRunTask.mustRunAfter(glideStartSync)
 
         glideStartServer.dependsOn(appengineRunTask)
+        startDaemon.dependsOn(appengineRunTask)
         glideRun.dependsOn(glideStartSync, appengineRunTask)
         glideDeploy.dependsOn(appengineUpdate)
+        stop.dependsOn(appengineStop)
+
+        project.gradle.taskGraph.whenReady { TaskExecutionGraph taskGraph ->
+            if (taskGraph.hasTask(startDaemon)) {
+                project.plugins.withType(AppEnginePlugin) {
+                    project.extensions.getByType(AppEnginePluginExtension).with {
+                        daemon = true
+                    }
+                }
+            }
+        }
     }
 
     private <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, boolean isPublic = false, String description = null) {
