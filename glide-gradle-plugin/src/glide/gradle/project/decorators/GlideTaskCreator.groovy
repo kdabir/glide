@@ -112,6 +112,7 @@ class GlideTaskCreator extends ProjectDecorator {
             if (taskGraph.hasTask(startDaemon)) {
                 project.plugins.withType(AppEnginePlugin) {
                     project.extensions.getByType(AppEnginePluginExtension).with {
+                        project.logger.info("Setting daemon mode to true")
                         daemon = true
                     }
                 }

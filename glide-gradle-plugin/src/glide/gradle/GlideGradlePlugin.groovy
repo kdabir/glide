@@ -37,6 +37,7 @@ class GlideGradlePlugin implements Plugin<Project> {
             // We need after evaluate to let user configure the glide {} block in build script and
             // then we add the dependencies to the project
             final GlideExtension configuredGlideExtension = project.extensions.getByType(GlideExtension)
+            project.logger.info("Configuring glide : " + configuredGlideExtension.toString());
 
             new AfterEvaluateProjectConfigurator(project, configuredGlideExtension).configure()
         }

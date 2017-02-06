@@ -1,5 +1,8 @@
 package glide.gradle.extn
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true, includePackage = false)
 class FeaturesExtension {
     /*
      * even if we disable them gaelyk, project will still include groovy & gaelyk in classpath because of application of

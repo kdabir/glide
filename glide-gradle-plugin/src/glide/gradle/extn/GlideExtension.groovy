@@ -1,22 +1,12 @@
 package glide.gradle.extn
 
+import groovy.transform.ToString
 import org.gradle.api.Project
 import org.gradle.util.ConfigureUtil
 
+@ToString(includeNames = true, includePackage = false)
 class GlideExtension {
     Project project
-
-    /**
-     * versions of various dependencies can be overriden here
-     */
-    VersionsExtension versions
-
-    /**
-     * enable or disable features provided by glide
-     */
-    FeaturesExtension features = new FeaturesExtension()
-
-    SyncExtension sync = new SyncExtension()
 
     /**
      * the environment param to pass to glide config
@@ -30,6 +20,22 @@ class GlideExtension {
      * the file representing the local db
      */
     File localDbFile
+
+    /**
+     * versions of various dependencies can be overriden here
+     */
+    VersionsExtension versions
+
+    /**
+     * enable or disable features provided by glide
+     */
+    FeaturesExtension features = new FeaturesExtension()
+
+    /**
+     * Configures sync
+     */
+    SyncExtension sync = new SyncExtension()
+
 
     GlideExtension(Project project, Properties defaultVersions) {
         this.project = project

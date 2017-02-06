@@ -1,8 +1,11 @@
 package glide.gradle.extn
 
+import groovy.transform.ToString
+
 /**
  * configure sync related config here
  */
+@ToString(includeNames = true, includePackage = false)
 class SyncExtension {
 
     public static final int DEFAULT_FREQUENCY = 3

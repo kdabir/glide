@@ -1,5 +1,8 @@
 package glide.gradle.extn
 
+import groovy.transform.ToString
+
+@ToString(includeNames = true, includePackage = false)
 class VersionsExtension {
     String groovyVersion,
            appengineVersion,
