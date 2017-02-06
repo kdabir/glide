@@ -2,6 +2,9 @@ app {
     staticFiles {
         excludes = (app?.staticFiles?.excludes?:[]) << "**.gtpl"
     }
+    resourceFiles {
+        includes = (app?.resourceFiles?.includes?:[]) << "**.gtpl"
+    }
 }
 
 web {

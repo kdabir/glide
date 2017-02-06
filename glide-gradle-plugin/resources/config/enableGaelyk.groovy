@@ -2,6 +2,9 @@ app {
     staticFiles {
         excludes = (app?.staticFiles?.excludes?:[]) << "**.groovy"
     }
+    resourceFiles {
+        includes = (app?.resourceFiles?.includes?:[]) << "**.groovy"
+    }
 }
 
 web {

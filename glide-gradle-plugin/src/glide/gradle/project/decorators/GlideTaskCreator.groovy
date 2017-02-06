@@ -72,6 +72,9 @@ class GlideTaskCreator extends ProjectDecorator {
         Task glideRun = createGlideTask(GLIDE_RUN_TASK_NAME, Task,
             true, "Starts the server and syncs app code and config")
 
+        Task glideDeploy = createGlideTask("glideDeploy", Task,
+            true, "Deploys the app to Google App Engine")
+
 
         // TODO - work on public facing task names to be more intuitive
 
@@ -94,6 +97,7 @@ class GlideTaskCreator extends ProjectDecorator {
 
         glideStartServer.dependsOn(appengineRunTask)
         glideRun.dependsOn(glideStartSync, appengineRunTask)
+        glideDeploy.dependsOn(appengineUpdate)
     }
 
     private <T extends Task> T createGlideTask(String taskName, Class<T> taskClass, boolean isPublic = false, String description = null) {
