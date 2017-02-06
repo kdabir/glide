@@ -92,10 +92,15 @@ jar {
 import org.apache.tools.ant.filters.*
 
 
+/**
+ * The following processing injects the properties from parent project into the plugins resources
+ * so the versions are maintained only at top level.
+ */
 project.afterEvaluate {
     tasks.withType(ProcessResources) { processResources ->
 
         def versions = project.properties.findAll { k, v -> k.endsWith("Version") && v instanceof String }
+        // declare inputs of this task, for UP-TO-DATE checking
         processResources.inputs.properties(versions) // so that resources are processed on version change
         processResources.inputs.property('useLatestGlideFilters', project.hasProperty('useLatestGlideFilters'))
 
