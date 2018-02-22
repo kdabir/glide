@@ -1,13 +1,13 @@
 language: groovy
 
 install:
-  - TERM=dumb ./gradlew -q assemble
+  - ./gradlew -q assemble --stacktrace --no-daemon
 
 script:
-  - TERM=dumb ./gradlew pTML test integrationTest --stacktrace --daemon -Dscan
+  - ./gradlew pTML test integrationTest --stacktrace --no-daemon
 
 jdk:
-  - oraclejdk7
   - oraclejdk8
 # weird probs with openjdk
 #  - openjdk7
+#  - oraclejdk7
