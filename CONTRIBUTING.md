@@ -28,8 +28,7 @@ of builds. If you are adding a feature, please add corresponding tests as well. 
 ### Prerequisites
 
 To hack glide, a Mac/Linux is preferred OS. However, Windows is supported too (after all Glide is 100% JVM
- based `¯\_(ツ)_/¯` ).  If you don't want to setup development environment locally, you can use various cloud based 
- editors like [Cloud9](https://c9.io), [Koding](https://www.koding.com) etc.
+ based `¯\_(ツ)_/¯` ).
 
 You need to have `git` and `java` (at least 1.7) available on your machine. It's advisable to have `groovy` and `gradle` 
 (both optional) installed via [sdkman](http://sdkman.io).
@@ -60,7 +59,7 @@ Then run `./gradlew intTest`
 - make sure tests pass after the changes
 - use the sandbox project as a sample app as it is already setup to use the in dev (snapshot) version, without publishing
 to local maven repo
-- sandbox project can be used to test locally built glide. use `make p`
+- sandbox project can be used to test locally built glide. use `make run`
 
 
 ### Using the locally developed plugin

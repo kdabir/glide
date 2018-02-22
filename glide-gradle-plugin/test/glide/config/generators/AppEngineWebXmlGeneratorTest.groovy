@@ -104,6 +104,26 @@ class AppEngineWebXmlGeneratorTest extends GroovyTestCase {
         assert app."inbound-services"."service"*.text() == ["email", "xmpp_message"]
     }
 
+    void testJava8Changes(){
+        def app = toXmlObject """
+            app {
+                runtime = 'java7'
+                url_stream_handler = 'native'
+            }
+        """
+        assert app."runtime".text() == "java7"
+        assert app.'url-stream-handler'.text() == "native"
+    }
+
+    void testJava8ChangesDefault(){
+        def app = toXmlObject """
+            app {
+            }
+        """
+        assert app."runtime".text() == "java8"
+        assert app.'url-stream-handler'.text() == "urlfetch"
+    }
+
     void testIncomingServicesAbsence(){
         def app = toXmlObject """
             app {

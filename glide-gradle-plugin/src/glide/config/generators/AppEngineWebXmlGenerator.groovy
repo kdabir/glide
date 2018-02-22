@@ -13,6 +13,8 @@ class AppEngineWebXmlGenerator extends XmlBasedConfigGenerator {
             'version' app.version?:"1"
             'threadsafe' true
             'precompilation-enabled' true
+            'runtime' app.runtime?:"java8"
+            'url-stream-handler' app.url_stream_handler?:"urlfetch"
 
             'system-properties' {
                 app.systemProperties.each { k, v ->
