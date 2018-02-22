@@ -9,6 +9,7 @@ plugins {
 repositories {
     jcenter()
     maven { url "http://dl.bintray.com/kdabir/maven" }
+    maven { url 'https://repo.gradle.org/gradle/libs-releases' }
 }
 
 sourceSets {
@@ -25,7 +26,7 @@ dependencies {
             "org.gradle:gradle-tooling-api:${gradleVersion}",
             "io.github.kdabir.directree:directree:${directreeVersion}"
 
-    runtime 'org.slf4j:slf4j-nop:1.7.2'
+    runtime 'org.slf4j:slf4j-simple:1.7.10'
 
     testCompile "junit:junit:${junitVersion}"
 }
