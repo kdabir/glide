@@ -3,9 +3,10 @@ package glide.gradle.tasks
 import glide.config.ConfigPipeline
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.FileCollection
-import org.gradle.api.tasks.*
+import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.OutputFiles
+import org.gradle.api.tasks.TaskAction
 
-@ParallelizableTask
 class GlideGenerateConf extends DefaultTask {
 
     @InputFile

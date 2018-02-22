@@ -3,7 +3,6 @@ package glide.gradle.tasks
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.ParallelizableTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
@@ -14,7 +13,6 @@ import org.gradle.api.tasks.incremental.IncrementalTaskInputs
  * not really suitable for bulk sync
  *
  */
-@ParallelizableTask
 class ForgivingSync extends DefaultTask {
 
     @InputDirectory
