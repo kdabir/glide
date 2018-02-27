@@ -12,11 +12,13 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
     // constants
     public static final String WEB_APP_DIR = 'app'
     public static final String SRC_DIR = 'src'
+    public static final String RESOURCES_DIR = 'resources'
+    public static final String TEST_RESOURCES_DIR = 'testResources'
     public static final String TEST_DIR = 'test'
     public static final String FUNCTIONAL_TESTS_DIR = 'functionalTests'
     public static final String PUBLIC_DIR = 'public'
     public static final String GLIDE_MAVEN_REPO = 'http://dl.bintray.com/kdabir/glide'
-    public static final String SUPPORTED_JAVA_VERSION = '1.7'
+    public static final String SUPPORTED_JAVA_VERSION = '1.8'
 
     ProjectDefaultsConfigurator(Project project) {
         super(project)
@@ -55,6 +57,8 @@ class ProjectDefaultsConfigurator extends ProjectDecorator {
         project.sourceSets {
             main.groovy.srcDirs = [SRC_DIR]
             test.groovy.srcDirs = [TEST_DIR]
+            main.resources.srcDirs = [RESOURCES_DIR]
+            test.resources.srcDirs = [TEST_RESOURCES_DIR]
 
             // let everything be compiled by groovy compiler
             // set java dirs to be empty
